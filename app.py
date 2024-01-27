@@ -70,7 +70,7 @@ def create_db():
             downvote INTEGER
         );
     ''')
-create_db()
+
 def get_data():
     conn = get_db()
     cursor = conn.cursor()
@@ -192,14 +192,46 @@ with gr.Blocks(theme=theme, css="footer {visibility: hidden}") as demo:
     gr.Markdown(DESCR)
     gr.TabbedInterface([vote, leaderboard], ['Vote', 'Leaderboard'])
 def restart_space():
-    time.sleep(60)
-    print("Restarting space")
     api = HfApi(
         token=os.getenv('HF_TOKEN')
     )
+    time.sleep(60 * 60) # Every hour
+    print("Restarting space")
     api.restart_space(repo_id=os.getenv('HF_ID'))
+def sync_db():
+    api = HfApi(
+        token=os.getenv('HF_TOKEN')
+    )
+    while True:
+        time.sleep(60 * 15)
+        print("Uploading DB")
+        api.upload_file(
+            path_or_fileobj='database.db',
+            path_in_repo='database.db',
+            repo_id=os.getenv('DATASET_ID'),
+            repo_type='dataset'
+        )
 if os.getenv('HF_ID'):
     restart_thread = threading.Thread(target=restart_space)
     restart_thread.daemon = True
     restart_thread.start()
+if os.getenv('DATASET_ID'):
+    # Fetch DB
+    api = HfApi(
+        token=os.getenv('HF_TOKEN')
+    )
+    try:
+        api.hf_hub_download(
+            repo_id=os.getenv('DATASET_ID'),
+            repo_type='dataset',
+            filename='database.db',
+            cache_dir='./'
+        )
+    except:
+        pass
+    # Update DB
+    db_thread = threading.Thread(target=restart_space)
+    db_thread.daemon = True
+    db_thread.start()
+create_db()
 demo.queue(api_open=False).launch(show_api=False)
