@@ -25,6 +25,9 @@ import os
 import pandas as pd
 import sqlite3
 from datasets import load_dataset
+import threading
+import time
+from huggingface_hub import HfApi
 
 dataset = load_dataset("ttseval/tts-arena", token=os.getenv('HF_TOKEN'))
 theme = gr.themes.Base(
@@ -188,4 +191,15 @@ with gr.Blocks() as vote:
 with gr.Blocks(theme=theme, css="footer {visibility: hidden}") as demo:
     gr.Markdown(DESCR)
     gr.TabbedInterface([vote, leaderboard], ['Vote', 'Leaderboard'])
+def restart_space():
+    time.sleep(60)
+    print("Restarting space")
+    api = HfApi(
+        token=os.getenv('HF_TOKEN')
+    )
+    api.restart_space(repo_id=os.getenv('HF_ID'))
+if os.getenv('HF_ID'):
+    restart_thread = threading.Thread(target=restart_space)
+    restart_thread.daemon = True
+    restart_thread.start()
 demo.queue(api_open=False).launch(show_api=False)
