@@ -124,20 +124,24 @@ def downvote_model(model):
     conn.commit()
     cursor.close()
 def a_is_better(model1, model2):
-    upvote_model(model1)
-    downvote_model(model2)
+    if model1 and model2:
+        upvote_model(model1)
+        downvote_model(model2)
     return reload(model1, model2)
 def b_is_better(model1, model2):
-    upvote_model(model2)
-    downvote_model(model1)
+    if model1 and model2:
+        upvote_model(model2)
+        downvote_model(model1)
     return reload(model1, model2)
 def both_bad(model1, model2):
-    downvote_model(model1)
-    downvote_model(model2)
+    if model1 and model2:
+        downvote_model(model1)
+        downvote_model(model2)
     return reload(model1, model2)
 def both_good(model1, model2):
-    upvote_model(model1)
-    upvote_model(model2)
+    if model1 and model2:
+        upvote_model(model1)
+        upvote_model(model2)
     return reload(model1, model2)
 def reload(chosenmodel1=None, chosenmodel2=None):
     # Select random splits
