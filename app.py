@@ -2,7 +2,8 @@ DESCR = """
 # TTS Arena
 
 Vote on different speech synthesis models!
-
+""".strip()
+INSTR = """
 ## Instructions
 
 * Listen to two anonymous models
@@ -13,10 +14,18 @@ Vote on different speech synthesis models!
 
 **When you're ready to begin, click the Start button below!** The model names will be revealed once you vote.
 """.strip()
+LDESC = """
+## Leaderboard
+
+A list of the models, based on how highly they are ranked!
+""".strip()
 import gradio as gr
 import random
 import os
+import pandas as pd
+import sqlite3
 from datasets import load_dataset
+
 dataset = load_dataset("ttseval/tts-arena", token=os.getenv('HF_TOKEN'))
 theme = gr.themes.Base(
     font=[gr.themes.GoogleFont('Libre Franklin'), gr.themes.GoogleFont('Public Sans'), 'system-ui', 'sans-serif'],
@@ -24,6 +33,8 @@ theme = gr.themes.Base(
 model_names = {
     'styletts2': 'StyleTTS 2',
     'tacotron': 'Tacotron',
+    'tacotronph': 'Tacotron Phoneme',
+    'tacotrondca': 'Tacotron DCA',
     'speedyspeech': 'Speedy Speech',
     'overflow': 'Overflow TTS',
     'vits': 'VITS',
@@ -31,6 +42,12 @@ model_names = {
     'neuralhmm': 'Neural HMM',
     'glow': 'Glow TTS',
     'fastpitch': 'FastPitch',
+    'jenny': 'Jenny',
+    'tortoise': 'Tortoise TTS',
+    'xtts2': 'XTTSv2',
+    'xtts': 'XTTS',
+    'elevenlabs': 'ElevenLabs',
+    'speecht5': 'SpeechT5',
 }
 def get_random_split(existing_split=None):
     choice = random.choice(list(dataset.keys()))
@@ -38,27 +55,93 @@ def get_random_split(existing_split=None):
         return get_random_split(choice)
     else:
         return choice
+def get_db():
+    return sqlite3.connect('database.db')
+def create_db():
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS model (
+            name TEXT UNIQUE,
+            upvote INTEGER,
+            downvote INTEGER
+        );
+    ''')
+create_db()
+def get_data():
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT name, upvote, downvote FROM model')
+    data = cursor.fetchall()
+    df = pd.DataFrame(data, columns=['name', 'upvote', 'downvote'])
+    df['name'] = df['name'].replace(model_names)
+    df['votes'] = df['upvote'] + df['downvote']
+    # df['score'] = round((df['upvote'] / df['votes']) * 100, 2) # Percentage score
+
+    ## ELO SCORE
+    df['score'] = 1200
+    for i in range(len(df)):
+        for j in range(len(df)):
+            if i != j:
+                expected_a = 1 / (1 + 10 ** ((df['score'][j] - df['score'][i]) / 400))
+                expected_b = 1 / (1 + 10 ** ((df['score'][i] - df['score'][j]) / 400))
+                actual_a = df['upvote'][i] / df['votes'][i]
+                actual_b = df['upvote'][j] / df['votes'][j]
+                df.at[i, 'score'] += 32 * (actual_a - expected_a)
+                df.at[j, 'score'] += 32 * (actual_b - expected_b)
+    df['score'] = round(df['score'])
+    ## ELO SCORE
+
+    df = df.sort_values(by='score', ascending=False)
+    # df = df[['name', 'score', 'upvote', 'votes']]
+    df = df[['name', 'score', 'votes']]
+    return df
+
 def get_random_splits():
     choice1 = get_random_split()
     choice2 = get_random_split(choice1)
     return (choice1, choice2)
+def upvote_model(model):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('UPDATE model SET upvote = upvote + 1 WHERE name = ?', (model,))
+    if cursor.rowcount == 0:
+        cursor.execute('INSERT OR REPLACE INTO model (name, upvote, downvote) VALUES (?, 1, 0)', (model,))
+    conn.commit()
+    cursor.close()
+def downvote_model(model):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('UPDATE model SET downvote = downvote + 1 WHERE name = ?', (model,))
+    if cursor.rowcount == 0:
+        cursor.execute('INSERT OR REPLACE INTO model (name, upvote, downvote) VALUES (?, 0, 1)', (model,))
+    conn.commit()
+    cursor.close()
 def a_is_better(model1, model2):
-    chosen_model = model1
-    print(chosen_model)
+    upvote_model(model1)
+    downvote_model(model2)
     return reload(model1, model2)
 def b_is_better(model1, model2):
-    chosen_model = model2
-    print(chosen_model)
+    upvote_model(model2)
+    downvote_model(model1)
+    return reload(model1, model2)
+def both_bad(model1, model2):
+    downvote_model(model1)
+    downvote_model(model2)
+    return reload(model1, model2)
+def both_good(model1, model2):
+    upvote_model(model1)
+    upvote_model(model2)
     return reload(model1, model2)
 def reload(chosenmodel1=None, chosenmodel2=None):
     # Select random splits
     split1, split2 = get_random_splits()
     d1, d2 = (dataset[split1], dataset[split2])
     choice1, choice2 = (d1.shuffle()[0]['audio'], d2.shuffle()[0]['audio'])
-    if split1 in model_names:
-        split1 = model_names[split1]
-    if split2 in model_names:
-        split2 = model_names[split2]
+    if chosenmodel1 in model_names:
+        chosenmodel1 = model_names[chosenmodel1]
+    if chosenmodel2 in model_names:
+        chosenmodel2 = model_names[chosenmodel2]
     out = [
         (choice1['sampling_rate'], choice1['array']),
         (choice2['sampling_rate'], choice2['array']),
@@ -68,9 +151,12 @@ def reload(chosenmodel1=None, chosenmodel2=None):
     if chosenmodel1: out.append(f'This model was {chosenmodel1}')
     if chosenmodel2: out.append(f'This model was {chosenmodel2}')
     return out
-with gr.Blocks(theme=theme, css="footer {visibility: hidden}") as demo:
-# with gr.Blocks() as demo:
-    gr.Markdown(DESCR)
+with gr.Blocks() as leaderboard:
+    gr.Markdown(LDESC)
+    df = gr.Dataframe(interactive=False, value=get_data())
+    leaderboard.load(get_data, outputs=[df])
+with gr.Blocks() as vote:
+    gr.Markdown(INSTR)
     with gr.Row():
         gr.HTML('<div align="left"><h3>Model A</h3></div>')
         gr.HTML('<div align="right"><h3>Model B</h3></div>')
@@ -83,13 +169,23 @@ with gr.Blocks(theme=theme, css="footer {visibility: hidden}") as demo:
         with gr.Row():
             aud1 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
             aud2 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
-        with gr.Row():
-            abetter = gr.Button("A is Better", scale=3)
-            skipbtn = gr.Button("Skip", scale=1)
-            bbetter = gr.Button("B is Better", scale=3)
+    with gr.Row():
+        abetter = gr.Button("A is Better", variant='primary')
+        bbetter = gr.Button("B is Better", variant='primary')
+    with gr.Row():
+        bothbad = gr.Button("Both are Bad", scale=2)
+        skipbtn = gr.Button("Skip", scale=1)
+        bothgood = gr.Button("Both are Good", scale=2)
     outputs = [aud1, aud2, model1, model2, prevmodel1, prevmodel2]
     abetter.click(a_is_better, outputs=outputs, inputs=[model1, model2])
     bbetter.click(b_is_better, outputs=outputs, inputs=[model1, model2])
     skipbtn.click(b_is_better, outputs=outputs, inputs=[model1, model2])
-    demo.load(reload, outputs=[aud1, aud2, model1, model2])
+
+    bothbad.click(both_bad, outputs=outputs, inputs=[model1, model2])
+    bothgood.click(both_good, outputs=outputs, inputs=[model1, model2])
+
+    vote.load(reload, outputs=[aud1, aud2, model1, model2])
+with gr.Blocks(theme=theme, css="footer {visibility: hidden}") as demo:
+    gr.Markdown(DESCR)
+    gr.TabbedInterface([vote, leaderboard], ['Vote', 'Leaderboard'])
 demo.queue(api_open=False).launch(show_api=False)
