@@ -192,7 +192,7 @@ with gr.Blocks() as vote:
     bothgood.click(both_good, outputs=outputs, inputs=[model1, model2])
 
     vote.load(reload, outputs=[aud1, aud2, model1, model2])
-with gr.Blocks(theme=theme, css="footer {visibility: hidden}") as demo:
+with gr.Blocks(theme=theme, css="footer {visibility: hidden}", title="TTS Leaderboard") as demo:
     gr.Markdown(DESCR)
     gr.TabbedInterface([vote, leaderboard], ['Vote', 'Leaderboard'])
 def restart_space():
