@@ -1,8 +1,8 @@
 ---
 title: TTS Leaderboard
 emoji: 🏆
-colorFrom: indigo
-colorTo: indigo
+colorFrom: blue
+colorTo: blue
 sdk: gradio
 app_file: app.py
 pinned: true
