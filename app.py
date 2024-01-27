@@ -93,6 +93,8 @@ def get_data():
                 actual_b = df['upvote'][j] / df['votes'][j]
                 df.at[i, 'score'] += 32 * (actual_a - expected_a)
                 df.at[j, 'score'] += 32 * (actual_b - expected_b)
+                if df['votes'][j] < 3:
+                    df.at[j, 'score'] -= (3 - df['votes'][j]) * 5
     df['score'] = round(df['score'])
     ## ELO SCORE
 
