@@ -233,7 +233,7 @@ if os.getenv('DATASET_ID'):
     except:
         pass
     # Update DB
-    db_thread = threading.Thread(target=restart_space)
+    db_thread = threading.Thread(target=sync_db)
     db_thread.daemon = True
     db_thread.start()
 create_db()
