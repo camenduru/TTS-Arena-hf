@@ -156,7 +156,8 @@ def reload(chosenmodel1=None, chosenmodel2=None):
     return out
 with gr.Blocks() as leaderboard:
     gr.Markdown(LDESC)
-    df = gr.Dataframe(interactive=False, value=get_data())
+    # df = gr.Dataframe(interactive=False, value=get_data())
+    df = gr.Dataframe(interactive=False)
     leaderboard.load(get_data, outputs=[df])
 with gr.Blocks() as vote:
     gr.Markdown(INSTR)
