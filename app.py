@@ -68,7 +68,7 @@ def reload(chosenmodel1=None, chosenmodel2=None):
     if chosenmodel1: out.append(f'This model was {chosenmodel1}')
     if chosenmodel2: out.append(f'This model was {chosenmodel2}')
     return out
-with gr.Blocks(theme=theme) as demo:
+with gr.Blocks(theme=theme, css="footer {visibility: hidden}") as demo:
 # with gr.Blocks() as demo:
     gr.Markdown(DESCR)
     with gr.Row():
