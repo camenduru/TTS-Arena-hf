@@ -22,6 +22,7 @@ A list of the models, based on how highly they are ranked!
 import gradio as gr
 import random
 import os
+import shutil
 import pandas as pd
 import sqlite3
 from datasets import load_dataset
@@ -204,7 +205,7 @@ def sync_db():
         token=os.getenv('HF_TOKEN')
     )
     while True:
-        time.sleep(45)
+        time.sleep(60 * 15)
         print("Uploading DB")
         api.upload_file(
             path_or_fileobj='database.db',
@@ -223,12 +224,13 @@ if os.getenv('DATASET_ID'):
     )
     print("Downloading DB...")
     try:
-        api.hf_hub_download(
+        path = api.hf_hub_download(
             repo_id=os.getenv('DATASET_ID'),
             repo_type='dataset',
             filename='database.db',
             cache_dir='./'
         )
+        shutil.copyfile(path, 'database.db')
         print("Downloaded DB")
     except:
         pass
