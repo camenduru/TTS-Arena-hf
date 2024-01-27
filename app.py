@@ -203,8 +203,7 @@ def sync_db():
         token=os.getenv('HF_TOKEN')
     )
     while True:
-        # time.sleep(60 * 15)
-        time.sleep(30)
+        time.sleep(60 * 15)
         print("Uploading DB")
         api.upload_file(
             path_or_fileobj='database.db',
@@ -221,6 +220,7 @@ if os.getenv('DATASET_ID'):
     api = HfApi(
         token=os.getenv('HF_TOKEN')
     )
+    print("Downloading DB...")
     try:
         api.hf_hub_download(
             repo_id=os.getenv('DATASET_ID'),
@@ -228,6 +228,7 @@ if os.getenv('DATASET_ID'):
             filename='database.db',
             cache_dir='./'
         )
+        print("Downloaded DB")
     except:
         pass
     # Update DB
