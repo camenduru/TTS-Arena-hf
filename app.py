@@ -178,11 +178,13 @@ def reload(chosenmodel1=None, chosenmodel2=None):
     if chosenmodel1: out.append(f'This model was {chosenmodel1}')
     if chosenmodel2: out.append(f'This model was {chosenmodel2}')
     return out
+
 with gr.Blocks() as leaderboard:
     gr.Markdown(LDESC)
     # df = gr.Dataframe(interactive=False, value=get_data())
     df = gr.Dataframe(interactive=False, min_width=0, wrap=True, column_widths=[200, 50, 50])
     leaderboard.load(get_data, outputs=[df])
+
 with gr.Blocks() as vote:
     gr.Markdown(INSTR)
     with gr.Row():
