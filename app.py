@@ -226,12 +226,12 @@ def sync_db():
         # time.sleep(60 * 5)
         time.sleep(5)
         print("Uploading DB")
-        api.upload_file(
+        print(api.upload_file(
             path_or_fileobj='database.db',
             path_in_repo='database.db',
             repo_id=os.getenv('DATASET_ID'),
             repo_type='dataset'
-        )
+        ))
 if os.getenv('HF_ID'):
     restart_thread = threading.Thread(target=restart_space)
     restart_thread.daemon = True
