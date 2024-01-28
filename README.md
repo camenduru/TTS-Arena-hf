@@ -1,5 +1,5 @@
 ---
-title: TTS Leaderboard
+title: TTS Arena
 emoji: 🏆
 colorFrom: blue
 colorTo: blue
