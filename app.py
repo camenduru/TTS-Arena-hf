@@ -225,11 +225,6 @@ def sync_db():
     while True:
         time.sleep(5)
         print("Uploading DB")
-        api.delete_file(
-            path_in_repo='database.db',
-            repo_id=os.getenv('DATASET_ID'),
-            repo_type='dataset'
-        )
         api.upload_file(
             path_or_fileobj='database.db',
             path_in_repo='database.db',
