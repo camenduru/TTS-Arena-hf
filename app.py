@@ -216,6 +216,13 @@ def restart_space():
         token=os.getenv('HF_TOKEN')
     )
     time.sleep(60 * 60) # Every hour
+    print("Syncing DB before restarting space")
+    api.upload_file(
+        path_or_fileobj='database.db',
+        path_in_repo='database.db',
+        repo_id=os.getenv('DATASET_ID'),
+        repo_type='dataset'
+    )
     print("Restarting space")
     api.restart_space(repo_id=os.getenv('HF_ID'))
 def sync_db():
