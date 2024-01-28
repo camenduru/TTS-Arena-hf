@@ -1,3 +1,15 @@
+import gradio as gr
+import random
+import os
+import shutil
+import pandas as pd
+import sqlite3
+from datasets import load_dataset
+import threading
+import time
+from huggingface_hub import HfApi
+
+
 DESCR = """
 # TTS Arena
 
@@ -14,21 +26,26 @@ INSTR = """
 
 **When you're ready to begin, click the Start button below!** The model names will be revealed once you vote.
 """.strip()
+request = ''
+if os.getenv('HF_ID'):
+    request = """
+### Request Model
+
+Please fill out [this form](https://huggingface.co/spaces/{os.getenv('HF_ID')}/discussions/new?title=%5BModel+Request%5D+&description=%23%23%20Model%20Request%0A%0A%2A%2AModel%20website%2Fpaper%20%28if%20applicable%29%2A%2A%3A%0A%2A%2AModel%20available%20on%2A%2A%3A%20%28coqui%7CHF%20pipeline%7Ccustom%20code%29%0A%2A%2AWhy%20do%20you%20want%20this%20model%20added%3F%2A%2A%0A%2A%2AComments%3A%2A%2A) to request a model.
+"""
+ABOUT = f"""
+## About
+
+TTS Arena is a project created to evaluate leading speech synthesis models. It is inspired by the [Chatbot Arena](https://chat.lmsys.org/) by LMSys.
+
+{request}
+""".strip()
 LDESC = """
 ## Leaderboard
 
 A list of the models, based on how highly they are ranked!
 """.strip()
-import gradio as gr
-import random
-import os
-import shutil
-import pandas as pd
-import sqlite3
-from datasets import load_dataset
-import threading
-import time
-from huggingface_hub import HfApi
+
 
 dataset = load_dataset("ttseval/tts-arena", token=os.getenv('HF_TOKEN'))
 theme = gr.themes.Base(
@@ -164,7 +181,7 @@ def reload(chosenmodel1=None, chosenmodel2=None):
 with gr.Blocks() as leaderboard:
     gr.Markdown(LDESC)
     # df = gr.Dataframe(interactive=False, value=get_data())
-    df = gr.Dataframe(interactive=False)
+    df = gr.Dataframe(interactive=False, min_width=0, wrap=True, column_widths=[200, 50, 50])
     leaderboard.load(get_data, outputs=[df])
 with gr.Blocks() as vote:
     gr.Markdown(INSTR)
@@ -208,9 +225,12 @@ with gr.Blocks() as vote:
     bothgood.click(both_good, outputs=outputs, inputs=[model1, model2])
 
     vote.load(reload, outputs=[aud1, aud2, model1, model2])
+with gr.Blocks() as about:
+    gr.Markdown(ABOUT)
+    pass
 with gr.Blocks(theme=theme, css="footer {visibility: hidden}", title="TTS Leaderboard") as demo:
     gr.Markdown(DESCR)
-    gr.TabbedInterface([vote, leaderboard], ['Vote', 'Leaderboard'])
+    gr.TabbedInterface([vote, leaderboard, about], ['Vote', 'Leaderboard', 'About'])
 def restart_space():
     api = HfApi(
         token=os.getenv('HF_TOKEN')
