@@ -183,7 +183,9 @@ with gr.Blocks() as leaderboard:
     gr.Markdown(LDESC)
     # df = gr.Dataframe(interactive=False, value=get_data())
     df = gr.Dataframe(interactive=False, min_width=0, wrap=True, column_widths=[200, 50, 50])
+    reloadbtn = gr.Button("Refresh")
     leaderboard.load(get_data, outputs=[df])
+    reloadbtn.click(get_data, outputs=[df])
 
 with gr.Blocks() as vote:
     gr.Markdown(INSTR)
@@ -252,7 +254,7 @@ def sync_db():
         token=os.getenv('HF_TOKEN')
     )
     while True:
-        time.sleep(60 * 30)
+        time.sleep(60 * 10)
         print("Uploading DB")
         api.upload_file(
             path_or_fileobj='database.db',
