@@ -36,7 +36,7 @@ Please fill out [this form](https://huggingface.co/spaces/{os.getenv('HF_ID')}/d
 ABOUT = f"""
 ## About
 
-TTS Arena is a project created to evaluate leading speech synthesis models. It is inspired by the [Chatbot Arena](https://chat.lmsys.org/) by LMSys.
+TTS Arena is a project created to evaluate leading speech synthesis models. It is inspired by the [Chatbot Arena](https://chat.lmsys.org/) by LMSYS.
 
 {request}
 """.strip()
