@@ -223,7 +223,8 @@ def sync_db():
         token=os.getenv('HF_TOKEN')
     )
     while True:
-        time.sleep(60 * 5)
+        # time.sleep(60 * 5)
+        time.sleep(5)
         print("Uploading DB")
         api.upload_file(
             path_or_fileobj='database.db',
