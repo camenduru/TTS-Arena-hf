@@ -92,7 +92,7 @@ def create_db():
 def get_data():
     conn = get_db()
     cursor = conn.cursor()
-    cursor.execute('SELECT name, upvote, downvote FROM model WHERE SUM(upvote, downvote) > 5')
+    cursor.execute('SELECT name, upvote, downvote FROM model WHERE (upvote + downvote) > 5')
     data = cursor.fetchall()
     df = pd.DataFrame(data, columns=['name', 'upvote', 'downvote'])
     df['name'] = df['name'].replace(model_names)
