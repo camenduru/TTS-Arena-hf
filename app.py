@@ -47,7 +47,7 @@ A list of the models, based on how highly they are ranked!
 """.strip()
 
 
-dataset = load_dataset("ttseval/tts-arena", token=os.getenv('HF_TOKEN'))
+dataset = load_dataset("ttseval/tts-arena-new", token=os.getenv('HF_TOKEN'))
 theme = gr.themes.Base(
     font=[gr.themes.GoogleFont('Libre Franklin'), gr.themes.GoogleFont('Public Sans'), 'system-ui', 'sans-serif'],
 )
@@ -70,12 +70,12 @@ model_names = {
     'elevenlabs': 'ElevenLabs',
     'speecht5': 'SpeechT5',
 }
-def get_random_split(existing_split=None):
-    choice = random.choice(list(dataset.keys()))
-    if existing_split and choice == existing_split:
-        return get_random_split(choice)
-    else:
-        return choice
+# def get_random_split(existing_split=None):
+#     choice = random.choice(list(dataset.keys()))
+#     if existing_split and choice == existing_split:
+#         return get_random_split(choice)
+#     else:
+#         return choice
 def get_db():
     return sqlite3.connect('database.db')
 def create_db():
@@ -120,10 +120,10 @@ def get_data():
     df = df[['name', 'score', 'votes']]
     return df
 
-def get_random_splits():
-    choice1 = get_random_split()
-    choice2 = get_random_split(choice1)
-    return (choice1, choice2)
+# def get_random_splits():
+#     choice1 = get_random_split()
+#     choice2 = get_random_split(choice1)
+#     return (choice1, choice2)
 def upvote_model(model):
     conn = get_db()
     cursor = conn.cursor()
@@ -162,9 +162,10 @@ def both_good(model1, model2):
     return reload(model1, model2)
 def reload(chosenmodel1=None, chosenmodel2=None):
     # Select random splits
-    split1, split2 = get_random_splits()
-    d1, d2 = (dataset[split1], dataset[split2])
-    choice1, choice2 = (d1.shuffle()[0]['audio'], d2.shuffle()[0]['audio'])
+    row = random.choice(list(dataset['train']))
+    options = list(random.choice(list(dataset['train'])).keys())
+    split1, split2 = random.sample(options, 2)
+    choice1, choice2 = (row[split1], row[split2])
     if chosenmodel1 in model_names:
         chosenmodel1 = model_names[chosenmodel1]
     if chosenmodel2 in model_names:
@@ -214,19 +215,20 @@ with gr.Blocks() as vote:
 
 
     with gr.Row():
-        abetter = gr.Button("A is Better", variant='primary')
-        bbetter = gr.Button("B is Better", variant='primary')
-    with gr.Row():
-        bothbad = gr.Button("Both are Bad", scale=2)
+        abetter = gr.Button("A is Better", variant='primary', scale=4)
         skipbtn = gr.Button("Skip", scale=1)
-        bothgood = gr.Button("Both are Good", scale=2)
+        bbetter = gr.Button("B is Better", variant='primary', scale=4)
+    # with gr.Row():
+    #     bothbad = gr.Button("Both are Bad", scale=2)
+    #     skipbtn = gr.Button("Skip", scale=1)
+    #     bothgood = gr.Button("Both are Good", scale=2)
     outputs = [aud1, aud2, model1, model2, prevmodel1, prevmodel2]
     abetter.click(a_is_better, outputs=outputs, inputs=[model1, model2])
     bbetter.click(b_is_better, outputs=outputs, inputs=[model1, model2])
     skipbtn.click(b_is_better, outputs=outputs, inputs=[model1, model2])
 
-    bothbad.click(both_bad, outputs=outputs, inputs=[model1, model2])
-    bothgood.click(both_good, outputs=outputs, inputs=[model1, model2])
+    # bothbad.click(both_bad, outputs=outputs, inputs=[model1, model2])
+    # bothgood.click(both_good, outputs=outputs, inputs=[model1, model2])
 
     vote.load(reload, outputs=[aud1, aud2, model1, model2])
 with gr.Blocks() as about:
