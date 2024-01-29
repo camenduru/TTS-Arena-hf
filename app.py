@@ -92,7 +92,7 @@ def create_db():
 def get_data():
     conn = get_db()
     cursor = conn.cursor()
-    cursor.execute('SELECT name, upvote, downvote FROM model')
+    cursor.execute('SELECT name, upvote, downvote FROM model WHERE SUM(upvote, downvote) > 5')
     data = cursor.fetchall()
     df = pd.DataFrame(data, columns=['name', 'upvote', 'downvote'])
     df['name'] = df['name'].replace(model_names)
@@ -110,8 +110,6 @@ def get_data():
                 actual_b = df['upvote'][j] / df['votes'][j]
                 df.at[i, 'score'] += 32 * (actual_a - expected_a)
                 df.at[j, 'score'] += 32 * (actual_b - expected_b)
-                if df['votes'][j] < 3:
-                    df.at[j, 'score'] -= (3 - df['votes'][j]) * 5
     df['score'] = round(df['score'])
     ## ELO SCORE
 
