@@ -63,7 +63,7 @@ def del_db(txt):
         repo_id=os.getenv('DATASET_ID'),
         repo_type='dataset'
     )
-    shutil.delete_file('database.db')
+    os.remove('database.db')
     create_db()
     return 'Delete DB'
 theme = gr.themes.Base(
