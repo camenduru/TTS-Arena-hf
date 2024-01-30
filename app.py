@@ -254,11 +254,11 @@ with gr.Blocks() as about:
     gr.Markdown(ABOUT)
 with gr.Blocks() as admin:
     rdb = gr.Button("Reload Dataset")
-    ddb = gr.Button("Delete DB")
     rdb.click(reload_db, outputs=rdb)
     with gr.Group():
         dbtext = gr.Textbox(label="Type \"delete db\" to confirm", placeholder="delete db")
-        ddb.click(del_db, inputs=dbtext, outputs=ddb)
+        ddb = gr.Button("Delete DB")
+    ddb.click(del_db, inputs=dbtext, outputs=ddb)
 with gr.Blocks(theme=theme, css="footer {visibility: hidden}", title="TTS Leaderboard") as demo:
     gr.Markdown(DESCR)
     gr.TabbedInterface([vote, leaderboard, about, admin], ['Vote', 'Leaderboard', 'About', 'Admin (ONLY IN BETA)'])
