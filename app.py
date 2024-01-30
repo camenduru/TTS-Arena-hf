@@ -218,19 +218,19 @@ with gr.Blocks() as vote:
 
     with gr.Row():
         abetter = gr.Button("A is Better", variant='primary', scale=4)
-        skipbtn = gr.Button("Skip", scale=1)
+        # skipbtn = gr.Button("Skip", scale=1)
         bbetter = gr.Button("B is Better", variant='primary', scale=4)
-    # with gr.Row():
-    #     bothbad = gr.Button("Both are Bad", scale=2)
-    #     skipbtn = gr.Button("Skip", scale=1)
-    #     bothgood = gr.Button("Both are Good", scale=2)
+    with gr.Row():
+        bothbad = gr.Button("Both are Bad", scale=2)
+        skipbtn = gr.Button("Skip", scale=1)
+        bothgood = gr.Button("Both are Good", scale=2)
     outputs = [aud1, aud2, model1, model2, prevmodel1, prevmodel2]
     abetter.click(a_is_better, outputs=outputs, inputs=[model1, model2])
     bbetter.click(b_is_better, outputs=outputs, inputs=[model1, model2])
     skipbtn.click(b_is_better, outputs=outputs, inputs=[model1, model2])
 
-    # bothbad.click(both_bad, outputs=outputs, inputs=[model1, model2])
-    # bothgood.click(both_good, outputs=outputs, inputs=[model1, model2])
+    bothbad.click(both_bad, outputs=outputs, inputs=[model1, model2])
+    bothgood.click(both_good, outputs=outputs, inputs=[model1, model2])
 
     vote.load(reload, outputs=[aud1, aud2, model1, model2])
 with gr.Blocks() as about:
