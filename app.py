@@ -51,6 +51,7 @@ dataset = load_dataset("ttseval/tts-arena-new", token=os.getenv('HF_TOKEN'))
 def reload_db():
     global dataset
     dataset = load_dataset("ttseval/tts-arena-new", token=os.getenv('HF_TOKEN'))
+    return 'Reload Dataset'
 theme = gr.themes.Base(
     font=[gr.themes.GoogleFont('Libre Franklin'), gr.themes.GoogleFont('Public Sans'), 'system-ui', 'sans-serif'],
 )
@@ -235,8 +236,8 @@ with gr.Blocks() as vote:
 with gr.Blocks() as about:
     gr.Markdown(ABOUT)
 with gr.Blocks() as admin:
-    rdb = gr.Button("Reload dataset")
-    rdb.click(reload_db)
+    rdb = gr.Button("Reload Dataset")
+    rdb.click(reload_db, outputs=rdb)
 with gr.Blocks(theme=theme, css="footer {visibility: hidden}", title="TTS Leaderboard") as demo:
     gr.Markdown(DESCR)
     gr.TabbedInterface([vote, leaderboard, about, admin], ['Vote', 'Leaderboard', 'About', 'Admin (ONLY IN BETA)'])
