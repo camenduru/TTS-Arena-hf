@@ -58,13 +58,13 @@ def del_db(txt):
     api = HfApi(
         token=os.getenv('HF_TOKEN')
     )
+    os.remove('database.db')
+    create_db()
     api.delete_file(
         path_in_repo='database.db',
         repo_id=os.getenv('DATASET_ID'),
         repo_type='dataset'
     )
-    os.remove('database.db')
-    create_db()
     return 'Delete DB'
 theme = gr.themes.Base(
     font=[gr.themes.GoogleFont('Libre Franklin'), gr.themes.GoogleFont('Public Sans'), 'system-ui', 'sans-serif'],
