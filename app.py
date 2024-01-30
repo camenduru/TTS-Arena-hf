@@ -48,6 +48,9 @@ A list of the models, based on how highly they are ranked!
 
 
 dataset = load_dataset("ttseval/tts-arena-new", token=os.getenv('HF_TOKEN'))
+def reload_db():
+    global dataset
+    dataset = load_dataset("ttseval/tts-arena-new", token=os.getenv('HF_TOKEN'))
 theme = gr.themes.Base(
     font=[gr.themes.GoogleFont('Libre Franklin'), gr.themes.GoogleFont('Public Sans'), 'system-ui', 'sans-serif'],
 )
@@ -231,10 +234,12 @@ with gr.Blocks() as vote:
     vote.load(reload, outputs=[aud1, aud2, model1, model2])
 with gr.Blocks() as about:
     gr.Markdown(ABOUT)
-    pass
+with gr.Blocks() as admin:
+    rdb = gr.Button("Reload dataset")
+    rdb.click(reload_db)
 with gr.Blocks(theme=theme, css="footer {visibility: hidden}", title="TTS Leaderboard") as demo:
     gr.Markdown(DESCR)
-    gr.TabbedInterface([vote, leaderboard, about], ['Vote', 'Leaderboard', 'About'])
+    gr.TabbedInterface([vote, leaderboard, about, admin], ['Vote', 'Leaderboard', 'About', 'Admin (ONLY IN BETA)'])
 def restart_space():
     api = HfApi(
         token=os.getenv('HF_TOKEN')
