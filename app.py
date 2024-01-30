@@ -19,10 +19,8 @@ INSTR = """
 ## Instructions
 
 * Listen to two anonymous models
-* Vote on which one is more natural and realistic
+* Vote on which one is more natural and realistic, with better prosody and intonation
 * If there's a tie, click Skip
-
-*IMPORTANT: Do not only rank the outputs based on naturalness. Also rank based on intelligibility (can you actually tell what they're saying?) and other factors (does it sound like a human?).*
 
 **When you're ready to begin, click the Start button below!** The model names will be revealed once you vote.
 """.strip()
