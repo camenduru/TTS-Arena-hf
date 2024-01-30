@@ -52,6 +52,20 @@ def reload_db():
     global dataset
     dataset = load_dataset("ttseval/tts-arena-new", token=os.getenv('HF_TOKEN'))
     return 'Reload Dataset'
+def del_db(txt):
+    if not txt.lower() == 'delete db':
+        raise gr.Error('You did not enter "delete db"')
+    api = HfApi(
+        token=os.getenv('HF_TOKEN')
+    )
+    api.delete_file(
+        path_in_repo='database.db',
+        repo_id=os.getenv('DATASET_ID'),
+        repo_type='dataset'
+    )
+    shutil.delete_file('database.db')
+    create_db()
+    return 'Delete DB'
 theme = gr.themes.Base(
     font=[gr.themes.GoogleFont('Libre Franklin'), gr.themes.GoogleFont('Public Sans'), 'system-ui', 'sans-serif'],
 )
@@ -72,6 +86,9 @@ model_names = {
     'xtts2': 'XTTSv2',
     'xtts': 'XTTS',
     'elevenlabs': 'ElevenLabs',
+    'openai': 'OpenAI',
+    'hierspeech': 'HierSpeech++',
+    'pheme': 'PolyAI Pheme',
     'speecht5': 'SpeechT5',
 }
 # def get_random_split(existing_split=None):
@@ -237,7 +254,11 @@ with gr.Blocks() as about:
     gr.Markdown(ABOUT)
 with gr.Blocks() as admin:
     rdb = gr.Button("Reload Dataset")
+    ddb = gr.Button("Delete DB")
     rdb.click(reload_db, outputs=rdb)
+    with gr.Group():
+        dbtext = gr.Textbox(label="Type \"delete db\" to confirm", placeholder="delete db")
+        ddb.click(del_db, inputs=dbtext, outputs=ddb)
 with gr.Blocks(theme=theme, css="footer {visibility: hidden}", title="TTS Leaderboard") as demo:
     gr.Markdown(DESCR)
     gr.TabbedInterface([vote, leaderboard, about, admin], ['Vote', 'Leaderboard', 'About', 'Admin (ONLY IN BETA)'])
