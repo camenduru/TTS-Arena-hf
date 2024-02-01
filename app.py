@@ -34,7 +34,19 @@ Please fill out [this form](https://huggingface.co/spaces/{os.getenv('HF_ID')}/d
 ABOUT = f"""
 ## About
 
-TTS Arena is a project created to evaluate leading speech synthesis models. It is inspired by the [Chatbot Arena](https://chat.lmsys.org/) by LMSYS.
+The TTS Arena is a project created to evaluate leading speech synthesis models. It is inspired by the [Chatbot Arena](https://chat.lmsys.org/) by LMSYS.
+
+### How it Works
+
+First, vote on two samples of text-to-speech models. The models that synthesized the samples are not revealed to mitigate bias.
+
+As you vote, the leaderboard will be updated based on votes. We calculate a score for each model using a method similar to the [Elo system](https://en.wikipedia.org/wiki/Elo_rating_system).
+
+### Motivation
+
+Recently, many new open-access speech synthesis models have been made available to the community. However, there is no standardized evaluation or benchmark to measure the quality and naturalness of these models.
+
+The TTS Arena is an attempt to benchmark these models and find the highest-quality models available to the community.
 
 {request}
 """.strip()
@@ -81,13 +93,37 @@ model_names = {
     'fastpitch': 'FastPitch',
     'jenny': 'Jenny',
     'tortoise': 'Tortoise TTS',
-    'xtts2': 'XTTSv2',
-    'xtts': 'XTTS',
+    'xtts2': 'Coqui XTTSv2',
+    'xtts': 'Coqui XTTS',
+    'openvoice': 'MyShell OpenVoice',
     'elevenlabs': 'ElevenLabs',
     'openai': 'OpenAI',
     'hierspeech': 'HierSpeech++',
     'pheme': 'PolyAI Pheme',
     'speecht5': 'SpeechT5',
+}
+model_licenses = {
+    'styletts2': 'MIT',
+    'tacotron': 'BSD-3',
+    'tacotronph': 'BSD-3',
+    'tacotrondca': 'BSD-3',
+    'speedyspeech': 'BSD-3',
+    'overflow': 'MIT',
+    'vits': 'MIT',
+    'openvoice': 'MIT',
+    'vitsneon': 'BSD-3',
+    'neuralhmm': 'MIT',
+    'glow': 'MIT',
+    'fastpitch': 'Apache 2.0',
+    'jenny': 'Jenny License',
+    'tortoise': 'Apache 2.0',
+    'xtts2': 'CPML (NC)',
+    'xtts': 'CPML (NC)',
+    'elevenlabs': 'Proprietary',
+    'openai': 'Proprietary',
+    'hierspeech': 'MIT',
+    'pheme': 'CC-BY',
+    'speecht5': 'MIT',
 }
 # def get_random_split(existing_split=None):
 #     choice = random.choice(list(dataset.keys()))
@@ -114,6 +150,7 @@ def get_data():
     cursor.execute('SELECT name, upvote, downvote FROM model WHERE (upvote + downvote) > 5')
     data = cursor.fetchall()
     df = pd.DataFrame(data, columns=['name', 'upvote', 'downvote'])
+    df['license'] = df['name'].replace(model_licenses)
     df['name'] = df['name'].replace(model_names)
     df['votes'] = df['upvote'] + df['downvote']
     # df['score'] = round((df['upvote'] / df['votes']) * 100, 2) # Percentage score
@@ -131,10 +168,10 @@ def get_data():
                 df.at[j, 'score'] += 32 * (actual_b - expected_b)
     df['score'] = round(df['score'])
     ## ELO SCORE
-
     df = df.sort_values(by='score', ascending=False)
+    df['order'] = ['#' + str(i + 1) for i in range(len(df))]
     # df = df[['name', 'score', 'upvote', 'votes']]
-    df = df[['name', 'score', 'votes']]
+    df = df[['order', 'name', 'score', 'license', 'votes']]
     return df
 
 # def get_random_splits():
@@ -200,10 +237,11 @@ def reload(chosenmodel1=None, chosenmodel2=None):
 with gr.Blocks() as leaderboard:
     gr.Markdown(LDESC)
     # df = gr.Dataframe(interactive=False, value=get_data())
-    df = gr.Dataframe(interactive=False, min_width=0, wrap=True, column_widths=[200, 50, 50])
+    df = gr.Dataframe(interactive=False, min_width=0, wrap=True, column_widths=[30, 200, 50, 75, 50])
     reloadbtn = gr.Button("Refresh")
     leaderboard.load(get_data, outputs=[df])
     reloadbtn.click(get_data, outputs=[df])
+    gr.Markdown("DISCLAIMER: The licenses listed may not be accurate or up to date, you are responsible for checking the licenses before using the models. Also note that some models may have additional usage restrictions.")
 
 with gr.Blocks() as vote:
     gr.Markdown(INSTR)
