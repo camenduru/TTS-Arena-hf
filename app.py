@@ -313,11 +313,11 @@ def restart_space():
     print("Restarting space")
     api.restart_space(repo_id=os.getenv('HF_ID'))
 def sync_db():
-    api = HfApi(
-        token=os.getenv('HF_TOKEN')
-    )
     while True:
         time.sleep(60 * 10)
+        api = HfApi(
+            token=os.getenv('HF_TOKEN')
+        )
         print("Uploading DB")
         api.upload_file(
             path_or_fileobj='database.db',
