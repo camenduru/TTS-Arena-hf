@@ -295,7 +295,7 @@ with gr.Blocks() as admin:
         dbtext = gr.Textbox(label="Type \"delete db\" to confirm", placeholder="delete db")
         ddb = gr.Button("Delete DB")
     ddb.click(del_db, inputs=dbtext, outputs=ddb)
-with gr.Blocks(theme=theme, css="footer {visibility: hidden}", title="TTS Leaderboard") as demo:
+with gr.Blocks(theme=theme, css="footer {visibility: hidden}textbox{resize:none}", title="TTS Leaderboard") as demo:
     gr.Markdown(DESCR)
     gr.TabbedInterface([vote, leaderboard, about, admin], ['Vote', 'Leaderboard', 'About', 'Admin (ONLY IN BETA)'])
 def restart_space():
@@ -313,11 +313,11 @@ def restart_space():
     print("Restarting space")
     api.restart_space(repo_id=os.getenv('HF_ID'))
 def sync_db():
+    api = HfApi(
+        token=os.getenv('HF_TOKEN')
+    )
     while True:
         time.sleep(60 * 10)
-        api = HfApi(
-            token=os.getenv('HF_TOKEN')
-        )
         print("Uploading DB")
         api.upload_file(
             path_or_fileobj='database.db',
