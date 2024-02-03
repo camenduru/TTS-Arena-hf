@@ -151,7 +151,6 @@ def create_db():
             vote INTEGER
         );
     ''')
-    cursor.commit()
 
 def get_data():
     conn = get_db()
