@@ -142,6 +142,8 @@ def create_db():
             upvote INTEGER,
             downvote INTEGER
         );
+    ''')
+    cursor.execute('''
         CREATE TABLE IF NOT EXISTS vote (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT,
@@ -149,6 +151,7 @@ def create_db():
             vote INTEGER
         );
     ''')
+    cursor.commit()
 
 def get_data():
     conn = get_db()
