@@ -257,6 +257,7 @@ with gr.Blocks() as leaderboard:
 
 with gr.Blocks() as vote:
     gr.Markdown(INSTR)
+    gr.LoginButton()
     with gr.Row():
         gr.HTML('<div align="left"><h3>Model A</h3></div>')
         gr.HTML('<div align="right"><h3>Model B</h3></div>')
