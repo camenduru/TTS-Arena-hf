@@ -142,6 +142,12 @@ def create_db():
             upvote INTEGER,
             downvote INTEGER
         );
+        CREATE TABLE IF NOT EXISTS vote (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT,
+            model TEXT,
+            vote INTEGER
+        );
     ''')
 
 def get_data():
@@ -178,41 +184,45 @@ def get_data():
 #     choice1 = get_random_split()
 #     choice2 = get_random_split(choice1)
 #     return (choice1, choice2)
-def upvote_model(model):
+def upvote_model(model, uname):
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('UPDATE model SET upvote = upvote + 1 WHERE name = ?', (model,))
     if cursor.rowcount == 0:
         cursor.execute('INSERT OR REPLACE INTO model (name, upvote, downvote) VALUES (?, 1, 0)', (model,))
+    cursor.execute('INSERT INTO vote (username, model, vote)', (uname, model, 1))
     conn.commit()
     cursor.close()
-def downvote_model(model):
+
+
+def downvote_model(model, uname):
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('UPDATE model SET downvote = downvote + 1 WHERE name = ?', (model,))
     if cursor.rowcount == 0:
         cursor.execute('INSERT OR REPLACE INTO model (name, upvote, downvote) VALUES (?, 0, 1)', (model,))
+    cursor.execute('INSERT INTO vote (username, model, vote)', (uname, model, -1))
     conn.commit()
     cursor.close()
-def a_is_better(model1, model2):
+def a_is_better(model1, model2, profile: gr.OAuthProfile | None):
     if model1 and model2:
-        upvote_model(model1)
-        downvote_model(model2)
+        upvote_model(model1, profile.username)
+        downvote_model(model2, profile.username)
     return reload(model1, model2)
-def b_is_better(model1, model2):
+def b_is_better(model1, model2, profile: gr.OAuthProfile | None):
     if model1 and model2:
-        upvote_model(model2)
-        downvote_model(model1)
+        upvote_model(model2, profile.username)
+        downvote_model(model1, profile.username)
     return reload(model1, model2)
-def both_bad(model1, model2):
+def both_bad(model1, model2, profile: gr.OAuthProfile | None):
     if model1 and model2:
-        downvote_model(model1)
-        downvote_model(model2)
+        downvote_model(model1, profile.username)
+        downvote_model(model2, profile.username)
     return reload(model1, model2)
-def both_good(model1, model2):
+def both_good(model1, model2, profile: gr.OAuthProfile | None):
     if model1 and model2:
-        upvote_model(model1)
-        upvote_model(model2)
+        upvote_model(model1, profile.username)
+        upvote_model(model2, profile.username)
     return reload(model1, model2)
 def reload(chosenmodel1=None, chosenmodel2=None):
     # Select random splits
