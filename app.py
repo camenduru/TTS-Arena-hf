@@ -192,7 +192,7 @@ def upvote_model(model, uname):
     cursor.execute('UPDATE model SET upvote = upvote + 1 WHERE name = ?', (model,))
     if cursor.rowcount == 0:
         cursor.execute('INSERT OR REPLACE INTO model (name, upvote, downvote) VALUES (?, 1, 0)', (model,))
-    cursor.execute('INSERT INTO vote (username, model, vote)', (uname, model, 1))
+    cursor.execute('INSERT INTO vote (username, model, vote)', (uname, model, 1,))
     conn.commit()
     cursor.close()
 
@@ -203,7 +203,7 @@ def downvote_model(model, uname):
     cursor.execute('UPDATE model SET downvote = downvote + 1 WHERE name = ?', (model,))
     if cursor.rowcount == 0:
         cursor.execute('INSERT OR REPLACE INTO model (name, upvote, downvote) VALUES (?, 0, 1)', (model,))
-    cursor.execute('INSERT INTO vote (username, model, vote)', (uname, model, -1))
+    cursor.execute('INSERT INTO vote (username, model, vote)', (uname, model, -1,))
     conn.commit()
     cursor.close()
 def a_is_better(model1, model2, profile: gr.OAuthProfile | None):
