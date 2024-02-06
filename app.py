@@ -9,7 +9,7 @@ import threading
 import time
 from huggingface_hub import HfApi
 
-
+MUST_BE_LOGGEDIN = "Please login with Hugging Face"
 DESCR = """
 # TTS Arena
 
@@ -207,21 +207,29 @@ def downvote_model(model, uname):
     conn.commit()
     cursor.close()
 def a_is_better(model1, model2, profile: gr.OAuthProfile | None):
+    if not profile:
+        raise gr.Error(MUST_BE_LOGGEDIN)
     if model1 and model2:
         upvote_model(model1, profile.username)
         downvote_model(model2, profile.username)
     return reload(model1, model2)
 def b_is_better(model1, model2, profile: gr.OAuthProfile | None):
+    if not profile:
+        raise gr.Error(MUST_BE_LOGGEDIN)
     if model1 and model2:
         upvote_model(model2, profile.username)
         downvote_model(model1, profile.username)
     return reload(model1, model2)
 def both_bad(model1, model2, profile: gr.OAuthProfile | None):
+    if not profile:
+        raise gr.Error(MUST_BE_LOGGEDIN)
     if model1 and model2:
         downvote_model(model1, profile.username)
         downvote_model(model2, profile.username)
     return reload(model1, model2)
 def both_good(model1, model2, profile: gr.OAuthProfile | None):
+    if not profile:
+        raise gr.Error(MUST_BE_LOGGEDIN)
     if model1 and model2:
         upvote_model(model1, profile.username)
         upvote_model(model2, profile.username)
