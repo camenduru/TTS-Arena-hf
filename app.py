@@ -9,7 +9,7 @@ import threading
 import time
 from huggingface_hub import HfApi
 
-MUST_BE_LOGGEDIN = "Please login with Hugging Face"
+MUST_BE_LOGGEDIN = "Please login with Hugging Face to participate in the TTS Arena."
 DESCR = """
 # TTS Arena
 
@@ -19,7 +19,7 @@ INSTR = """
 ## Instructions
 
 * Listen to two anonymous models
-* Vote on which one is more natural and realistic, with better prosody and intonation
+* Vote on which one sounds more like a human to you
 * If there's a tie, click Skip
 
 **When you're ready to begin, click the Start button below!** The model names will be revealed once you vote.
