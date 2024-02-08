@@ -159,7 +159,7 @@ A list of the models, based on how highly they are ranked!
 def reload_audio_dataset():
     global audio_dataset
     audio_dataset = load_dataset(AUDIO_DATASET_ID)
-    return 'Reload audio dataset'
+    return 'Reload Audio Dataset'
 
 def del_db(txt):
     if not txt.lower() == 'delete db':
