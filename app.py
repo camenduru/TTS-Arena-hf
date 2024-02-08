@@ -31,6 +31,25 @@ try:
 except Exception as e:
     print("Error while downloading DB:", e)
 
+def create_db_if_missing():
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS model (
+            name TEXT UNIQUE,
+            upvote INTEGER,
+            downvote INTEGER
+        );
+    ''')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS vote (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT,
+            model TEXT,
+            vote INTEGER
+        );
+    ''')
+
 # Create DB table (if doesn't exist)
 create_db_if_missing()
     
@@ -174,25 +193,6 @@ model_licenses = {
 #         return choice
 def get_db():
     return sqlite3.connect(DB_PATH)
-
-def create_db_if_missing():
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS model (
-            name TEXT UNIQUE,
-            upvote INTEGER,
-            downvote INTEGER
-        );
-    ''')
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS vote (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT,
-            model TEXT,
-            vote INTEGER
-        );
-    ''')
 
 def get_leaderboard():
     conn = get_db()
