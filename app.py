@@ -19,17 +19,8 @@ DB_PATH = "database.db"
 AUDIO_DATASET_ID = "ttseval/tts-arena-new"
 
 ####################################
-# Space initialization
+# Functions
 ####################################
-
-# Download existing DB
-print("Downloading DB...")
-try:
-    cache_path = hf_hub_download(repo_id=DB_DATASET_ID, repo_type='dataset', filename=DB_NAME)
-    shutil.copyfile(cache_path, DB_PATH)
-    print("Downloaded DB")
-except Exception as e:
-    print("Error while downloading DB:", e)
 
 def create_db_if_missing():
     conn = get_db()
@@ -49,6 +40,53 @@ def create_db_if_missing():
             vote INTEGER
         );
     ''')
+def get_db():
+    return sqlite3.connect(DB_PATH)
+
+def get_leaderboard():
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT name, upvote, downvote FROM model WHERE (upvote + downvote) > 5')
+    data = cursor.fetchall()
+    df = pd.DataFrame(data, columns=['name', 'upvote', 'downvote'])
+    df['license'] = df['name'].replace(model_licenses)
+    df['name'] = df['name'].replace(model_names)
+    df['votes'] = df['upvote'] + df['downvote']
+    # df['score'] = round((df['upvote'] / df['votes']) * 100, 2) # Percentage score
+
+    ## ELO SCORE
+    df['score'] = 1200
+    for i in range(len(df)):
+        for j in range(len(df)):
+            if i != j:
+                expected_a = 1 / (1 + 10 ** ((df['score'][j] - df['score'][i]) / 400))
+                expected_b = 1 / (1 + 10 ** ((df['score'][i] - df['score'][j]) / 400))
+                actual_a = df['upvote'][i] / df['votes'][i]
+                actual_b = df['upvote'][j] / df['votes'][j]
+                df.at[i, 'score'] += 32 * (actual_a - expected_a)
+                df.at[j, 'score'] += 32 * (actual_b - expected_b)
+    df['score'] = round(df['score'])
+    ## ELO SCORE
+    df = df.sort_values(by='score', ascending=False)
+    df['order'] = ['#' + str(i + 1) for i in range(len(df))]
+    # df = df[['name', 'score', 'upvote', 'votes']]
+    df = df[['order', 'name', 'score', 'license', 'votes']]
+    return df
+
+
+####################################
+# Space initialization
+####################################
+
+# Download existing DB
+print("Downloading DB...")
+try:
+    cache_path = hf_hub_download(repo_id=DB_DATASET_ID, repo_type='dataset', filename=DB_NAME)
+    shutil.copyfile(cache_path, DB_PATH)
+    print("Downloaded DB")
+except Exception as e:
+    print("Error while downloading DB:", e)
+
 
 # Create DB table (if doesn't exist)
 create_db_if_missing()
@@ -191,38 +229,6 @@ model_licenses = {
 #         return get_random_split(choice)
 #     else:
 #         return choice
-def get_db():
-    return sqlite3.connect(DB_PATH)
-
-def get_leaderboard():
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute('SELECT name, upvote, downvote FROM model WHERE (upvote + downvote) > 5')
-    data = cursor.fetchall()
-    df = pd.DataFrame(data, columns=['name', 'upvote', 'downvote'])
-    df['license'] = df['name'].replace(model_licenses)
-    df['name'] = df['name'].replace(model_names)
-    df['votes'] = df['upvote'] + df['downvote']
-    # df['score'] = round((df['upvote'] / df['votes']) * 100, 2) # Percentage score
-
-    ## ELO SCORE
-    df['score'] = 1200
-    for i in range(len(df)):
-        for j in range(len(df)):
-            if i != j:
-                expected_a = 1 / (1 + 10 ** ((df['score'][j] - df['score'][i]) / 400))
-                expected_b = 1 / (1 + 10 ** ((df['score'][i] - df['score'][j]) / 400))
-                actual_a = df['upvote'][i] / df['votes'][i]
-                actual_b = df['upvote'][j] / df['votes'][j]
-                df.at[i, 'score'] += 32 * (actual_a - expected_a)
-                df.at[j, 'score'] += 32 * (actual_b - expected_b)
-    df['score'] = round(df['score'])
-    ## ELO SCORE
-    df = df.sort_values(by='score', ascending=False)
-    df['order'] = ['#' + str(i + 1) for i in range(len(df))]
-    # df = df[['name', 'score', 'upvote', 'votes']]
-    df = df[['order', 'name', 'score', 'license', 'votes']]
-    return df
 
 # def get_random_splits():
 #     choice1 = get_random_split()
