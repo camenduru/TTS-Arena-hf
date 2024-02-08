@@ -14,7 +14,9 @@ SPACE_ID = os.getenv('HF_ID')
 
 DB_DATASET_ID = os.getenv('DATASET_ID')
 DB_NAME = "database.db"
-DB_PATH = "database.db"
+
+# If /data available => means local storage is enabled => let's use it!
+DB_PATH = f"/data/{DB_NAME}" if os.path.isdir("/data") else DB_NAME
 
 AUDIO_DATASET_ID = "ttseval/tts-arena-new"
 
@@ -79,14 +81,14 @@ def get_leaderboard():
 ####################################
 
 # Download existing DB
-print("Downloading DB...")
-try:
-    cache_path = hf_hub_download(repo_id=DB_DATASET_ID, repo_type='dataset', filename=DB_NAME)
-    shutil.copyfile(cache_path, DB_PATH)
-    print("Downloaded DB")
-except Exception as e:
-    print("Error while downloading DB:", e)
-
+if not os.path.isfile(DB_PATH):
+    print("Downloading DB...")
+    try:
+        cache_path = hf_hub_download(repo_id=DB_DATASET_ID, repo_type='dataset', filename=DB_NAME)
+        shutil.copyfile(cache_path, DB_PATH)
+        print("Downloaded DB")
+    except Exception as e:
+        print("Error while downloading DB:", e)
 
 # Create DB table (if doesn't exist)
 create_db_if_missing()
