@@ -7,8 +7,48 @@ import sqlite3
 from datasets import load_dataset
 import threading
 import time
-from huggingface_hub import HfApi
+from pathlib import Path
+from huggingface_hub import CommitScheduler, delete_file, hf_hub_download
 
+SPACE_ID = os.getenv('HF_ID')
+
+DB_DATASET_ID = os.getenv('DATASET_ID')
+DB_NAME = "database.db"
+DB_PATH = "database.db"
+
+AUDIO_DATASET_ID = "ttseval/tts-arena-new"
+
+####################################
+# Space initialization
+####################################
+
+# Download existing DB
+print("Downloading DB...")
+try:
+    cache_path = hf_hub_download(repo_id=DB_DATASET_ID, repo_type='dataset', filename=DB_NAME)
+    shutil.copyfile(cache_path, DB_PATH)
+    print("Downloaded DB")
+except Exception as e:
+    print("Error while downloading DB:", e)
+
+# Create DB table (if doesn't exist)
+create_db_if_missing()
+    
+# Sync local DB with remote repo every 5 minute (only if a change is detected)
+scheduler = CommitScheduler(
+    repo_id=DB_DATASET_ID,
+    repo_type="dataset",
+    folder_path=Path(DB_PATH).parent,
+    every=5,
+    allow_patterns=DB_NAME,
+)
+
+# Load audio dataset
+audio_dataset = load_dataset(AUDIO_DATASET_ID)
+
+####################################
+# Gradio app
+####################################
 MUST_BE_LOGGEDIN = "Please login with Hugging Face to participate in the TTS Arena."
 DESCR = """
 # TTS Arena
@@ -25,11 +65,11 @@ INSTR = """
 **When you're ready to begin, click the Start button below!** The model names will be revealed once you vote.
 """.strip()
 request = ''
-if os.getenv('HF_ID'):
+if SPACE_ID:
     request = f"""
 ### Request Model
 
-Please fill out [this form](https://huggingface.co/spaces/{os.getenv('HF_ID')}/discussions/new?title=%5BModel+Request%5D+&description=%23%23%20Model%20Request%0A%0A%2A%2AModel%20website%2Fpaper%20%28if%20applicable%29%2A%2A%3A%0A%2A%2AModel%20available%20on%2A%2A%3A%20%28coqui%7CHF%20pipeline%7Ccustom%20code%29%0A%2A%2AWhy%20do%20you%20want%20this%20model%20added%3F%2A%2A%0A%2A%2AComments%3A%2A%2A) to request a model.
+Please fill out [this form](https://huggingface.co/spaces/{SPACE_ID}/discussions/new?title=%5BModel+Request%5D+&description=%23%23%20Model%20Request%0A%0A%2A%2AModel%20website%2Fpaper%20%28if%20applicable%29%2A%2A%3A%0A%2A%2AModel%20available%20on%2A%2A%3A%20%28coqui%7CHF%20pipeline%7Ccustom%20code%29%0A%2A%2AWhy%20do%20you%20want%20this%20model%20added%3F%2A%2A%0A%2A%2AComments%3A%2A%2A) to request a model.
 """
 ABOUT = f"""
 ## About
@@ -57,28 +97,29 @@ A list of the models, based on how highly they are ranked!
 """.strip()
 
 
-dataset = load_dataset("ttseval/tts-arena-new", token=os.getenv('HF_TOKEN'))
-def reload_db():
-    global dataset
-    dataset = load_dataset("ttseval/tts-arena-new", token=os.getenv('HF_TOKEN'))
-    return 'Reload Dataset'
+
+
+def reload_audio_dataset():
+    global audio_dataset
+    audio_dataset = load_dataset(AUDIO_DATASET_ID)
+    return 'Reload audio dataset'
+
 def del_db(txt):
     if not txt.lower() == 'delete db':
         raise gr.Error('You did not enter "delete db"')
-    api = HfApi(
-        token=os.getenv('HF_TOKEN')
-    )
-    os.remove('database.db')
-    create_db()
-    api.delete_file(
-        path_in_repo='database.db',
-        repo_id=os.getenv('DATASET_ID'),
-        repo_type='dataset'
-    )
+
+    # Delete local + remote
+    os.remove(DB_PATH)
+    delete_file(path_in_repo=DB_NAME, repo_id=DATASET_ID, repo_type='dataset')
+
+    # Recreate
+    create_db_if_missing()
     return 'Delete DB'
+
 theme = gr.themes.Base(
     font=[gr.themes.GoogleFont('Libre Franklin'), gr.themes.GoogleFont('Public Sans'), 'system-ui', 'sans-serif'],
 )
+
 model_names = {
     'styletts2': 'StyleTTS 2',
     'tacotron': 'Tacotron',
@@ -126,14 +167,15 @@ model_licenses = {
     'speecht5': 'MIT',
 }
 # def get_random_split(existing_split=None):
-#     choice = random.choice(list(dataset.keys()))
+#     choice = random.choice(list(audio_dataset.keys()))
 #     if existing_split and choice == existing_split:
 #         return get_random_split(choice)
 #     else:
 #         return choice
 def get_db():
-    return sqlite3.connect('database.db')
-def create_db():
+    return sqlite3.connect(DB_PATH)
+
+def create_db_if_missing():
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('''
@@ -152,7 +194,7 @@ def create_db():
         );
     ''')
 
-def get_data():
+def get_leaderboard():
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('SELECT name, upvote, downvote FROM model WHERE (upvote + downvote) > 5')
@@ -193,9 +235,9 @@ def upvote_model(model, uname):
     if cursor.rowcount == 0:
         cursor.execute('INSERT OR REPLACE INTO model (name, upvote, downvote) VALUES (?, 1, 0)', (model,))
     cursor.execute('INSERT INTO vote (username, model, vote) VALUES (?, ?, ?)', (uname, model, 1,))
-    conn.commit()
+    with scheduler.lock:
+        conn.commit()
     cursor.close()
-
 
 def downvote_model(model, uname):
     conn = get_db()
@@ -204,8 +246,10 @@ def downvote_model(model, uname):
     if cursor.rowcount == 0:
         cursor.execute('INSERT OR REPLACE INTO model (name, upvote, downvote) VALUES (?, 0, 1)', (model,))
     cursor.execute('INSERT INTO vote (username, model, vote) VALUES (?, ?, ?)', (uname, model, -1,))
-    conn.commit()
+    with scheduler.lock:
+        conn.commit()
     cursor.close()
+
 def a_is_better(model1, model2, profile: gr.OAuthProfile | None):
     if not profile:
         raise gr.Error(MUST_BE_LOGGEDIN)
@@ -236,8 +280,8 @@ def both_good(model1, model2, profile: gr.OAuthProfile | None):
     return reload(model1, model2)
 def reload(chosenmodel1=None, chosenmodel2=None):
     # Select random splits
-    row = random.choice(list(dataset['train']))
-    options = list(random.choice(list(dataset['train'])).keys())
+    row = random.choice(list(audio_dataset['train']))
+    options = list(random.choice(list(audio_dataset['train'])).keys())
     split1, split2 = random.sample(options, 2)
     choice1, choice2 = (row[split1], row[split2])
     if chosenmodel1 in model_names:
@@ -256,11 +300,11 @@ def reload(chosenmodel1=None, chosenmodel2=None):
 
 with gr.Blocks() as leaderboard:
     gr.Markdown(LDESC)
-    # df = gr.Dataframe(interactive=False, value=get_data())
+    # df = gr.Dataframe(interactive=False, value=get_leaderboard())
     df = gr.Dataframe(interactive=False, min_width=0, wrap=True, column_widths=[30, 200, 50, 75, 50])
     reloadbtn = gr.Button("Refresh")
-    leaderboard.load(get_data, outputs=[df])
-    reloadbtn.click(get_data, outputs=[df])
+    leaderboard.load(get_leaderboard, outputs=[df])
+    reloadbtn.click(get_leaderboard, outputs=[df])
     gr.Markdown("DISCLAIMER: The licenses listed may not be accurate or up to date, you are responsible for checking the licenses before using the models. Also note that some models may have additional usage restrictions.")
 
 with gr.Blocks() as vote:
@@ -310,8 +354,8 @@ with gr.Blocks() as vote:
 with gr.Blocks() as about:
     gr.Markdown(ABOUT)
 with gr.Blocks() as admin:
-    rdb = gr.Button("Reload Dataset")
-    rdb.click(reload_db, outputs=rdb)
+    rdb = gr.Button("Reload Audio Dataset")
+    rdb.click(reload_audio_dataset, outputs=rdb)
     with gr.Group():
         dbtext = gr.Textbox(label="Type \"delete db\" to confirm", placeholder="delete db")
         ddb = gr.Button("Delete DB")
@@ -319,57 +363,5 @@ with gr.Blocks() as admin:
 with gr.Blocks(theme=theme, css="footer {visibility: hidden}textbox{resize:none}", title="TTS Leaderboard") as demo:
     gr.Markdown(DESCR)
     gr.TabbedInterface([vote, leaderboard, about, admin], ['Vote', 'Leaderboard', 'About', 'Admin (ONLY IN BETA)'])
-def restart_space():
-    api = HfApi(
-        token=os.getenv('HF_TOKEN')
-    )
-    time.sleep(60 * 60) # Every hour
-    print("Syncing DB before restarting space")
-    api.upload_file(
-        path_or_fileobj='database.db',
-        path_in_repo='database.db',
-        repo_id=os.getenv('DATASET_ID'),
-        repo_type='dataset'
-    )
-    print("Restarting space")
-    api.restart_space(repo_id=os.getenv('HF_ID'))
-def sync_db():
-    api = HfApi(
-        token=os.getenv('HF_TOKEN')
-    )
-    while True:
-        time.sleep(60 * 10)
-        print("Uploading DB")
-        api.upload_file(
-            path_or_fileobj='database.db',
-            path_in_repo='database.db',
-            repo_id=os.getenv('DATASET_ID'),
-            repo_type='dataset'
-        )
-if os.getenv('HF_ID'):
-    restart_thread = threading.Thread(target=restart_space)
-    restart_thread.daemon = True
-    restart_thread.start()
-if os.getenv('DATASET_ID'):
-    # Fetch DB
-    api = HfApi(
-        token=os.getenv('HF_TOKEN')
-    )
-    print("Downloading DB...")
-    try:
-        path = api.hf_hub_download(
-            repo_id=os.getenv('DATASET_ID'),
-            repo_type='dataset',
-            filename='database.db',
-            cache_dir='./'
-        )
-        shutil.copyfile(path, 'database.db')
-        print("Downloaded DB")
-    except:
-        pass
-    # Update DB
-    db_thread = threading.Thread(target=sync_db)
-    db_thread.daemon = True
-    db_thread.start()
-create_db()
+
 demo.queue(api_open=False).launch(show_api=False)
