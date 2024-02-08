@@ -199,6 +199,7 @@ model_names = {
     'hierspeech': 'HierSpeech++',
     'pheme': 'PolyAI Pheme',
     'speecht5': 'SpeechT5',
+    'metavoice': 'MetaVoice-1B',
 }
 model_licenses = {
     'styletts2': 'MIT',
@@ -222,6 +223,27 @@ model_licenses = {
     'hierspeech': 'MIT',
     'pheme': 'CC-BY',
     'speecht5': 'MIT',
+    'metavoice': 'Apache 2.0',
+}
+model_links = {
+    'styletts2': 'https://github.com/yl4579/StyleTTS2',
+    'tacotron': 'https://github.com/NVIDIA/tacotron2',
+    'speedyspeech': 'https://github.com/janvainer/speedyspeech',
+    'overflow': 'https://github.com/shivammehta25/OverFlow',
+    'vits': 'https://github.com/jaywalnut310/vits',
+    'openvoice': 'https://github.com/myshell-ai/OpenVoice',
+    'neuralhmm': 'https://github.com/ketranm/neuralHMM',
+    'glow': 'https://github.com/jaywalnut310/glow-tts',
+    'fastpitch': 'https://fastpitch.github.io/',
+    'tortoise': 'https://github.com/neonbjb/tortoise-tts',
+    'xtts2': 'https://huggingface.co/coqui/XTTS-v2',
+    'xtts': 'https://huggingface.co/coqui/XTTS-v1',
+    'elevenlabs': 'https://elevenlabs.io/',
+    'openai': 'https://help.openai.com/en/articles/8555505-tts-api',
+    'hierspeech': 'https://github.com/sh-lee-prml/HierSpeechpp',
+    'pheme': 'https://github.com/PolyAI-LDN/pheme',
+    'speecht5': 'https://github.com/microsoft/SpeechT5',
+    'metavoice': 'https://github.com/metavoiceio/metavoice-src',
 }
 # def get_random_split(existing_split=None):
 #     choice = random.choice(list(audio_dataset.keys()))
