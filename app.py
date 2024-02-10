@@ -131,7 +131,7 @@ INSTR = """
 * Vote on which one sounds more like a human to you
 * If there's a tie, click Skip
 
-**When you're ready to begin, click the Start button below!** The model names will be revealed once you vote.
+**When you're ready to begin, login and begin voting!** The model names will be revealed once you vote.
 """.strip()
 request = ''
 if SPACE_ID:
