@@ -19,6 +19,16 @@ DB_NAME = "database.db"
 DB_PATH = f"/data/{DB_NAME}" if os.path.isdir("/data") else DB_NAME
 
 AUDIO_DATASET_ID = "ttseval/tts-arena-new"
+CITATION_TEXT = None
+# CITATION_TEXT = """
+# @misc{tts-arena,
+# 	title        = {Text to Speech Arena},
+# 	author       = {},
+# 	year         = 2024,
+# 	publisher    = {Hugging Face},
+# 	howpublished = "\url{https://huggingface.co/spaces/ttseval/TTS-Arena}"
+# }
+# """
 
 ####################################
 # Functions
@@ -343,8 +353,8 @@ with gr.Blocks() as vote:
     with gr.Row():
         gr.HTML('<div align="left"><h3>Model A</h3></div>')
         gr.HTML('<div align="right"><h3>Model B</h3></div>')
-    model1 = gr.Textbox(interactive=False, visible=False)
-    model2 = gr.Textbox(interactive=False, visible=False)
+    model1 = gr.Textbox(interactive=False, visible=False, max_lines=1, lines=1)
+    model2 = gr.Textbox(interactive=False, visible=False, max_lines=1, lines=1)
     # with gr.Group():
     #     with gr.Row():
     #         prevmodel1 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model A")
@@ -393,5 +403,10 @@ with gr.Blocks() as admin:
 with gr.Blocks(theme=theme, css="footer {visibility: hidden}textbox{resize:none}", title="TTS Leaderboard") as demo:
     gr.Markdown(DESCR)
     gr.TabbedInterface([vote, leaderboard, about, admin], ['Vote', 'Leaderboard', 'About', 'Admin (ONLY IN BETA)'])
+    if CITATION_TEXT:
+        with gr.Row():
+            with gr.Accordion("📙 Citation", open=False):
+                gr.Markdown(f"Copy the BibTeX citation to cite this source:\n\n```bibtext\n{CITATION_TEXT}\n```")
+
 
 demo.queue(api_open=False).launch(show_api=False)
