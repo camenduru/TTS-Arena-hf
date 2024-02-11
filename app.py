@@ -353,8 +353,8 @@ with gr.Blocks() as vote:
     with gr.Row():
         gr.HTML('<div align="left"><h3>Model A</h3></div>')
         gr.HTML('<div align="right"><h3>Model B</h3></div>')
-    model1 = gr.Textbox(interactive=False, visible=False, max_lines=1, lines=1)
-    model2 = gr.Textbox(interactive=False, visible=False, max_lines=1, lines=1)
+    model1 = gr.Textbox(interactive=False, visible=False, lines=1, max_lines=1)
+    model2 = gr.Textbox(interactive=False, visible=False, lines=1, max_lines=1)
     # with gr.Group():
     #     with gr.Row():
     #         prevmodel1 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model A")
@@ -366,11 +366,11 @@ with gr.Blocks() as vote:
         with gr.Row():
             with gr.Column():
                 with gr.Group():
-                    prevmodel1 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model A")
+                    prevmodel1 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model A", lines=1, max_lines=1)
                     aud1 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
             with gr.Column():
                 with gr.Group():
-                    prevmodel2 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model B", text_align="right")
+                    prevmodel2 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model B", text_align="right", lines=1, max_lines=1)
                     aud2 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
 
 
