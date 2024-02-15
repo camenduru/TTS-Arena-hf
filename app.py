@@ -25,7 +25,7 @@ CITATION_TEXT = """@misc{tts-arena,
 	author       = {mrfakename and Srivastav, Vaibhav and Pouget, Lucain},
 	year         = 2024,
 	publisher    = {Hugging Face},
-	howpublished = "\url{https://huggingface.co/spaces/ttseval/TTS-Arena}"
+	howpublished = "\\url{https://huggingface.co/spaces/ttseval/TTS-Arena}"
 }"""
 
 ####################################
