@@ -20,7 +20,7 @@ DB_PATH = f"/data/{DB_NAME}" if os.path.isdir("/data") else DB_NAME
 
 AUDIO_DATASET_ID = "ttseval/tts-arena-new"
 CITATION_TEXT = None
-# CITATION_TEXT = """
+CITATION_TEXT = """
 @misc{tts-arena,
 	title        = {Text to Speech Arena},
 	author       = {mrfakename and Srivastav, Vaibhav and Pouget, Lucain},
