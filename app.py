@@ -298,26 +298,26 @@ def a_is_better(model1, model2, userid):
     if model1 and model2:
         upvote_model(model1, str(userid))
         downvote_model(model2, str(userid))
-    return reload(model1, model2), userid
+    return reload(model1, model2, userid)
 def b_is_better(model1, model2, userid):
     userid = mkuuid(userid)
     if model1 and model2:
         upvote_model(model2, str(userid))
         downvote_model(model1, str(userid))
-    return reload(model1, model2), userid
+    return reload(model1, model2, userid)
 def both_bad(model1, model2, userid):
     userid = mkuuid(userid)
     if model1 and model2:
         downvote_model(model1, str(userid))
         downvote_model(model2, str(userid))
-    return reload(model1, model2), userid
+    return reload(model1, model2, userid)
 def both_good(model1, model2, userid):
     userid = mkuuid(userid)
     if model1 and model2:
         upvote_model(model1, str(userid))
         upvote_model(model2, str(userid))
-    return reload(model1, model2), userid
-def reload(chosenmodel1=None, chosenmodel2=None):
+    return reload(model1, model2, userid)
+def reload(chosenmodel1, chosenmodel2, userid):
     # Select random splits
     row = random.choice(list(audio_dataset['train']))
     options = list(random.choice(list(audio_dataset['train'])).keys())
@@ -335,7 +335,7 @@ def reload(chosenmodel1=None, chosenmodel2=None):
     ]
     if chosenmodel1: out.append(f'This model was {chosenmodel1}')
     if chosenmodel2: out.append(f'This model was {chosenmodel2}')
-    return out
+    return out, userid
 
 with gr.Blocks() as leaderboard:
     gr.Markdown(LDESC)
@@ -390,7 +390,7 @@ with gr.Blocks() as vote:
     bothbad.click(both_bad, outputs=outputs, inputs=[model1, model2, useridstate])
     bothgood.click(both_good, outputs=outputs, inputs=[model1, model2, useridstate])
 
-    vote.load(reload, outputs=[aud1, aud2, model1, model2])
+    vote.load(reload, inputs=[None, None, useridstate], outputs=[aud1, aud2, model1, model2])
 with gr.Blocks() as about:
     gr.Markdown(ABOUT)
 with gr.Blocks() as admin:
