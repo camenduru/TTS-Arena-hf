@@ -7,6 +7,7 @@ import sqlite3
 from datasets import load_dataset
 import threading
 import time
+import uuid
 from pathlib import Path
 from huggingface_hub import CommitScheduler, delete_file, hf_hub_download
 
@@ -266,6 +267,9 @@ model_links = {
 #     choice1 = get_random_split()
 #     choice2 = get_random_split(choice1)
 #     return (choice1, choice2)
+def mkuuid(uid):
+    if not uid:
+        uid = str(uuid.uuid4())
 def upvote_model(model, uname):
     conn = get_db()
     cursor = conn.cursor()
@@ -288,33 +292,29 @@ def downvote_model(model, uname):
         conn.commit()
     cursor.close()
 
-def a_is_better(model1, model2, profile: gr.OAuthProfile | None):
-    if not profile:
-        raise gr.Error(MUST_BE_LOGGEDIN)
+def a_is_better(model1, model2, userid):
+    mkuuid(userid)
     if model1 and model2:
-        upvote_model(model1, profile.username)
-        downvote_model(model2, profile.username)
+        upvote_model(model1, userid)
+        downvote_model(model2, userid)
     return reload(model1, model2)
-def b_is_better(model1, model2, profile: gr.OAuthProfile | None):
-    if not profile:
-        raise gr.Error(MUST_BE_LOGGEDIN)
+def b_is_better(model1, model2, userid):
+    mkuuid(userid)
     if model1 and model2:
-        upvote_model(model2, profile.username)
-        downvote_model(model1, profile.username)
+        upvote_model(model2, userid)
+        downvote_model(model1, userid)
     return reload(model1, model2)
-def both_bad(model1, model2, profile: gr.OAuthProfile | None):
-    if not profile:
-        raise gr.Error(MUST_BE_LOGGEDIN)
+def both_bad(model1, model2, userid):
+    mkuuid(userid)
     if model1 and model2:
-        downvote_model(model1, profile.username)
-        downvote_model(model2, profile.username)
+        downvote_model(model1, userid)
+        downvote_model(model2, userid)
     return reload(model1, model2)
-def both_good(model1, model2, profile: gr.OAuthProfile | None):
-    if not profile:
-        raise gr.Error(MUST_BE_LOGGEDIN)
+def both_good(model1, model2, userid):
+    mkuuid(userid)
     if model1 and model2:
-        upvote_model(model1, profile.username)
-        upvote_model(model2, profile.username)
+        upvote_model(model1, userid)
+        upvote_model(model2, userid)
     return reload(model1, model2)
 def reload(chosenmodel1=None, chosenmodel2=None):
     # Select random splits
@@ -346,8 +346,9 @@ with gr.Blocks() as leaderboard:
     gr.Markdown("DISCLAIMER: The licenses listed may not be accurate or up to date, you are responsible for checking the licenses before using the models. Also note that some models may have additional usage restrictions.")
 
 with gr.Blocks() as vote:
+    userid = gr.State()
     gr.Markdown(INSTR)
-    gr.LoginButton()
+    # gr.LoginButton()
     with gr.Row():
         gr.HTML('<div align="left"><h3>Model A</h3></div>')
         gr.HTML('<div align="right"><h3>Model B</h3></div>')
@@ -380,13 +381,13 @@ with gr.Blocks() as vote:
         bothbad = gr.Button("Both are Bad", scale=2)
         skipbtn = gr.Button("Skip", scale=1)
         bothgood = gr.Button("Both are Good", scale=2)
-    outputs = [aud1, aud2, model1, model2, prevmodel1, prevmodel2]
-    abetter.click(a_is_better, outputs=outputs, inputs=[model1, model2])
-    bbetter.click(b_is_better, outputs=outputs, inputs=[model1, model2])
-    skipbtn.click(b_is_better, outputs=outputs, inputs=[model1, model2])
+    outputs = [aud1, aud2, model1, model2, prevmodel1, prevmodel2, userid]
+    abetter.click(a_is_better, outputs=[outputs, userid], inputs=[model1, model2, userid])
+    bbetter.click(b_is_better, outputs=[outputs, userid], inputs=[model1, model2, userid])
+    skipbtn.click(b_is_better, outputs=[outputs, userid], inputs=[model1, model2, userid])
 
-    bothbad.click(both_bad, outputs=outputs, inputs=[model1, model2])
-    bothgood.click(both_good, outputs=outputs, inputs=[model1, model2])
+    bothbad.click(both_bad, outputs=outputs, inputs=[model1, model2, userid])
+    bothgood.click(both_good, outputs=outputs, inputs=[model1, model2, userid])
 
     vote.load(reload, outputs=[aud1, aud2, model1, model2])
 with gr.Blocks() as about:
