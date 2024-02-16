@@ -269,7 +269,8 @@ model_links = {
 #     return (choice1, choice2)
 def mkuuid(uid):
     if not uid:
-        uid = str(uuid.uuid4())
+        uid = uuid.uuid4()
+    return uid
 def upvote_model(model, uname):
     conn = get_db()
     cursor = conn.cursor()
@@ -293,29 +294,29 @@ def downvote_model(model, uname):
     cursor.close()
 
 def a_is_better(model1, model2, userid):
-    mkuuid(userid)
+    userid = mkuuid(userid)
     if model1 and model2:
-        upvote_model(model1, userid)
-        downvote_model(model2, userid)
-    return reload(model1, model2)
+        upvote_model(model1, str(userid))
+        downvote_model(model2, str(userid))
+    return reload(model1, model2), userid
 def b_is_better(model1, model2, userid):
-    mkuuid(userid)
+    userid = mkuuid(userid)
     if model1 and model2:
-        upvote_model(model2, userid)
-        downvote_model(model1, userid)
-    return reload(model1, model2)
+        upvote_model(model2, str(userid))
+        downvote_model(model1, str(userid))
+    return reload(model1, model2), userid
 def both_bad(model1, model2, userid):
-    mkuuid(userid)
+    userid = mkuuid(userid)
     if model1 and model2:
-        downvote_model(model1, userid)
-        downvote_model(model2, userid)
-    return reload(model1, model2)
+        downvote_model(model1, str(userid))
+        downvote_model(model2, str(userid))
+    return reload(model1, model2), userid
 def both_good(model1, model2, userid):
-    mkuuid(userid)
+    userid = mkuuid(userid)
     if model1 and model2:
-        upvote_model(model1, userid)
-        upvote_model(model2, userid)
-    return reload(model1, model2)
+        upvote_model(model1, str(userid))
+        upvote_model(model2, str(userid))
+    return reload(model1, model2), userid
 def reload(chosenmodel1=None, chosenmodel2=None):
     # Select random splits
     row = random.choice(list(audio_dataset['train']))
