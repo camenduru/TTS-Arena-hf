@@ -347,7 +347,7 @@ with gr.Blocks() as leaderboard:
     gr.Markdown("DISCLAIMER: The licenses listed may not be accurate or up to date, you are responsible for checking the licenses before using the models. Also note that some models may have additional usage restrictions.")
 
 with gr.Blocks() as vote:
-    userid = gr.State()
+    useridstate = gr.State()
     gr.Markdown(INSTR)
     # gr.LoginButton()
     with gr.Row():
@@ -382,13 +382,13 @@ with gr.Blocks() as vote:
         bothbad = gr.Button("Both are Bad", scale=2)
         skipbtn = gr.Button("Skip", scale=1)
         bothgood = gr.Button("Both are Good", scale=2)
-    outputs = [aud1, aud2, model1, model2, prevmodel1, prevmodel2, userid]
-    abetter.click(a_is_better, outputs=[outputs, userid], inputs=[model1, model2, userid])
-    bbetter.click(b_is_better, outputs=[outputs, userid], inputs=[model1, model2, userid])
-    skipbtn.click(b_is_better, outputs=[outputs, userid], inputs=[model1, model2, userid])
+    outputs = [aud1, aud2, model1, model2, prevmodel1, prevmodel2, useridstate]
+    abetter.click(a_is_better, outputs=[outputs, useridstate], inputs=[model1, model2, useridstate])
+    bbetter.click(b_is_better, outputs=[outputs, useridstate], inputs=[model1, model2, useridstate])
+    skipbtn.click(b_is_better, outputs=[outputs, useridstate], inputs=[model1, model2, useridstate])
 
-    bothbad.click(both_bad, outputs=outputs, inputs=[model1, model2, userid])
-    bothgood.click(both_good, outputs=outputs, inputs=[model1, model2, userid])
+    bothbad.click(both_bad, outputs=outputs, inputs=[model1, model2, useridstate])
+    bothgood.click(both_good, outputs=outputs, inputs=[model1, model2, useridstate])
 
     vote.load(reload, outputs=[aud1, aud2, model1, model2])
 with gr.Blocks() as about:
