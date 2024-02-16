@@ -383,9 +383,9 @@ with gr.Blocks() as vote:
         skipbtn = gr.Button("Skip", scale=1)
         bothgood = gr.Button("Both are Good", scale=2)
     outputs = [aud1, aud2, model1, model2, prevmodel1, prevmodel2, useridstate]
-    abetter.click(a_is_better, outputs=[outputs, useridstate], inputs=[model1, model2, useridstate])
-    bbetter.click(b_is_better, outputs=[outputs, useridstate], inputs=[model1, model2, useridstate])
-    skipbtn.click(b_is_better, outputs=[outputs, useridstate], inputs=[model1, model2, useridstate])
+    abetter.click(a_is_better, outputs=outputs, inputs=[model1, model2, useridstate])
+    bbetter.click(b_is_better, outputs=outputs, inputs=[model1, model2, useridstate])
+    skipbtn.click(b_is_better, outputs=outputs, inputs=[model1, model2, useridstate])
 
     bothbad.click(both_bad, outputs=outputs, inputs=[model1, model2, useridstate])
     bothgood.click(both_good, outputs=outputs, inputs=[model1, model2, useridstate])
