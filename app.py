@@ -317,7 +317,7 @@ def both_good(model1, model2, userid):
         upvote_model(model1, str(userid))
         upvote_model(model2, str(userid))
     return reload(model1, model2, userid)
-def reload(chosenmodel1, chosenmodel2, userid):
+def reload(chosenmodel1=None, chosenmodel2=None, userid=None):
     # Select random splits
     row = random.choice(list(audio_dataset['train']))
     options = list(random.choice(list(audio_dataset['train'])).keys())
@@ -333,9 +333,10 @@ def reload(chosenmodel1, chosenmodel2, userid):
         split1,
         split2
     ]
+    if userid: out.append(userid)
     if chosenmodel1: out.append(f'This model was {chosenmodel1}')
     if chosenmodel2: out.append(f'This model was {chosenmodel2}')
-    return out, userid
+    return out
 
 with gr.Blocks() as leaderboard:
     gr.Markdown(LDESC)
@@ -390,7 +391,7 @@ with gr.Blocks() as vote:
     bothbad.click(both_bad, outputs=outputs, inputs=[model1, model2, useridstate])
     bothgood.click(both_good, outputs=outputs, inputs=[model1, model2, useridstate])
 
-    vote.load(reload, inputs=[None, None, useridstate], outputs=[aud1, aud2, model1, model2])
+    vote.load(reload, outputs=[aud1, aud2, model1, model2])
 with gr.Blocks() as about:
     gr.Markdown(ABOUT)
 with gr.Blocks() as admin:
