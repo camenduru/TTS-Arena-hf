@@ -339,24 +339,25 @@ def both_good(model1, model2, userid):
     return reload(model1, model2, userid)
 def reload(chosenmodel1=None, chosenmodel2=None, userid=None):
     # Select random splits
-    row = random.choice(list(audio_dataset['train']))
-    options = list(random.choice(list(audio_dataset['train'])).keys())
-    split1, split2 = random.sample(options, 2)
-    choice1, choice2 = (row[split1], row[split2])
-    if chosenmodel1 in model_names:
-        chosenmodel1 = model_names[chosenmodel1]
-    if chosenmodel2 in model_names:
-        chosenmodel2 = model_names[chosenmodel2]
-    out = [
-        (choice1['sampling_rate'], choice1['array']),
-        (choice2['sampling_rate'], choice2['array']),
-        split1,
-        split2
-    ]
-    if userid: out.append(userid)
-    if chosenmodel1: out.append(f'This model was {chosenmodel1}')
-    if chosenmodel2: out.append(f'This model was {chosenmodel2}')
-    return out
+    # row = random.choice(list(audio_dataset['train']))
+    # options = list(random.choice(list(audio_dataset['train'])).keys())
+    # split1, split2 = random.sample(options, 2)
+    # choice1, choice2 = (row[split1], row[split2])
+    # if chosenmodel1 in model_names:
+    #     chosenmodel1 = model_names[chosenmodel1]
+    # if chosenmodel2 in model_names:
+    #     chosenmodel2 = model_names[chosenmodel2]
+    # out = [
+    #     (choice1['sampling_rate'], choice1['array']),
+    #     (choice2['sampling_rate'], choice2['array']),
+    #     split1,
+    #     split2
+    # ]
+    # if userid: out.append(userid)
+    # if chosenmodel1: out.append(f'This model was {chosenmodel1}')
+    # if chosenmodel2: out.append(f'This model was {chosenmodel2}')
+    # return out
+    return (f'This model was {chosenmodel1}', f'This model was {chosenmodel2}')
 
 with gr.Blocks() as leaderboard:
     gr.Markdown(LDESC)
@@ -462,7 +463,7 @@ with gr.Blocks() as vote:
     outputs = [text, btn, r1, r2, model1, model2, prevmodel1, aud1, prevmodel2, aud2]
     btn.click(synthandreturn, inputs=[text], outputs=outputs)
 
-    nxt_outputs = [aud1, aud2, model1, model2, useridstate, prevmodel1, prevmodel2]
+    nxt_outputs = [prevmodel1, prevmodel2]
     abetter.click(a_is_better, outputs=nxt_outputs, inputs=[model1, model2, useridstate])
     bbetter.click(b_is_better, outputs=nxt_outputs, inputs=[model1, model2, useridstate])
     # skipbtn.click(b_is_better, outputs=outputs, inputs=[model1, model2, useridstate])
