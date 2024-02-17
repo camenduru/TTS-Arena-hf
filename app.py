@@ -333,13 +333,13 @@ def a_is_better(model1, model2, userid):
     if model1 and model2:
         upvote_model(model1, str(userid))
         downvote_model(model2, str(userid))
-    return reload(model1, model2, userid)
+    return reload(model1, model2, userid, chose_a=True)
 def b_is_better(model1, model2, userid):
     userid = mkuuid(userid)
     if model1 and model2:
         upvote_model(model2, str(userid))
         downvote_model(model1, str(userid))
-    return reload(model1, model2, userid)
+    return reload(model1, model2, userid, chose_b=True)
 def both_bad(model1, model2, userid):
     userid = mkuuid(userid)
     if model1 and model2:
@@ -352,7 +352,7 @@ def both_good(model1, model2, userid):
         upvote_model(model1, str(userid))
         upvote_model(model2, str(userid))
     return reload(model1, model2, userid)
-def reload(chosenmodel1=None, chosenmodel2=None, userid=None):
+def reload(chosenmodel1=None, chosenmodel2=None, userid=None, chose_a=False, chose_b=False):
     # Select random splits
     # row = random.choice(list(audio_dataset['train']))
     # options = list(random.choice(list(audio_dataset['train'])).keys())
@@ -374,12 +374,20 @@ def reload(chosenmodel1=None, chosenmodel2=None, userid=None):
     # return out
     # return (f'This model was {chosenmodel1}', f'This model was {chosenmodel2}', gr.update(visible=False), gr.update(visible=False))
     # return (gr.update(variant='secondary', value=chosenmodel1, interactive=False), gr.update(variant='secondary', value=chosenmodel2, interactive=False))
-    return (
+    out = [
         gr.update(interactive=False, visible=False),
         gr.update(interactive=False, visible=False),
-        gr.update(value=chosenmodel1, interactive=False, visible=True),
         gr.update(value=chosenmodel2, interactive=False, visible=True),
-    )
+    ]
+    if chose_a:
+        out.append(gr.update(value=f'👍 {chosenmodel1}', interactive=False, visible=True))
+    else:
+        out.append(gr.update(value=chosenmodel1, interactive=False, visible=True))
+    if chose_b:
+        out.append(gr.update(value=f'👍 {chosenmodel2}', interactive=False, visible=True))
+    else:
+        out.append(gr.update(value=chosenmodel2, interactive=False, visible=True))
+    return out
 
 with gr.Blocks() as leaderboard:
     gr.Markdown(LDESC)
@@ -461,8 +469,10 @@ def synthandreturn(text):
             AVAILABLE_MODELS[mdl2],
             api_name="/synthesize"
         ), # aud2
-        gr.update(visible=True),
-        gr.update(visible=True)
+        gr.update(visible=True, interactive=True),
+        gr.update(visible=True, interactive=True),
+        gr.update(visible=False),
+        gr.update(visible=False),
     )
 with gr.Blocks() as vote:
     useridstate = gr.State()
@@ -484,7 +494,7 @@ with gr.Blocks() as vote:
                 bbetter = gr.Button("B is better", variant='primary')
                 prevmodel2 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model B", text_align="center", lines=1, max_lines=1, visible=False)
     # outputs = [text, btn, r2, model1, model2, prevmodel1, aud1, prevmodel2, aud2, abetter, bbetter]
-    outputs = [text, btn, r2, model1, model2, aud1, aud2, abetter, bbetter]
+    outputs = [text, btn, r2, model1, model2, aud1, aud2, abetter, bbetter, prevmodel1, prevmodel2]
     btn.click(synthandreturn, inputs=[text], outputs=outputs)
 
     # nxt_outputs = [prevmodel1, prevmodel2, abetter, bbetter]
