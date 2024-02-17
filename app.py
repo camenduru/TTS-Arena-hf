@@ -32,7 +32,7 @@ DB_NAME = "database.db"
 # If /data available => means local storage is enabled => let's use it!
 DB_PATH = f"/data/{DB_NAME}" if os.path.isdir("/data") else DB_NAME
 
-AUDIO_DATASET_ID = "ttseval/tts-arena-new"
+# AUDIO_DATASET_ID = "ttseval/tts-arena-new"
 CITATION_TEXT = """@misc{tts-arena,
 	title        = {Text to Speech Arena},
 	author       = {mrfakename and Srivastav, Vaibhav and Pouget, Lucain and Fourrier, Clémentine},
@@ -124,7 +124,7 @@ scheduler = CommitScheduler(
 )
 
 # Load audio dataset
-audio_dataset = load_dataset(AUDIO_DATASET_ID)
+# audio_dataset = load_dataset(AUDIO_DATASET_ID)
 
 ####################################
 # Router API
@@ -191,10 +191,10 @@ A list of the models, based on how highly they are ranked!
 
 
 
-def reload_audio_dataset():
-    global audio_dataset
-    audio_dataset = load_dataset(AUDIO_DATASET_ID)
-    return 'Reload Audio Dataset'
+# def reload_audio_dataset():
+#     global audio_dataset
+#     audio_dataset = load_dataset(AUDIO_DATASET_ID)
+#     return 'Reload Audio Dataset'
 
 def del_db(txt):
     if not txt.lower() == 'delete db':
@@ -486,7 +486,7 @@ with gr.Blocks() as about:
     gr.Markdown(ABOUT)
 with gr.Blocks() as admin:
     rdb = gr.Button("Reload Audio Dataset")
-    rdb.click(reload_audio_dataset, outputs=rdb)
+    # rdb.click(reload_audio_dataset, outputs=rdb)
     with gr.Group():
         dbtext = gr.Textbox(label="Type \"delete db\" to confirm", placeholder="delete db")
         ddb = gr.Button("Delete DB")
