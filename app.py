@@ -414,6 +414,7 @@ with gr.Blocks() as leaderboard:
 
 #     vote.load(reload, outputs=[aud1, aud2, model1, model2])
 def synthandreturn(text):
+    text = text.strip()
     if len(text) > MAX_SAMPLE_TXT_LENGTH:
         raise gr.Error(f'You exceeded the limit of {MAX_SAMPLE_TXT_LENGTH} characters')
     # Get two random models
@@ -492,7 +493,7 @@ with gr.Blocks(theme=theme, css="footer {visibility: hidden}textbox{resize:none}
     if CITATION_TEXT:
         with gr.Row():
             with gr.Accordion("📙 Citation", open=False):
-                gr.Markdown(f"If you use this data in your publication, please cite!\n\nCopy the BibTeX citation to cite this source:\n\n```bibtext\n{CITATION_TEXT}\n```")
+                gr.Markdown(f"If you use this data in your publication, please cite us!\n\nCopy the BibTeX citation to cite this source:\n\n```bibtext\n{CITATION_TEXT}\n```")
 
 
 demo.queue(api_open=False).launch(show_api=False)
