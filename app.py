@@ -399,13 +399,15 @@ with gr.Blocks() as leaderboard:
 with gr.Blocks() as vote:
     useridstate = gr.State()
     gr.Markdown(INSTR)
+    with gr.Group():
+        text = gr.Textbox(label="Enter text to synthesize", info="By entering text, you certify that it is either in the public domain or, if you are its author, you dedicate it into the public domain. You also must agree to the privacy statement in the About page.")
+        btn = gr.Button("Synthesize", variant='primary')
     with gr.Row():
         gr.HTML('<div align="left"><h3>Model A</h3></div>')
         gr.HTML('<div align="right"><h3>Model B</h3></div>')
     model1 = gr.Textbox(interactive=False, visible=False, lines=1, max_lines=1)
     model2 = gr.Textbox(interactive=False, visible=False, lines=1, max_lines=1)
 
-    text = gr.Textbox(label="Enter text to synthesize", info="By entering text, you certify that it is either in the public domain or, if you are its author, you dedicate it into the public domain. You also must agree to the privacy statement in the About page.")
     with gr.Group(visible=False):
         with gr.Row():
             with gr.Column():
