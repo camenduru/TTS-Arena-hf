@@ -177,6 +177,10 @@ The TTS Arena is an attempt to benchmark these models and find the highest-quali
 ### Privacy Statement
 
 We may store text you enter and generated audio. We store a unique ID for each session.
+
+### License
+
+Please assume all audio clips are not licensed to be redistributed and may only be used for personal, non-commercial use.
 """.strip()
 LDESC = """
 ## Leaderboard
