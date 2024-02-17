@@ -157,6 +157,10 @@ Recently, many new open-access speech synthesis models have been made available 
 The TTS Arena is an attempt to benchmark these models and find the highest-quality models available to the community.
 
 {request}
+
+### Privacy Statement
+
+We may store text you enter and generated audio. We store a unique ID for each session.
 """.strip()
 LDESC = """
 ## Leaderboard
@@ -347,23 +351,62 @@ with gr.Blocks() as leaderboard:
     reloadbtn.click(get_leaderboard, outputs=[df])
     gr.Markdown("DISCLAIMER: The licenses listed may not be accurate or up to date, you are responsible for checking the licenses before using the models. Also note that some models may have additional usage restrictions.")
 
+# with gr.Blocks() as vote:
+#     useridstate = gr.State()
+#     gr.Markdown(INSTR)
+#     # gr.LoginButton()
+#     with gr.Row():
+#         gr.HTML('<div align="left"><h3>Model A</h3></div>')
+#         gr.HTML('<div align="right"><h3>Model B</h3></div>')
+#     model1 = gr.Textbox(interactive=False, visible=False, lines=1, max_lines=1)
+#     model2 = gr.Textbox(interactive=False, visible=False, lines=1, max_lines=1)
+#     # with gr.Group():
+#     #     with gr.Row():
+#     #         prevmodel1 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model A")
+#     #         prevmodel2 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model B", text_align="right")
+#     #     with gr.Row():
+#     #         aud1 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
+#     #         aud2 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
+#     with gr.Group():
+#         with gr.Row():
+#             with gr.Column():
+#                 with gr.Group():
+#                     prevmodel1 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model A", lines=1, max_lines=1)
+#                     aud1 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
+#             with gr.Column():
+#                 with gr.Group():
+#                     prevmodel2 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model B", text_align="right", lines=1, max_lines=1)
+#                     aud2 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
+
+
+#     with gr.Row():
+#         abetter = gr.Button("A is Better", variant='primary', scale=4)
+#         # skipbtn = gr.Button("Skip", scale=1)
+#         bbetter = gr.Button("B is Better", variant='primary', scale=4)
+#     with gr.Row():
+#         bothbad = gr.Button("Both are Bad", scale=2)
+#         skipbtn = gr.Button("Skip", scale=1)
+#         bothgood = gr.Button("Both are Good", scale=2)
+#     outputs = [aud1, aud2, model1, model2, useridstate, prevmodel1, prevmodel2]
+#     abetter.click(a_is_better, outputs=outputs, inputs=[model1, model2, useridstate])
+#     bbetter.click(b_is_better, outputs=outputs, inputs=[model1, model2, useridstate])
+#     skipbtn.click(b_is_better, outputs=outputs, inputs=[model1, model2, useridstate])
+
+#     bothbad.click(both_bad, outputs=outputs, inputs=[model1, model2, useridstate])
+#     bothgood.click(both_good, outputs=outputs, inputs=[model1, model2, useridstate])
+
+#     vote.load(reload, outputs=[aud1, aud2, model1, model2])
 with gr.Blocks() as vote:
     useridstate = gr.State()
     gr.Markdown(INSTR)
-    # gr.LoginButton()
     with gr.Row():
         gr.HTML('<div align="left"><h3>Model A</h3></div>')
         gr.HTML('<div align="right"><h3>Model B</h3></div>')
     model1 = gr.Textbox(interactive=False, visible=False, lines=1, max_lines=1)
     model2 = gr.Textbox(interactive=False, visible=False, lines=1, max_lines=1)
-    # with gr.Group():
-    #     with gr.Row():
-    #         prevmodel1 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model A")
-    #         prevmodel2 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model B", text_align="right")
-    #     with gr.Row():
-    #         aud1 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
-    #         aud2 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
-    with gr.Group():
+
+    text = gr.Textbox(label="Enter text to synthesize", info="By entering text, you certify that it is either in the public domain or, if you are its author, you dedicate it into the public domain. You also must agree to the privacy statement in the About page.")
+    with gr.Group(visible=False):
         with gr.Row():
             with gr.Column():
                 with gr.Group():
@@ -375,23 +418,24 @@ with gr.Blocks() as vote:
                     aud2 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
 
 
-    with gr.Row():
+    with gr.Row(visible=False):
         abetter = gr.Button("A is Better", variant='primary', scale=4)
         # skipbtn = gr.Button("Skip", scale=1)
         bbetter = gr.Button("B is Better", variant='primary', scale=4)
-    with gr.Row():
+    with gr.Row(visible=False):
         bothbad = gr.Button("Both are Bad", scale=2)
         skipbtn = gr.Button("Skip", scale=1)
         bothgood = gr.Button("Both are Good", scale=2)
-    outputs = [aud1, aud2, model1, model2, useridstate, prevmodel1, prevmodel2]
-    abetter.click(a_is_better, outputs=outputs, inputs=[model1, model2, useridstate])
-    bbetter.click(b_is_better, outputs=outputs, inputs=[model1, model2, useridstate])
-    skipbtn.click(b_is_better, outputs=outputs, inputs=[model1, model2, useridstate])
+    # outputs = [aud1, aud2, model1, model2, useridstate, prevmodel1, prevmodel2]
+    # abetter.click(a_is_better, outputs=outputs, inputs=[model1, model2, useridstate])
+    # bbetter.click(b_is_better, outputs=outputs, inputs=[model1, model2, useridstate])
+    # skipbtn.click(b_is_better, outputs=outputs, inputs=[model1, model2, useridstate])
 
-    bothbad.click(both_bad, outputs=outputs, inputs=[model1, model2, useridstate])
-    bothgood.click(both_good, outputs=outputs, inputs=[model1, model2, useridstate])
+    # bothbad.click(both_bad, outputs=outputs, inputs=[model1, model2, useridstate])
+    # bothgood.click(both_good, outputs=outputs, inputs=[model1, model2, useridstate])
 
-    vote.load(reload, outputs=[aud1, aud2, model1, model2])
+    # vote.load(reload, outputs=[aud1, aud2, model1, model2])
+
 with gr.Blocks() as about:
     gr.Markdown(ABOUT)
 with gr.Blocks() as admin:
