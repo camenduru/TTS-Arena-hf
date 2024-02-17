@@ -399,8 +399,8 @@ with gr.Blocks() as leaderboard:
 def makevisible(text):
     print(text)
     return (
-        None, # model1
-        None, # model2
+        'None', # model1
+        'None', # model2
         gr.update(visible=True), # prevmodel1
         gr.update(visible=True), # aud1
         gr.update(visible=True), # prevmodel2
