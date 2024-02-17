@@ -10,6 +10,19 @@ import time
 import uuid
 from pathlib import Path
 from huggingface_hub import CommitScheduler, delete_file, hf_hub_download
+from gradio_client import Client
+
+####################################
+# Constants
+####################################
+
+AVAILABLE_MODELS = {
+    'XTTS': 'xttsv2',
+    'WhisperSpeech': 'whisperspeech',
+    'ElevenLabs': 'eleven',
+    'OpenVoice': 'openvoice',
+    'Pheme': 'pheme',
+}
 
 SPACE_ID = os.getenv('HF_ID')
 
@@ -20,7 +33,6 @@ DB_NAME = "database.db"
 DB_PATH = f"/data/{DB_NAME}" if os.path.isdir("/data") else DB_NAME
 
 AUDIO_DATASET_ID = "ttseval/tts-arena-new"
-CITATION_TEXT = None
 CITATION_TEXT = """@misc{tts-arena,
 	title        = {Text to Speech Arena},
 	author       = {mrfakename and Srivastav, Vaibhav and Pouget, Lucain and Fourrier, Clémentine},
@@ -115,6 +127,10 @@ scheduler = CommitScheduler(
 audio_dataset = load_dataset(AUDIO_DATASET_ID)
 
 ####################################
+# Router API
+####################################
+router = Client("ttseval/tts-router", hf_token=os.getenv('HF_TOKEN'))
+####################################
 # Gradio app
 ####################################
 MUST_BE_LOGGEDIN = "Please login with Hugging Face to participate in the TTS Arena."
@@ -182,7 +198,7 @@ def del_db(txt):
 
     # Delete local + remote
     os.remove(DB_PATH)
-    delete_file(path_in_repo=DB_NAME, repo_id=DATASET_ID, repo_type='dataset')
+    delete_file(path_in_repo=DB_NAME, repo_id=DB_DATASET_ID, repo_type='dataset')
 
     # Recreate
     create_db_if_missing()
@@ -396,18 +412,26 @@ with gr.Blocks() as leaderboard:
 #     bothgood.click(both_good, outputs=outputs, inputs=[model1, model2, useridstate])
 
 #     vote.load(reload, outputs=[aud1, aud2, model1, model2])
-def makevisible(text):
-    time.sleep(5)
+def synthandreturn(text):
+    # Get two random models
+    mdl1, mdl2 = random.sample(AVAILABLE_MODELS.keys(), 2)
     return (
         text,
+        "Synthesize",
         gr.update(visible=True), # r1
         gr.update(visible=True), # r2
-        None, # model1
-        None, # model2
-        'Hi', # prevmodel1
-        None, # aud1
-        'Hi', # prevmodel2
-        None, # aud2
+        mdl1, # model1
+        mdl2, # model2
+        'Vote to reveal model A', # prevmodel1
+        router.predict(
+            text,
+            AVAILABLE_MODELS[mdl1]
+        ), # aud1
+        'Vote to reveal model B', # prevmodel2
+        router.predict(
+            text,
+            AVAILABLE_MODELS[mdl2]
+        ), # aud2
     )
 with gr.Blocks() as vote:
     useridstate = gr.State()
@@ -433,11 +457,12 @@ with gr.Blocks() as vote:
         with gr.Row():
             abetter = gr.Button("A is Better", variant='primary')
             bbetter = gr.Button("B is Better", variant='primary')
-    btn.click(makevisible, inputs=text, outputs=[text, r1, r2, model1, model2, prevmodel1, aud1, prevmodel2, aud2])
+    outputs = [text, btn, r1, r2, model1, model2, prevmodel1, aud1, prevmodel2, aud2]
+    btn.click(synthandreturn, inputs=[text], outputs=outputs)
 
-    # outputs = [aud1, aud2, model1, model2, useridstate, prevmodel1, prevmodel2]
-    # abetter.click(a_is_better, outputs=outputs, inputs=[model1, model2, useridstate])
-    # bbetter.click(b_is_better, outputs=outputs, inputs=[model1, model2, useridstate])
+    nxt_outputs = [aud1, aud2, model1, model2, useridstate, prevmodel1, prevmodel2]
+    abetter.click(a_is_better, outputs=nxt_outputs, inputs=[model1, model2, useridstate])
+    bbetter.click(b_is_better, outputs=nxt_outputs, inputs=[model1, model2, useridstate])
     # skipbtn.click(b_is_better, outputs=outputs, inputs=[model1, model2, useridstate])
 
     # bothbad.click(both_bad, outputs=outputs, inputs=[model1, model2, useridstate])
