@@ -72,7 +72,7 @@ def get_leaderboard():
     cursor.execute('SELECT name, upvote, downvote FROM model WHERE (upvote + downvote) > 5')
     data = cursor.fetchall()
     df = pd.DataFrame(data, columns=['name', 'upvote', 'downvote'])
-    df['license'] = df['name'].replace(model_licenses)
+    df['license'] = df['name'].map(model_licenses).fillna("Unknown")
     df['name'] = df['name'].replace(model_names)
     df['votes'] = df['upvote'] + df['downvote']
     # df['score'] = round((df['upvote'] / df['votes']) * 100, 2) # Percentage score
