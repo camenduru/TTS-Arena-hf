@@ -464,18 +464,17 @@ with gr.Blocks() as vote:
         btn = gr.Button("Synthesize", variant='primary')
     model1 = gr.Textbox(interactive=False, lines=1, max_lines=1, visible=False)
     model2 = gr.Textbox(interactive=False, lines=1, max_lines=1, visible=False)
-    with gr.Group(visible=False) as r2:
-        with gr.Row():
-            with gr.Column():
-                with gr.Group():
-                    prevmodel1 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model A", text_align="center", lines=1, max_lines=1)
-                    aud1 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
-                    abetter = gr.Button("A is better")
-            with gr.Column():
-                with gr.Group():
-                    prevmodel2 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model B", text_align="center", lines=1, max_lines=1)
-                    aud2 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
-                    bbetter = gr.Button("B is better")
+    with gr.Row(visible=False) as r2:
+        with gr.Column():
+            with gr.Group():
+                prevmodel1 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model A", text_align="center", lines=1, max_lines=1)
+                aud1 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
+                abetter = gr.Button("A is better")
+        with gr.Column():
+            with gr.Group():
+                prevmodel2 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model B", text_align="center", lines=1, max_lines=1)
+                aud2 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
+                bbetter = gr.Button("B is better")
     outputs = [text, btn, r2, model1, model2, prevmodel1, aud1, prevmodel2, aud2, abetter, bbetter]
     btn.click(synthandreturn, inputs=[text], outputs=outputs)
 
