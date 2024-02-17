@@ -2,3 +2,4 @@ gradio
 datasets
 librosa
 soundfile
+gradio_client
