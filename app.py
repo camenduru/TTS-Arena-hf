@@ -397,20 +397,11 @@ with gr.Blocks() as leaderboard:
 
 #     vote.load(reload, outputs=[aud1, aud2, model1, model2])
 def makevisible(text):
-    yield (
-        gr.update(visible=True), # r1
-        gr.update(visible=True), # r2
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-    )
     time.sleep(5)
     return (
-        None, # r1
-        None, # r2
+        text,
+        gr.update(visible=True), # r1
+        gr.update(visible=True), # r2
         None, # model1
         None, # model2
         'Hi', # prevmodel1
@@ -442,7 +433,7 @@ with gr.Blocks() as vote:
         with gr.Row():
             abetter = gr.Button("A is Better", variant='primary')
             bbetter = gr.Button("B is Better", variant='primary')
-    btn.click(makevisible, inputs=text, outputs=[r1, r2, model1, model2, prevmodel1, aud1, prevmodel2, aud2])
+    btn.click(makevisible, inputs=text, outputs=[text, r1, r2, model1, model2, prevmodel1, aud1, prevmodel2, aud2])
 
     # outputs = [aud1, aud2, model1, model2, useridstate, prevmodel1, prevmodel2]
     # abetter.click(a_is_better, outputs=outputs, inputs=[model1, model2, useridstate])
