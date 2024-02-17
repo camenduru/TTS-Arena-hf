@@ -397,6 +397,7 @@ with gr.Blocks() as leaderboard:
 
 #     vote.load(reload, outputs=[aud1, aud2, model1, model2])
 def makevisible(text):
+    print(text)
     return (
         None, # model1
         None, # model2
