@@ -143,7 +143,7 @@ INSTR = """
 ## Instructions
 
 * Listen to two anonymous models
-* Vote on which synthesised audio sounds more natural to you
+* Vote on which synthesized audio sounds more natural to you
 * If there's a tie, click Skip
 
 **When you're ready to begin, login and begin voting!** The model names will be revealed once you vote.
