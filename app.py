@@ -465,7 +465,7 @@ with gr.Blocks() as vote:
             abetter = gr.Button("A is Better")
             bbetter = gr.Button("B is Better")
     outputs = [text, btn, r1, r2, model1, model2, prevmodel1, aud1, prevmodel2, aud2, abetter, bbetter]
-    btn.click(synthandreturn, inpus=[text], outputs=outputs)
+    btn.click(synthandreturn, inputs=[text], outputs=outputs)
 
     nxt_outputs = [prevmodel1, prevmodel2, abetter, bbetter]
     abetter.click(a_is_better, outputs=nxt_outputs, inputs=[model1, model2, useridstate])
