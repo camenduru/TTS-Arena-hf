@@ -382,7 +382,7 @@ def reload(chosenmodel1=None, chosenmodel2=None, userid=None, chose_a=False, cho
         out.append(gr.update(value=f'{chosenmodel2}', interactive=False, visible=True))
     else:
         out.append(gr.update(value=f'{chosenmodel1}', interactive=False, visible=True))
-        out.append(gr.update(value=f'Your vote: {chosenmodel1}', interactive=False, visible=True))
+        out.append(gr.update(value=f'Your vote: {chosenmodel2}', interactive=False, visible=True))
     return out
 
 with gr.Blocks() as leaderboard:
