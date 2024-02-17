@@ -206,6 +206,7 @@ def del_db(txt):
 
     # Recreate
     create_db_if_missing()
+    gr.Error('You probably want to restart the space now')
     return 'Delete DB'
 
 theme = gr.themes.Base(
