@@ -401,10 +401,10 @@ def makevisible(text):
     return (
         None, # model1
         None, # model2
-        gr.Textbox.update(visible=True), # prevmodel1
-        gr.Audio.update(visible=True), # aud1
-        gr.Textbox.update(visible=True), # prevmodel2
-        gr.Audio.update(visible=True), # aud2
+        gr.update(visible=True), # prevmodel1
+        gr.update(visible=True), # aud1
+        gr.update(visible=True), # prevmodel2
+        gr.update(visible=True), # aud2
     )
 with gr.Blocks() as vote:
     useridstate = gr.State()
