@@ -497,7 +497,8 @@ with gr.Blocks() as admin:
         dbtext = gr.Textbox(label="Type \"delete db\" to confirm", placeholder="delete db")
         ddb = gr.Button("Delete DB")
     ddb.click(del_db, inputs=dbtext, outputs=ddb)
-with gr.Blocks(theme=theme, css="footer {visibility: hidden}textbox{resize:none}", title="TTS Leaderboard") as demo:
+# with gr.Blocks(theme=theme, css="footer {visibility: hidden}textbox{resize:none}", title="TTS Leaderboard") as demo:
+with gr.Blocks(css="footer {visibility: hidden}textbox{resize:none}", title="TTS Leaderboard") as demo:
     gr.Markdown(DESCR)
     gr.TabbedInterface([vote, leaderboard, about, admin], ['Vote', 'Leaderboard', 'About', 'Admin (ONLY IN BETA)'])
     if CITATION_TEXT:
