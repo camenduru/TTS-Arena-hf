@@ -25,7 +25,7 @@ AVAILABLE_MODELS = {
 }
 
 SPACE_ID = os.getenv('HF_ID')
-
+MAX_SAMPLE_TXT_LENGTH = 150
 DB_DATASET_ID = os.getenv('DATASET_ID')
 DB_NAME = "database.db"
 
@@ -357,7 +357,7 @@ def reload(chosenmodel1=None, chosenmodel2=None, userid=None):
     # if chosenmodel1: out.append(f'This model was {chosenmodel1}')
     # if chosenmodel2: out.append(f'This model was {chosenmodel2}')
     # return out
-    return (f'This model was {chosenmodel1}', f'This model was {chosenmodel2}', gr.update(interactive=False), gr.update(interactive=False))
+    return (f'This model was {chosenmodel1}', f'This model was {chosenmodel2}', gr.update(visible=False), gr.update(visible=False))
 
 with gr.Blocks() as leaderboard:
     gr.Markdown(LDESC)
@@ -414,6 +414,8 @@ with gr.Blocks() as leaderboard:
 
 #     vote.load(reload, outputs=[aud1, aud2, model1, model2])
 def synthandreturn(text):
+    if len(text) > MAX_SAMPLE_TXT_LENGTH:
+        raise gr.Error(f'You exceeded the limit of {MAX_SAMPLE_TXT_LENGTH} characters')
     # Get two random models
     mdl1, mdl2 = random.sample(AVAILABLE_MODELS.keys(), 2)
     return (
@@ -435,6 +437,8 @@ def synthandreturn(text):
             AVAILABLE_MODELS[mdl2],
             api_name="/synthesize"
         ), # aud2
+        gr.update(visible=False),
+        gr.update(visible=False)
     )
 with gr.Blocks() as vote:
     useridstate = gr.State()
@@ -458,10 +462,10 @@ with gr.Blocks() as vote:
                     prevmodel2 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model B", text_align="right", lines=1, max_lines=1)
                     aud2 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
         with gr.Row():
-            abetter = gr.Button("A is Better", variant='primary')
-            bbetter = gr.Button("B is Better", variant='primary')
-    outputs = [text, btn, r1, r2, model1, model2, prevmodel1, aud1, prevmodel2, aud2]
-    btn.click(synthandreturn, inputs=[text], outputs=outputs)
+            abetter = gr.Button("A is Better")
+            bbetter = gr.Button("B is Better")
+    outputs = [text, btn, r1, r2, model1, model2, prevmodel1, aud1, prevmodel2, aud2, abetter, bbetter]
+    btn.click(synthandreturn, inpus=[text], outputs=outputs)
 
     nxt_outputs = [prevmodel1, prevmodel2, abetter, bbetter]
     abetter.click(a_is_better, outputs=nxt_outputs, inputs=[model1, model2, useridstate])
