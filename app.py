@@ -425,12 +425,14 @@ def synthandreturn(text):
         'Vote to reveal model A', # prevmodel1
         router.predict(
             text,
-            AVAILABLE_MODELS[mdl1]
+            AVAILABLE_MODELS[mdl1],
+            api_name="/synthesize"
         ), # aud1
         'Vote to reveal model B', # prevmodel2
         router.predict(
             text,
-            AVAILABLE_MODELS[mdl2]
+            AVAILABLE_MODELS[mdl2],
+            api_name="/synthesize"
         ), # aud2
     )
 with gr.Blocks() as vote:
