@@ -396,15 +396,19 @@ with gr.Blocks() as leaderboard:
 #     bothgood.click(both_good, outputs=outputs, inputs=[model1, model2, useridstate])
 
 #     vote.load(reload, outputs=[aud1, aud2, model1, model2])
+def get_txtbox(value, visible=False):
+    return gr.Textbox(interactive=False, show_label=False, container=False, value=value, lines=1, max_lines=1, visible=visible)
+def get_audio(value=None, visible=False):
+    return gr.Audio(value=value, interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'}, visible=visible)
 def makevisible(text):
     print(text)
     return (
         'None', # model1
         'None', # model2
-        gr.update(visible=True), # prevmodel1
-        gr.update(visible=True), # aud1
-        gr.update(visible=True), # prevmodel2
-        gr.update(visible=True), # aud2
+        get_txtbox('Vote to reveal model A', True), # prevmodel1
+        get_audio(visible=True), # aud1
+        get_txtbox('Vote to reveal model B', True), # prevmodel2
+        get_audio(visible=True), # aud2
     )
 with gr.Blocks() as vote:
     useridstate = gr.State()
@@ -421,12 +425,16 @@ with gr.Blocks() as vote:
         with gr.Row():
             with gr.Column():
                 with gr.Group():
-                    prevmodel1 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model A", lines=1, max_lines=1)
-                    aud1 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
+                    # prevmodel1 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model A", lines=1, max_lines=1)
+                    prevmodel1 = get_txtbox('Vote to reveal model A')
+                    aud1 = get_audio()
+                    # aud1 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
             with gr.Column():
                 with gr.Group():
-                    prevmodel2 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model B", text_align="right", lines=1, max_lines=1)
-                    aud2 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
+                    # prevmodel2 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model B", text_align="right", lines=1, max_lines=1)
+                    prevmodel2 = get_txtbox('Vote to reveal model B')
+                    aud2 = get_audio()
+                    # aud2 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
         with gr.Row(visible=False):
             abetter = gr.Button("A is Better", variant='primary')
             bbetter = gr.Button("B is Better", variant='primary')
