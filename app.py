@@ -496,7 +496,7 @@ with gr.Blocks(theme=theme, css="footer {visibility: hidden}textbox{resize:none}
     gr.TabbedInterface([vote, leaderboard, about, admin], ['Vote', 'Leaderboard', 'About', 'Admin (ONLY IN BETA)'])
     if CITATION_TEXT:
         with gr.Row():
-            with gr.Accordion("📙 Citation", open=False):
+            with gr.Accordion("Citation", open=False):
                 gr.Markdown(f"If you use this data in your publication, please cite us!\n\nCopy the BibTeX citation to cite this source:\n\n```bibtext\n{CITATION_TEXT}\n```")
 
 
