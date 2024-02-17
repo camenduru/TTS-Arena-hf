@@ -31,7 +31,7 @@ DB_NAME = "database.db"
 
 # If /data available => means local storage is enabled => let's use it!
 DB_PATH = f"/data/{DB_NAME}" if os.path.isdir("/data") else DB_NAME
-
+print(f"Using {DB_PATH}")
 # AUDIO_DATASET_ID = "ttseval/tts-arena-new"
 CITATION_TEXT = """@misc{tts-arena,
 	title        = {Text to Speech Arena},
