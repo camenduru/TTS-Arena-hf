@@ -401,14 +401,10 @@ def makevisible(text):
     return (
         None, # model1
         None, # model2
-        gr.update(visible=True), # prevmodel1
-        gr.update(visible=True), # aud1
-        gr.update(visible=True), # prevmodel2
-        gr.update(visible=True), # aud2
-        'Test',
-        None,
-        'Test',
-        None,
+        gr.Textbox.update(visible=True), # prevmodel1
+        gr.Audio.update(visible=True), # aud1
+        gr.Textbox.update(visible=True), # prevmodel2
+        gr.Audio.update(visible=True), # aud2
     )
 with gr.Blocks() as vote:
     useridstate = gr.State()
@@ -436,7 +432,6 @@ with gr.Blocks() as vote:
             bbetter = gr.Button("B is Better", variant='primary')
     btn.click(makevisible, inputs=text, outputs=[
         model1, model2, prevmodel1, aud1, prevmodel2, aud2,
-        prevmodel1, aud1, prevmodel2, aud2
     ])
 
     # outputs = [aud1, aud2, model1, model2, useridstate, prevmodel1, prevmodel2]
