@@ -380,11 +380,11 @@ def reload(chosenmodel1=None, chosenmodel2=None, userid=None, chose_a=False, cho
         gr.update(value=chosenmodel2, interactive=False, visible=True),
     ]
     if chose_a:
-        out.append(gr.update(value=f'👍 {chosenmodel1}', interactive=False, visible=True))
+        out.append(gr.update(value=f'✨ {chosenmodel1}', interactive=False, visible=True))
     else:
         out.append(gr.update(value=f'🥺 {chosenmodel1}', interactive=False, visible=True))
     if chose_b:
-        out.append(gr.update(value=f'👍 {chosenmodel2}', interactive=False, visible=True))
+        out.append(gr.update(value=f'✨ {chosenmodel2}', interactive=False, visible=True))
     else:
         out.append(gr.update(value=f'🥺 {chosenmodel2}', interactive=False, visible=True))
     return out
