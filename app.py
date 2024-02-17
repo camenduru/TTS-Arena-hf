@@ -357,7 +357,7 @@ def reload(chosenmodel1=None, chosenmodel2=None, userid=None):
     # if chosenmodel1: out.append(f'This model was {chosenmodel1}')
     # if chosenmodel2: out.append(f'This model was {chosenmodel2}')
     # return out
-    return (f'This model was {chosenmodel1}', f'This model was {chosenmodel2}')
+    return (f'This model was {chosenmodel1}', f'This model was {chosenmodel2}', gr.update(interactive=False), gr.update(interactive=False))
 
 with gr.Blocks() as leaderboard:
     gr.Markdown(LDESC)
@@ -463,7 +463,7 @@ with gr.Blocks() as vote:
     outputs = [text, btn, r1, r2, model1, model2, prevmodel1, aud1, prevmodel2, aud2]
     btn.click(synthandreturn, inputs=[text], outputs=outputs)
 
-    nxt_outputs = [prevmodel1, prevmodel2]
+    nxt_outputs = [prevmodel1, prevmodel2, abetter, bbetter]
     abetter.click(a_is_better, outputs=nxt_outputs, inputs=[model1, model2, useridstate])
     bbetter.click(b_is_better, outputs=nxt_outputs, inputs=[model1, model2, useridstate])
     # skipbtn.click(b_is_better, outputs=outputs, inputs=[model1, model2, useridstate])
