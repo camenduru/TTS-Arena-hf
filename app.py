@@ -357,7 +357,7 @@ def reload(chosenmodel1=None, chosenmodel2=None, userid=None):
     # if chosenmodel1: out.append(f'This model was {chosenmodel1}')
     # if chosenmodel2: out.append(f'This model was {chosenmodel2}')
     # return out
-    return (f'This model was {chosenmodel1}', f'This model was {chosenmodel2}', gr.update(visible=False), gr.update(visible=False))
+    return (f'This model was {chosenmodel1}', f'This model was {chosenmodel2}', gr.update(visible=True), gr.update(visible=True))
 
 with gr.Blocks() as leaderboard:
     gr.Markdown(LDESC)
