@@ -371,7 +371,8 @@ def reload(chosenmodel1=None, chosenmodel2=None, userid=None):
     # if chosenmodel1: out.append(f'This model was {chosenmodel1}')
     # if chosenmodel2: out.append(f'This model was {chosenmodel2}')
     # return out
-    return (f'This model was {chosenmodel1}', f'This model was {chosenmodel2}', gr.update(visible=False), gr.update(visible=False))
+    # return (f'This model was {chosenmodel1}', f'This model was {chosenmodel2}', gr.update(visible=False), gr.update(visible=False))
+    return (gr.update(visible=False, value=chosenmodel1), gr.update(visible=False, value=chosenmodel2))
 
 with gr.Blocks() as leaderboard:
     gr.Markdown(LDESC)
@@ -441,13 +442,13 @@ def synthandreturn(text):
         gr.update(visible=True), # r2
         mdl1, # model1
         mdl2, # model2
-        'Vote to reveal model A', # prevmodel1
+        # 'Vote to reveal model A', # prevmodel1
         router.predict(
             text,
             AVAILABLE_MODELS[mdl1],
             api_name="/synthesize"
         ), # aud1
-        'Vote to reveal model B', # prevmodel2
+        # 'Vote to reveal model B', # prevmodel2
         router.predict(
             text,
             AVAILABLE_MODELS[mdl2],
@@ -467,18 +468,20 @@ with gr.Blocks() as vote:
     with gr.Row(visible=False) as r2:
         with gr.Column():
             with gr.Group():
-                prevmodel1 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model A", text_align="center", lines=1, max_lines=1)
+                # prevmodel1 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model A", text_align="center", lines=1, max_lines=1)
                 aud1 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
-                abetter = gr.Button("A is better")
+                abetter = gr.Button("A is better", variant='primary')
         with gr.Column():
             with gr.Group():
-                prevmodel2 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model B", text_align="center", lines=1, max_lines=1)
+                # prevmodel2 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model B", text_align="center", lines=1, max_lines=1)
                 aud2 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
-                bbetter = gr.Button("B is better")
-    outputs = [text, btn, r2, model1, model2, prevmodel1, aud1, prevmodel2, aud2, abetter, bbetter]
+                bbetter = gr.Button("B is better", variant='primary')
+    # outputs = [text, btn, r2, model1, model2, prevmodel1, aud1, prevmodel2, aud2, abetter, bbetter]
+    outputs = [text, btn, r2, model1, model2, aud1, aud2, abetter, bbetter]
     btn.click(synthandreturn, inputs=[text], outputs=outputs)
 
-    nxt_outputs = [prevmodel1, prevmodel2, abetter, bbetter]
+    # nxt_outputs = [prevmodel1, prevmodel2, abetter, bbetter]
+    nxt_outputs = [abetter, bbetter]
     abetter.click(a_is_better, outputs=nxt_outputs, inputs=[model1, model2, useridstate])
     bbetter.click(b_is_better, outputs=nxt_outputs, inputs=[model1, model2, useridstate])
     # skipbtn.click(b_is_better, outputs=outputs, inputs=[model1, model2, useridstate])
