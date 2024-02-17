@@ -376,15 +376,14 @@ def reload(chosenmodel1=None, chosenmodel2=None, userid=None, chose_a=False, cho
     # return (gr.update(variant='secondary', value=chosenmodel1, interactive=False), gr.update(variant='secondary', value=chosenmodel2, interactive=False))
     out = [
         gr.update(interactive=False, visible=False),
-        gr.update(interactive=False, visible=False),
-        gr.update(value=chosenmodel2, interactive=False, visible=True),
+        gr.update(interactive=False, visible=False)
     ]
     if chose_a == True:
-        out.append(gr.update(value=f'You chose {chosenmodel1}', interactive=False, visible=True))
-        out.append(gr.update(value=f'{chosenmodel2}', interactive=False, visible=True))
+        out.append(gr.update(value=f'✨ {chosenmodel1}', interactive=False, visible=True))
+        out.append(gr.update(value=f'🥹 {chosenmodel2}', interactive=False, visible=True))
     else:
-        out.append(gr.update(value=f'{chosenmodel1}', interactive=False, visible=True))
-        out.append(gr.update(value=f'You chose {chosenmodel1}', interactive=False, visible=True))
+        out.append(gr.update(value=f'🥹 {chosenmodel1}', interactive=False, visible=True))
+        out.append(gr.update(value=f'✨ {chosenmodel1}', interactive=False, visible=True))
     return out
 
 with gr.Blocks() as leaderboard:
