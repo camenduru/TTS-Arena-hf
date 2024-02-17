@@ -139,12 +139,22 @@ DESCR = """
 
 Vote on different speech synthesis models!
 """.strip()
+# INSTR = """
+# ## Instructions
+
+# * Listen to two anonymous models
+# * Vote on which synthesized audio sounds more natural to you
+# * If there's a tie, click Skip
+
+# **When you're ready to begin, login and begin voting!** The model names will be revealed once you vote.
+# """.strip()
 INSTR = """
 ## Instructions
 
-* Listen to two anonymous models
+* Enter text to synthesize
+* Listen to the two audio clips
 * Vote on which synthesized audio sounds more natural to you
-* If there's a tie, click Skip
+* Repeat!
 
 **When you're ready to begin, login and begin voting!** The model names will be revealed once you vote.
 """.strip()
@@ -180,7 +190,7 @@ We may store text you enter and generated audio. We store a unique ID for each s
 
 ### License
 
-Please assume all audio clips are not licensed to be redistributed and may only be used for personal, non-commercial use.
+Please assume all generated audio clips are not licensed to be redistributed and may only be used for personal, non-commercial use.
 """.strip()
 LDESC = """
 ## Leaderboard
@@ -206,7 +216,6 @@ def del_db(txt):
 
     # Recreate
     create_db_if_missing()
-    gr.Error('You probably want to restart the space now')
     return 'Delete DB'
 
 theme = gr.themes.Base(
@@ -422,6 +431,8 @@ def synthandreturn(text):
     text = text.strip()
     if len(text) > MAX_SAMPLE_TXT_LENGTH:
         raise gr.Error(f'You exceeded the limit of {MAX_SAMPLE_TXT_LENGTH} characters')
+    if not text:
+        raise gr.Error(f'You did not enter any text')
     # Get two random models
     mdl1, mdl2 = random.sample(AVAILABLE_MODELS.keys(), 2)
     return (
@@ -497,7 +508,7 @@ with gr.Blocks(theme=theme, css="footer {visibility: hidden}textbox{resize:none}
     gr.TabbedInterface([vote, leaderboard, about, admin], ['Vote', 'Leaderboard', 'About', 'Admin (ONLY IN BETA)'])
     if CITATION_TEXT:
         with gr.Row():
-            with gr.Accordion("Citation", open=False):
+            with gr.Accordion("📙 Citation", open=False):
                 gr.Markdown(f"If you use this data in your publication, please cite us!\n\nCopy the BibTeX citation to cite this source:\n\n```bibtext\n{CITATION_TEXT}\n```")
 
 
