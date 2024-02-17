@@ -400,6 +400,12 @@ def makevisible(text):
     yield (
         gr.update(visible=True), # r1
         gr.update(visible=True), # r2
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
     )
     time.sleep(5)
     return (
