@@ -151,10 +151,9 @@ Vote on different speech synthesis models!
 INSTR = """
 ## Instructions
 
-* Enter text to synthesize
-* Listen to the two audio clips
-* Vote on which synthesized audio sounds more natural to you
-* Repeat!
+* Enter text to synthesize.
+* Listen to the two audio clips.
+* Vote on which synthesized audio sounds more natural to you.
 
 **When you're ready to begin, enter text!** The model names will be revealed once you vote.
 """.strip()
@@ -519,7 +518,7 @@ with gr.Blocks(theme=theme, css="footer {visibility: hidden}textbox{resize:none}
     gr.TabbedInterface([vote, leaderboard, about, admin], ['Vote', 'Leaderboard', 'About', 'Admin (ONLY IN BETA)'])
     if CITATION_TEXT:
         with gr.Row():
-            with gr.Accordion("📙 Citation", open=False):
+            with gr.Accordion("Citation", open=False):
                 gr.Markdown(f"If you use this data in your publication, please cite us!\n\nCopy the BibTeX citation to cite this source:\n\n```bibtext\n{CITATION_TEXT}\n```")
 
 
