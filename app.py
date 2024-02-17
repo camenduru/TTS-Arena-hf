@@ -442,7 +442,7 @@ def synthandreturn(text):
     if not text:
         raise gr.Error(f'You did not enter any text')
     # Get two random models
-    mdl1, mdl2 = random.sample(AVAILABLE_MODELS.keys(), 2)
+    mdl1, mdl2 = random.sample(list(AVAILABLE_MODELS.keys()), 2)
     return (
         text,
         "Synthesize",
@@ -477,12 +477,12 @@ with gr.Blocks() as vote:
             with gr.Group():
                 aud1 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
                 abetter = gr.Button("A is better", variant='primary')
-                prevmodel1 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model A", text_align="center", lines=1, max_lines=1)
+                prevmodel1 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model A", text_align="center", lines=1, max_lines=1, visible=False)
         with gr.Column():
             with gr.Group():
                 aud2 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
                 bbetter = gr.Button("B is better", variant='primary')
-                prevmodel2 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model B", text_align="center", lines=1, max_lines=1)
+                prevmodel2 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model B", text_align="center", lines=1, max_lines=1, visible=False)
     # outputs = [text, btn, r2, model1, model2, prevmodel1, aud1, prevmodel2, aud2, abetter, bbetter]
     outputs = [text, btn, r2, model1, model2, aud1, aud2, abetter, bbetter]
     btn.click(synthandreturn, inputs=[text], outputs=outputs)
