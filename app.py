@@ -447,6 +447,7 @@ def synthandreturn(text):
         raise gr.Error(f'You did not enter any text')
     # Get two random models
     mdl1, mdl2 = random.sample(list(AVAILABLE_MODELS.keys()), 2)
+    print("Using models:", mdl1, mdl2)
     return (
         text,
         "Synthesize",
