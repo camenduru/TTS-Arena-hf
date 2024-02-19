@@ -26,7 +26,6 @@ AVAILABLE_MODELS = {
 
 SPACE_ID = os.getenv('HF_ID')
 MAX_SAMPLE_TXT_LENGTH = 150
-MIN_SAMPLE_TXT_LENGTH = 10
 DB_DATASET_ID = os.getenv('DATASET_ID')
 DB_NAME = "database.db"
 
@@ -195,7 +194,7 @@ Please assume all generated audio clips are not licensed to be redistributed and
 LDESC = """
 ## Leaderboard
 
-A list of the models, based on how highly they are ranked! **Please note that if the leaderboard is empty, it means we have not collected enough results yet.**
+A list of the models, based on how highly they are ranked!
 """.strip()
 
 
@@ -384,7 +383,7 @@ def reload(chosenmodel1=None, chosenmodel2=None, userid=None, chose_a=False, cho
     else:
         out.append(gr.update(value=f'{chosenmodel1}', interactive=False, visible=True))
         out.append(gr.update(value=f'Your vote: {chosenmodel2}', interactive=False, visible=True))
-    # out.append(gr.update(visible=True))
+    out.append(gr.update(visible=True))
     return out
 
 with gr.Blocks() as leaderboard:
@@ -445,16 +444,13 @@ def synthandreturn(text):
     text = text.strip()
     if len(text) > MAX_SAMPLE_TXT_LENGTH:
         raise gr.Error(f'You exceeded the limit of {MAX_SAMPLE_TXT_LENGTH} characters')
-    if len(text) < MIN_SAMPLE_TXT_LENGTH:
-        raise gr.Error(f'You did not enter enough text!')
     if not text:
         raise gr.Error(f'You did not enter any text')
     # Get two random models
     mdl1, mdl2 = random.sample(list(AVAILABLE_MODELS.keys()), 2)
     return (
         text,
-        # "Synthesize",
-        "Next Round",
+        "Synthesize",
         gr.update(visible=True), # r2
         mdl1, # model1
         mdl2, # model2
@@ -474,7 +470,7 @@ def synthandreturn(text):
         gr.update(visible=True, interactive=True),
         gr.update(visible=False),
         gr.update(visible=False),
-        # gr.update(visible=False), #nxt round btn
+        gr.update(visible=False), #nxt round btn
     )
 def clear_stuff():
     return "", "Synthesize", gr.update(visible=False), '', '', gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=False)
@@ -497,14 +493,14 @@ with gr.Blocks() as vote:
                 aud2 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
                 bbetter = gr.Button("B is better", variant='primary')
                 prevmodel2 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model B", text_align="center", lines=1, max_lines=1, visible=False)
-    # nxtroundbtn = gr.Button('Next Round', visible=False)
+    nxtroundbtn = gr.Button('Next Round', visible=False)
     # outputs = [text, btn, r2, model1, model2, prevmodel1, aud1, prevmodel2, aud2, abetter, bbetter]
-    outputs = [text, btn, r2, model1, model2, aud1, aud2, abetter, bbetter, prevmodel1, prevmodel2]
+    outputs = [text, btn, r2, model1, model2, aud1, aud2, abetter, bbetter, prevmodel1, prevmodel2, nxtroundbtn]
     btn.click(synthandreturn, inputs=[text], outputs=outputs)
-    # nxtroundbtn.click(clear_stuff, outputs=outputs)
+    nxtroundbtn.click(clear_stuff, outputs=outputs)
 
     # nxt_outputs = [prevmodel1, prevmodel2, abetter, bbetter]
-    nxt_outputs = [abetter, bbetter, prevmodel1, prevmodel2]
+    nxt_outputs = [abetter, bbetter, prevmodel1, prevmodel2, nxtroundbtn]
     abetter.click(a_is_better, outputs=nxt_outputs, inputs=[model1, model2, useridstate])
     bbetter.click(b_is_better, outputs=nxt_outputs, inputs=[model1, model2, useridstate])
     # skipbtn.click(b_is_better, outputs=outputs, inputs=[model1, model2, useridstate])
