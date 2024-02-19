@@ -445,7 +445,7 @@ def synthandreturn(text):
     text = text.strip()
     if len(text) > MAX_SAMPLE_TXT_LENGTH:
         raise gr.Error(f'You exceeded the limit of {MAX_SAMPLE_TXT_LENGTH} characters')
-    if len(text) < MAX_SAMPLE_TXT_LENGTH:
+    if len(text) < MIN_SAMPLE_TXT_LENGTH:
         raise gr.Error(f'You did not enter enough text!')
     if not text:
         raise gr.Error(f'You did not enter any text')
