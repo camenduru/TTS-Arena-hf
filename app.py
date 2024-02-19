@@ -69,7 +69,7 @@ def get_db():
 def get_leaderboard():
     conn = get_db()
     cursor = conn.cursor()
-    cursor.execute('SELECT name, upvote, downvote FROM model WHERE (upvote + downvote) > 5')
+    cursor.execute('SELECT name, upvote, downvote FROM model WHERE (upvote + downvote) > 750')
     data = cursor.fetchall()
     df = pd.DataFrame(data, columns=['name', 'upvote', 'downvote'])
     df['license'] = df['name'].map(model_licenses).fillna("Unknown")
@@ -455,17 +455,17 @@ def synthandreturn(text):
         mdl1, # model1
         mdl2, # model2
         # 'Vote to reveal model A', # prevmodel1
-        router.predict(
+        gr.update(visible=True, value=router.predict(
             text,
             AVAILABLE_MODELS[mdl1],
             api_name="/synthesize"
-        ), # aud1
+        )), # aud1
         # 'Vote to reveal model B', # prevmodel2
-        router.predict(
+        gr.update(visible=True, value=router.predict(
             text,
             AVAILABLE_MODELS[mdl2],
             api_name="/synthesize"
-        ), # aud2
+        )), # aud2
         gr.update(visible=True, interactive=True),
         gr.update(visible=True, interactive=True),
         gr.update(visible=False),
