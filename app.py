@@ -489,8 +489,8 @@ with gr.Blocks() as vote:
     gr.Markdown(INSTR)
     with gr.Group():
         with gr.Row():
-            text = gr.Textbox(label="Enter text to synthesize", info="By entering text, you certify that it is either in the public domain or, if you are its author, you dedicate it into the public domain. You also must agree to the privacy statement in the About page.")
-            randomt = gr.Button('🎲')
+            text = gr.Textbox(container=False, show_label=False, placeholder="Enter text to synthesize", scale=9999999)
+            randomt = gr.Button('🎲', scale=1)
         randomt.click(randomsent, outputs=[text, randomt])
         btn = gr.Button("Synthesize", variant='primary')
     model1 = gr.Textbox(interactive=False, lines=1, max_lines=1, visible=False)
