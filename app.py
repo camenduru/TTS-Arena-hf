@@ -67,6 +67,12 @@ def create_db_if_missing():
             vote INTEGER
         );
     ''')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS spokentext (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            spokentext TEXT
+        );
+    ''')
 def get_db():
     return sqlite3.connect(DB_PATH)
 
@@ -319,7 +325,13 @@ def upvote_model(model, uname):
     with scheduler.lock:
         conn.commit()
     cursor.close()
-
+def log_text(text):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('INSERT INTO spokentext (spokentext) VALUES (?)', (text,))
+    with scheduler.lock:
+        conn.commit()
+    cursor.close()
 def downvote_model(model, uname):
     conn = get_db()
     cursor = conn.cursor()
@@ -456,6 +468,8 @@ def synthandreturn(text):
         raise gr.Error(f'You did not enter any text')
     # Get two random models
     mdl1, mdl2 = random.sample(list(AVAILABLE_MODELS.keys()), 2)
+    log_text(text)
+    print("[debug] Using", mdl1, mdl2)
     return (
         text,
         "Synthesize",
@@ -506,7 +520,7 @@ with gr.Blocks() as vote:
                 aud2 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
                 bbetter = gr.Button("B is better", variant='primary')
                 prevmodel2 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model B", text_align="center", lines=1, max_lines=1, visible=False)
-    nxtroundbtn = gr.Button('Next Round', visible=False)
+    nxtroundbtn = gr.Button('Next round', visible=False)
     # outputs = [text, btn, r2, model1, model2, prevmodel1, aud1, prevmodel2, aud2, abetter, bbetter]
     outputs = [text, btn, r2, model1, model2, aud1, aud2, abetter, bbetter, prevmodel1, prevmodel2, nxtroundbtn]
     btn.click(synthandreturn, inputs=[text], outputs=outputs)
