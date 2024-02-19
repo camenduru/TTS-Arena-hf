@@ -204,7 +204,7 @@ Please assume all generated audio clips are not licensed to be redistributed and
 LDESC = """
 ## Leaderboard
 
-A list of the models, based on how highly they are ranked!
+A list of the models, based on how highly they are ranked! **If there are no results, please check back in a couple days for more votes to be submitted.**
 """.strip()
 
 
@@ -504,7 +504,7 @@ with gr.Blocks() as vote:
     with gr.Group():
         with gr.Row():
             text = gr.Textbox(container=False, show_label=False, placeholder="Enter text to synthesize", lines=1, max_lines=1, scale=9999999)
-            randomt = gr.Button('🎲', scale=1, variant='tool')
+            randomt = gr.Button('🎲', scale=0, variant='tool')
         randomt.click(randomsent, outputs=[text, randomt])
         btn = gr.Button("Synthesize", variant='primary')
     model1 = gr.Textbox(interactive=False, lines=1, max_lines=1, visible=False)
