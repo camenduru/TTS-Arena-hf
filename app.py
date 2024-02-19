@@ -25,6 +25,7 @@ AVAILABLE_MODELS = {
     'OpenVoice': 'openvoice',
     'Pheme': 'pheme',
     'MetaVoice': 'metavoice',
+    'OpenAI TTS': 'openai',
 }
 
 SPACE_ID = os.getenv('HF_ID')
@@ -503,7 +504,7 @@ with gr.Blocks() as vote:
     gr.Markdown(INSTR)
     with gr.Group():
         with gr.Row():
-            text = gr.Textbox(container=False, show_label=False, placeholder="Enter text to synthesize", lines=1, max_lines=1, scale=9999999)
+            text = gr.Textbox(container=False, show_label=False, placeholder="Enter text to synthesize", lines=1, max_lines=1, scale=9999999, min_width=0)
             randomt = gr.Button('🎲', scale=0, min_width=0)
         randomt.click(randomsent, outputs=[text, randomt])
         btn = gr.Button("Synthesize", variant='primary')
