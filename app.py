@@ -13,10 +13,11 @@ from huggingface_hub import CommitScheduler, delete_file, hf_hub_download
 from gradio_client import Client
 from detoxify import Detoxify
 toxicity = Detoxify('original')
+with open('harvard_sentences.txt') as f:
+    sents = f.read().strip().splitlines()
 ####################################
 # Constants
 ####################################
-
 AVAILABLE_MODELS = {
     'XTTS': 'xttsv2',
     'WhisperSpeech': 'whisperspeech',
@@ -478,13 +479,18 @@ def synthandreturn(text):
         gr.update(visible=False),
         gr.update(visible=False), #nxt round btn
     )
+def randomsent():
+    return random.choice(sents), '🎲'
 def clear_stuff():
     return "", "Synthesize", gr.update(visible=False), '', '', gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=False)
 with gr.Blocks() as vote:
     useridstate = gr.State()
     gr.Markdown(INSTR)
     with gr.Group():
-        text = gr.Textbox(label="Enter text to synthesize", info="By entering text, you certify that it is either in the public domain or, if you are its author, you dedicate it into the public domain. You also must agree to the privacy statement in the About page.")
+        with gr.Row():
+            text = gr.Textbox(label="Enter text to synthesize", info="By entering text, you certify that it is either in the public domain or, if you are its author, you dedicate it into the public domain. You also must agree to the privacy statement in the About page.")
+            randomt = gr.Button('🎲')
+        randomt.click(randomsent, outputs=[text, randomt])
         btn = gr.Button("Synthesize", variant='primary')
     model1 = gr.Textbox(interactive=False, lines=1, max_lines=1, visible=False)
     model2 = gr.Textbox(interactive=False, lines=1, max_lines=1, visible=False)
