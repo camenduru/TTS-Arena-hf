@@ -11,7 +11,8 @@ import uuid
 from pathlib import Path
 from huggingface_hub import CommitScheduler, delete_file, hf_hub_download
 from gradio_client import Client
-
+from detoxify import Detoxify
+toxicity = Detoxify('original')
 ####################################
 # Constants
 ####################################
@@ -26,6 +27,7 @@ AVAILABLE_MODELS = {
 
 SPACE_ID = os.getenv('HF_ID')
 MAX_SAMPLE_TXT_LENGTH = 150
+MIN_SAMPLE_TXT_LENGTH = 10
 DB_DATASET_ID = os.getenv('DATASET_ID')
 DB_NAME = "database.db"
 
@@ -444,6 +446,10 @@ def synthandreturn(text):
     text = text.strip()
     if len(text) > MAX_SAMPLE_TXT_LENGTH:
         raise gr.Error(f'You exceeded the limit of {MAX_SAMPLE_TXT_LENGTH} characters')
+    if len(text) < MIN_SAMPLE_TXT_LENGTH:
+        raise gr.Error(f'Not enough text')
+    if (toxicity.predict(text)['toxicity'] > 0.5):
+        raise gr.Error('Your text failed the toxicity test!')
     if not text:
         raise gr.Error(f'You did not enter any text')
     # Get two random models
