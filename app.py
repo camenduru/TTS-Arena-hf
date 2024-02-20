@@ -137,7 +137,7 @@ INSTR = """
 * Listen to the two audio clips.
 * Vote on which synthesized audio sounds more natural to you. **Did the model hallucinate?**
 
-**When you're ready to begin, enter text!** The model names will be revealed once you vote.
+**When you're ready to begin, enter text.** Model names will be revealed once you vote.
 """.strip()
 request = ''
 if SPACE_ID:
@@ -482,7 +482,7 @@ def synthandreturn(text):
     if len(text) < MIN_SAMPLE_TXT_LENGTH:
         raise gr.Error(f'Not enough text')
     if (toxicity.predict(text)['toxicity'] > 0.5):
-        raise gr.Error('Your text failed the toxicity test!')
+        raise gr.Error('Your text failed the toxicity test')
     if not text:
         raise gr.Error(f'You did not enter any text')
     # Get two random models
