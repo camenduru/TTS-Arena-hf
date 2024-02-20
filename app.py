@@ -474,7 +474,8 @@ with gr.Blocks() as leaderboard:
 # 2x speedup (hopefully)
 ############
 async def predict_async(text, model, api_name):
-    return await router.predict(text, AVAILABLE_MODELS[model], api_name=api_name)
+    print('Predicting using', model)
+    return router.predict(text, AVAILABLE_MODELS[model], api_name=api_name)
 
 async def predict_both_concurrently(text, mdl1, mdl2):
     task1 = predict_async(text, mdl1, "/synthesize")
