@@ -288,6 +288,7 @@ model_links = {
 #     choice2 = get_random_split(choice1)
 #     return (choice1, choice2)
 def model_license(name):
+    print(name)
     if name in model_licenses.keys():
         return model_licenses[name]
     return 'Unknown'
