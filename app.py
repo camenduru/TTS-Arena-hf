@@ -289,6 +289,7 @@ model_links = {
 #     return (choice1, choice2)
 def model_license(name):
     for k, v in model_names.items():
+        print(v)
         if v == name:
             print(v, k)
             return model_licenses[k]
