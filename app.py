@@ -553,7 +553,7 @@ with gr.Blocks(theme=theme, css="footer {visibility: hidden}textbox{resize:none}
     if CITATION_TEXT:
         with gr.Row():
             with gr.Accordion("Citation", open=False):
-                gr.Markdown(f"If you use this data in your publication, please cite us!\n\nCopy the BibTeX citation to cite this source:\n\n```bibtext\n{CITATION_TEXT}\n```")
+                gr.Markdown(f"If you use this data in your publication, please cite us!\n\nCopy the BibTeX citation to cite this source:\n\n```bibtext\n{CITATION_TEXT}\n```\n\nPlease remember that all generated audio clips should be assumed unsuitable for redistribution or commercial use.")
 
 
 demo.queue(api_open=False).launch(show_api=False)
