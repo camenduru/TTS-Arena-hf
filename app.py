@@ -473,35 +473,6 @@ with gr.Blocks() as leaderboard:
 ############
 # 2x speedup (hopefully)
 ############
-def predict_and_update(router, text, model, gr_update, api_name):
-    prediction = router.predict(text, AVAILABLE_MODELS[model], api_name)
-    gr_update(visible=True, value=prediction)
-    return prediction
-
-def predict_and_update_both(router, text, mdl1, mdl2, gr_update1, gr_update2):
-    result1, result2 = [None, None]  # Placeholder for storing predictions
-
-    def thread_func1():
-        nonlocal result1
-        result1 = predict_and_update(router, text, mdl1, gr_update1, "/synthesize")
-
-    def thread_func2():
-        nonlocal result2
-        result2 = predict_and_update(router, text, mdl2, gr_update2, "/synthesize")
-
-    thread1 = threading.Thread(target=thread_func1)
-    thread2 = threading.Thread(target=thread_func2)
-
-    thread1.start()
-    thread2.start()
-
-    thread1.join()  # Wait for thread1 to finish
-    thread2.join()  # Wait for thread2 to finish
-
-    return result1, result2
-############
-# 2x speedup (hopefully)
-############
 
 def synthandreturn(text):
     text = text.strip()
@@ -517,15 +488,22 @@ def synthandreturn(text):
     mdl1, mdl2 = random.sample(list(AVAILABLE_MODELS.keys()), 2)
     log_text(text)
     print("[debug] Using", mdl1, mdl2)
-    aud1, aud2 = predict_and_update_both(router, text, mdl1, mdl2, gr.update, gr.update)
+    def predict_and_update_result(text, model, gr_update):
+        result = router.predict(text, AVAILABLE_MODELS[model], api_name="/synthesize")
+    thread1 = threading.Thread(target=predict_and_update_result, args=(text, mdl1, gr.update))
+    thread2 = threading.Thread(target=predict_and_update_result, args=(text, mdl2, gr.update))
+    thread1.start()
+    thread2.start()
+    thread1.join()
+    thread2.join()
     return (
         text,
         "Synthesize",
         gr.update(visible=True), # r2
         mdl1, # model1
         mdl2, # model2
-        aud1, # aud1
-        aud2, # aud2
+        gr.update(visible=True, value=thread1.result), # aud1
+        gr.update(visible=True, value=thread2.result), # aud2
         gr.update(visible=True, interactive=True),
         gr.update(visible=True, interactive=True),
         gr.update(visible=False),
