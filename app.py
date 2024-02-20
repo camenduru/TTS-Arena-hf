@@ -15,7 +15,7 @@ with open('harvard_sentences.txt') as f:
 # Constants
 ####################################
 AVAILABLE_MODELS = {
-    'XTTS': 'xttsv2',
+    'XTTS': 'xtts',
     'WhisperSpeech': 'whisperspeech',
     'ElevenLabs': 'eleven',
     'OpenVoice': 'openvoice',
@@ -472,11 +472,11 @@ with gr.Blocks() as leaderboard:
 
 #     vote.load(reload, outputs=[aud1, aud2, model1, model2])
 def doloudnorm(path):
-    data, rate = sf.read(path, format='wav')
+    data, rate = sf.read(path)
     meter = pyln.Meter(rate)
     loudness = meter.integrated_loudness(data)
     loudness_normalized_audio = pyln.normalize.loudness(data, loudness, -12.0)
-    sf.write(path, loudness_normalized_audio, rate, format='wav')
+    sf.write(path, loudness_normalized_audio, rate)
 ############
 # 2x speedup (hopefully)
 ############
@@ -496,9 +496,11 @@ def synthandreturn(text):
     log_text(text)
     print("[debug] Using", mdl1, mdl2)
     def predict_and_update_result(text, model, result_storage):
-        print(model, AVAILABLE_MODELS[model])
         result = router.predict(text, AVAILABLE_MODELS[model], api_name="/synthesize")
-        doloudnorm(result)
+        try:
+            doloudnorm(result)
+        except:
+            pass
         result_storage[model] = result
     results = {}
     thread1 = threading.Thread(target=predict_and_update_result, args=(text, mdl1, results))
