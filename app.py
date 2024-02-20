@@ -476,10 +476,21 @@ with gr.Blocks() as leaderboard:
 def predict_and_update(router, text, model, gr_update, api_name):
     prediction = router.predict(text, AVAILABLE_MODELS[model], api_name)
     gr_update(visible=True, value=prediction)
+    return prediction
 
 def predict_and_update_both(router, text, mdl1, mdl2, gr_update1, gr_update2):
-    thread1 = threading.Thread(target=predict_and_update, args=(router, text, mdl1, gr_update1, "/synthesize"))
-    thread2 = threading.Thread(target=predict_and_update, args=(router, text, mdl2, gr_update2, "/synthesize"))
+    result1, result2 = [None, None]  # Placeholder for storing predictions
+
+    def thread_func1():
+        nonlocal result1
+        result1 = predict_and_update(router, text, mdl1, gr_update1, "/synthesize")
+
+    def thread_func2():
+        nonlocal result2
+        result2 = predict_and_update(router, text, mdl2, gr_update2, "/synthesize")
+
+    thread1 = threading.Thread(target=thread_func1)
+    thread2 = threading.Thread(target=thread_func2)
 
     thread1.start()
     thread2.start()
@@ -487,8 +498,7 @@ def predict_and_update_both(router, text, mdl1, mdl2, gr_update1, gr_update2):
     thread1.join()  # Wait for thread1 to finish
     thread2.join()  # Wait for thread2 to finish
 
-    return thread1.predicted_value, thread2.predicted_value
-
+    return result1, result2
 ############
 # 2x speedup (hopefully)
 ############
