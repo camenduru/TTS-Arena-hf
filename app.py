@@ -19,7 +19,7 @@ AVAILABLE_MODELS = {
     'OpenVoice': 'openvoice',
     'Pheme': 'pheme',
     'MetaVoice': 'metavoice',
-    'OpenAI TTS': 'openai',
+    'OpenAI': 'openai',
 }
 
 SPACE_ID = os.getenv('HF_ID')
