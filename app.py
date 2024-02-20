@@ -77,37 +77,6 @@ def create_db_if_missing():
 def get_db():
     return sqlite3.connect(DB_PATH)
 
-def get_leaderboard(reveal_prelim: bool):
-    conn = get_db()
-    cursor = conn.cursor()
-    sql = 'SELECT name, upvote, downvote FROM model'
-    if not reveal_prelim: sql += ' WHERE EXISTS (SELECT 1 FROM model WHERE (upvote + downvote) > 750)'
-    cursor.execute(sql)
-    data = cursor.fetchall()
-    df = pd.DataFrame(data, columns=['name', 'upvote', 'downvote'])
-    df['license'] = df['name'].map(model_licenses).fillna("Unknown")
-    df['name'] = df['name'].replace(model_names)
-    df['votes'] = df['upvote'] + df['downvote']
-    # df['score'] = round((df['upvote'] / df['votes']) * 100, 2) # Percentage score
-
-    ## ELO SCORE
-    df['score'] = 1200
-    for i in range(len(df)):
-        for j in range(len(df)):
-            if i != j:
-                expected_a = 1 / (1 + 10 ** ((df['score'][j] - df['score'][i]) / 400))
-                expected_b = 1 / (1 + 10 ** ((df['score'][i] - df['score'][j]) / 400))
-                actual_a = df['upvote'][i] / df['votes'][i]
-                actual_b = df['upvote'][j] / df['votes'][j]
-                df.at[i, 'score'] += 32 * (actual_a - expected_a)
-                df.at[j, 'score'] += 32 * (actual_b - expected_b)
-    df['score'] = round(df['score'])
-    ## ELO SCORE
-    df = df.sort_values(by='score', ascending=False)
-    df['order'] = ['#' + str(i + 1) for i in range(len(df))]
-    # df = df[['name', 'score', 'upvote', 'votes']]
-    df = df[['order', 'name', 'score', 'license', 'votes']]
-    return df
 
 
 ####################################
@@ -318,6 +287,41 @@ model_links = {
 #     choice1 = get_random_split()
 #     choice2 = get_random_split(choice1)
 #     return (choice1, choice2)
+def model_license(name):
+    if name in model_licenses.keys():
+        return model_licenses[name]
+    return 'Unknown'
+def get_leaderboard(reveal_prelim: bool):
+    conn = get_db()
+    cursor = conn.cursor()
+    sql = 'SELECT name, upvote, downvote FROM model'
+    if not reveal_prelim: sql += ' WHERE EXISTS (SELECT 1 FROM model WHERE (upvote + downvote) > 750)'
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    df = pd.DataFrame(data, columns=['name', 'upvote', 'downvote'])
+    df['license'] = df['name'].map(model_license).fillna("Unknown")
+    df['name'] = df['name'].replace(model_names)
+    df['votes'] = df['upvote'] + df['downvote']
+    # df['score'] = round((df['upvote'] / df['votes']) * 100, 2) # Percentage score
+
+    ## ELO SCORE
+    df['score'] = 1200
+    for i in range(len(df)):
+        for j in range(len(df)):
+            if i != j:
+                expected_a = 1 / (1 + 10 ** ((df['score'][j] - df['score'][i]) / 400))
+                expected_b = 1 / (1 + 10 ** ((df['score'][i] - df['score'][j]) / 400))
+                actual_a = df['upvote'][i] / df['votes'][i]
+                actual_b = df['upvote'][j] / df['votes'][j]
+                df.at[i, 'score'] += 32 * (actual_a - expected_a)
+                df.at[j, 'score'] += 32 * (actual_b - expected_b)
+    df['score'] = round(df['score'])
+    ## ELO SCORE
+    df = df.sort_values(by='score', ascending=False)
+    df['order'] = ['#' + str(i + 1) for i in range(len(df))]
+    # df = df[['name', 'score', 'upvote', 'votes']]
+    df = df[['order', 'name', 'score', 'license', 'votes']]
+    return df
 def mkuuid(uid):
     if not uid:
         uid = uuid.uuid4()
