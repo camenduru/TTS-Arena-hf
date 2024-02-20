@@ -289,8 +289,9 @@ model_links = {
 #     return (choice1, choice2)
 def model_license(name):
     print(name)
-    if name in model_licenses.keys():
-        return model_licenses[name]
+    for k,v in model_licenses.items():
+        if v == name:
+            return model_licenses[k]
     return 'Unknown'
 def get_leaderboard(reveal_prelim: bool):
     conn = get_db()
