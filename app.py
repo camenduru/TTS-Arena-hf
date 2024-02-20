@@ -164,7 +164,7 @@ INSTR = """
 
 * Enter text to synthesize.
 * Listen to the two audio clips.
-* Vote on which synthesized audio sounds more natural to you.
+* Vote on which synthesized audio sounds more natural to you. **Did the model hallucinate?**
 
 **When you're ready to begin, enter text!** The model names will be revealed once you vote.
 """.strip()
