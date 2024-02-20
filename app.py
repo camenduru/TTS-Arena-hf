@@ -255,6 +255,7 @@ model_licenses = {
     'speecht5': 'MIT',
     'metavoice': 'Apache 2.0',
     'elevenlabs': 'Proprietary',
+    'whisperspeech': 'MIT',
 }
 model_links = {
     'styletts2': 'https://github.com/yl4579/StyleTTS2',
@@ -291,7 +292,8 @@ def model_license(name):
     print(name)
     for k, v in AVAILABLE_MODELS.items():
         if k == name:
-            return model_licenses[v]
+            if v in model_licenses:
+                return model_licenses[v]
     print('---')
     return 'Unknown'
 def get_leaderboard(reveal_prelim: bool):
