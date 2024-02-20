@@ -5,6 +5,8 @@ import threading, time, uuid, sqlite3, shutil, os, random, asyncio, threading
 from pathlib import Path
 from huggingface_hub import CommitScheduler, delete_file, hf_hub_download
 from gradio_client import Client
+import pyloudnorm as pyln
+import soundfile as sf
 from detoxify import Detoxify
 toxicity = Detoxify('original')
 with open('harvard_sentences.txt') as f:
@@ -19,7 +21,7 @@ AVAILABLE_MODELS = {
     'OpenVoice': 'openvoice',
     'Pheme': 'pheme',
     'MetaVoice': 'metavoice',
-    'OpenAI': 'openai',
+    'OpenAI TTS': 'openai',
 }
 
 SPACE_ID = os.getenv('HF_ID')
@@ -469,7 +471,12 @@ with gr.Blocks() as leaderboard:
 #     bothgood.click(both_good, outputs=outputs, inputs=[model1, model2, useridstate])
 
 #     vote.load(reload, outputs=[aud1, aud2, model1, model2])
-
+def doloudnorm(path):
+    data, rate = sf.read(path)
+    meter = pyln.Meter(rate)
+    loudness = meter.integrated_loudness(data)
+    loudness_normalized_audio = pyln.normalize.loudness(data, loudness, -12.0)
+    sf.write(path, loudness_normalized_audio, rate)
 ############
 # 2x speedup (hopefully)
 ############
@@ -490,6 +497,7 @@ def synthandreturn(text):
     print("[debug] Using", mdl1, mdl2)
     def predict_and_update_result(text, model, result_storage):
         result = router.predict(text, AVAILABLE_MODELS[model], api_name="/synthesize")
+        doloudnorm(result)
         result_storage[model] = result
     results = {}
     thread1 = threading.Thread(target=predict_and_update_result, args=(text, mdl1, results))
