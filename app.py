@@ -15,13 +15,13 @@ with open('harvard_sentences.txt') as f:
 # Constants
 ####################################
 AVAILABLE_MODELS = {
-    'XTTS': 'xtts',
+    'XTTS': 'xttsv2',
     'WhisperSpeech': 'whisperspeech',
     'ElevenLabs': 'eleven',
     'OpenVoice': 'openvoice',
     'Pheme': 'pheme',
     'MetaVoice': 'metavoice',
-    'OpenAI TTS': 'openai',
+    'OpenAI': 'openai',
 }
 
 SPACE_ID = os.getenv('HF_ID')
@@ -497,10 +497,7 @@ def synthandreturn(text):
     print("[debug] Using", mdl1, mdl2)
     def predict_and_update_result(text, model, result_storage):
         result = router.predict(text, AVAILABLE_MODELS[model], api_name="/synthesize")
-        try:
-            doloudnorm(result)
-        except:
-            pass
+        doloudnorm(result)
         result_storage[model] = result
     results = {}
     thread1 = threading.Thread(target=predict_and_update_result, args=(text, mdl1, results))
