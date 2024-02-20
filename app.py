@@ -472,11 +472,11 @@ with gr.Blocks() as leaderboard:
 
 #     vote.load(reload, outputs=[aud1, aud2, model1, model2])
 def doloudnorm(path):
-    data, rate = sf.read(path)
+    data, rate = sf.read(path, format='wav')
     meter = pyln.Meter(rate)
     loudness = meter.integrated_loudness(data)
     loudness_normalized_audio = pyln.normalize.loudness(data, loudness, -12.0)
-    sf.write(path, loudness_normalized_audio, rate)
+    sf.write(path, loudness_normalized_audio, rate, format='wav')
 ############
 # 2x speedup (hopefully)
 ############
