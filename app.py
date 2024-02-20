@@ -288,11 +288,12 @@ model_links = {
 #     choice2 = get_random_split(choice1)
 #     return (choice1, choice2)
 def model_license(name):
+    print(name)
     for k, v in AVAILABLE_MODELS.items():
-        print(v)
         if v == name:
             print(v, k)
             return model_licenses[k]
+    print('---')
     return 'Unknown'
 def get_leaderboard(reveal_prelim: bool):
     conn = get_db()
