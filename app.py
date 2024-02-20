@@ -290,9 +290,8 @@ model_links = {
 def model_license(name):
     print(name)
     for k, v in AVAILABLE_MODELS.items():
-        if v == name:
-            print(v, k)
-            return model_licenses[k]
+        if k == name:
+            return model_licenses[v]
     print('---')
     return 'Unknown'
 def get_leaderboard(reveal_prelim: bool):
