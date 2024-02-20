@@ -77,10 +77,12 @@ def create_db_if_missing():
 def get_db():
     return sqlite3.connect(DB_PATH)
 
-def get_leaderboard():
+def get_leaderboard(reveal_prelim: bool):
     conn = get_db()
     cursor = conn.cursor()
-    cursor.execute('SELECT name, upvote, downvote FROM model WHERE (upvote + downvote) > 750')
+    sql = 'SELECT name, upvote, downvote FROM model'
+    if not reveal_prelim: sql += 'WHERE EXISTS (SELECT 1 FROM model WHERE (upvote + downvote) > 750)'
+    cursor.execute(sql)
     data = cursor.fetchall()
     df = pd.DataFrame(data, columns=['name', 'upvote', 'downvote'])
     df['license'] = df['name'].map(model_licenses).fillna("Unknown")
@@ -205,7 +207,11 @@ Please assume all generated audio clips are not licensed to be redistributed and
 LDESC = """
 ## Leaderboard
 
-A list of the models, based on how highly they are ranked! **If there are no results, please check back in a couple days for more votes to be submitted.**
+A list of the models, based on how highly they are ranked!
+
+### **Important**: To keep a fair impression of results, the leaderboard will be **hidden** by default, until a large number of human ratings have been recorded.
+
+Tick the `Reveal Preliminary Results` checkbox below if you wish to see the raw data.
 """.strip()
 
 
@@ -407,9 +413,12 @@ with gr.Blocks() as leaderboard:
     gr.Markdown(LDESC)
     # df = gr.Dataframe(interactive=False, value=get_leaderboard())
     df = gr.Dataframe(interactive=False, min_width=0, wrap=True, column_widths=[30, 200, 50, 75, 50])
-    reloadbtn = gr.Button("Refresh")
-    leaderboard.load(get_leaderboard, outputs=[df])
-    reloadbtn.click(get_leaderboard, outputs=[df])
+    with gr.Row():
+        reveal_prelim = gr.Checkbox(label="Reveal Preliminary Results", info="Show all models, including models with very few human ratings.", scale=0)
+        reloadbtn = gr.Button("Refresh")
+    reveal_prelim.input(get_leaderboard, inputs=[reveal_prelim], outputs=[df])
+    leaderboard.load(get_leaderboard, inputs=[reveal_prelim], outputs=[df])
+    reloadbtn.click(get_leaderboard, inputs=[reveal_prelim], outputs=[df])
     gr.Markdown("DISCLAIMER: The licenses listed may not be accurate or up to date, you are responsible for checking the licenses before using the models. Also note that some models may have additional usage restrictions.")
 
 # with gr.Blocks() as vote:
