@@ -554,7 +554,7 @@ with gr.Blocks() as vote:
     with gr.Group():
         with gr.Row():
             text = gr.Textbox(container=False, show_label=False, placeholder="Enter text to synthesize", lines=1, max_lines=1, scale=9999999, min_width=0)
-            randomt = gr.Button('🎲', scale=0, min_width=0)
+            randomt = gr.Button('🎲', scale=0, min_width=0, variant='tool')
         randomt.click(randomsent, outputs=[text, randomt])
         btn = gr.Button("Synthesize", variant='primary')
     model1 = gr.Textbox(interactive=False, lines=1, max_lines=1, visible=False)
