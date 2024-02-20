@@ -1,13 +1,7 @@
 import gradio as gr
-import random
-import os
-import shutil
 import pandas as pd
-import sqlite3
 from datasets import load_dataset
-import threading
-import time
-import uuid
+import threading, time, uuid, sqlite3, shutil, os, random, asyncio
 from pathlib import Path
 from huggingface_hub import CommitScheduler, delete_file, hf_hub_download
 from gradio_client import Client
@@ -475,6 +469,39 @@ with gr.Blocks() as leaderboard:
 #     bothgood.click(both_good, outputs=outputs, inputs=[model1, model2, useridstate])
 
 #     vote.load(reload, outputs=[aud1, aud2, model1, model2])
+
+############
+# 2x speedup (hopefully)
+############
+async def predict_async(text, model, api_name):
+    return await router.predict(text, AVAILABLE_MODELS[model], api_name=api_name)
+
+async def predict_both_concurrently(text, mdl1, mdl2):
+    task1 = predict_async(text, mdl1, "/synthesize")
+    task2 = predict_async(text, mdl2, "/synthesize")
+    results = await asyncio.gather(task1, task2)
+    return results
+
+############
+# 2x speedup (hopefully)
+############
+
+async def process_predictions(text, mdl1, mdl2):
+    aud1, aud2 = await predict_both_concurrently(text, mdl1, mdl2)
+    return (
+        text,
+        "Synthesize",
+        gr.update(visible=True),
+        mdl1,
+        mdl2,
+        gr.update(visible=True, value=aud1),
+        gr.update(visible=True, value=aud2),
+        gr.update(visible=True, interactive=True),
+        gr.update(visible=True, interactive=True),
+        gr.update(visible=False),
+        gr.update(visible=False),
+        gr.update(visible=False),
+    )
 def synthandreturn(text):
     text = text.strip()
     if len(text) > MAX_SAMPLE_TXT_LENGTH:
@@ -489,30 +516,31 @@ def synthandreturn(text):
     mdl1, mdl2 = random.sample(list(AVAILABLE_MODELS.keys()), 2)
     log_text(text)
     print("[debug] Using", mdl1, mdl2)
-    return (
-        text,
-        "Synthesize",
-        gr.update(visible=True), # r2
-        mdl1, # model1
-        mdl2, # model2
-        # 'Vote to reveal model A', # prevmodel1
-        gr.update(visible=True, value=router.predict(
-            text,
-            AVAILABLE_MODELS[mdl1],
-            api_name="/synthesize"
-        )), # aud1
-        # 'Vote to reveal model B', # prevmodel2
-        gr.update(visible=True, value=router.predict(
-            text,
-            AVAILABLE_MODELS[mdl2],
-            api_name="/synthesize"
-        )), # aud2
-        gr.update(visible=True, interactive=True),
-        gr.update(visible=True, interactive=True),
-        gr.update(visible=False),
-        gr.update(visible=False),
-        gr.update(visible=False), #nxt round btn
-    )
+    return asyncio.run(process_predictions(text, mdl1, mdl2))
+    # return (
+    #     text,
+    #     "Synthesize",
+    #     gr.update(visible=True), # r2
+    #     mdl1, # model1
+    #     mdl2, # model2
+    #     # 'Vote to reveal model A', # prevmodel1
+    #     gr.update(visible=True, value=router.predict(
+    #         text,
+    #         AVAILABLE_MODELS[mdl1],
+    #         api_name="/synthesize"
+    #     )), # aud1
+    #     # 'Vote to reveal model B', # prevmodel2
+    #     gr.update(visible=True, value=router.predict(
+    #         text,
+    #         AVAILABLE_MODELS[mdl2],
+    #         api_name="/synthesize"
+    #     )), # aud2
+    #     gr.update(visible=True, interactive=True),
+    #     gr.update(visible=True, interactive=True),
+    #     gr.update(visible=False),
+    #     gr.update(visible=False),
+    #     gr.update(visible=False), #nxt round btn
+    # )
 def randomsent():
     return random.choice(sents), '🎲'
 def clear_stuff():
