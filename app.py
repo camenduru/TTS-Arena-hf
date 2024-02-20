@@ -488,10 +488,12 @@ def synthandreturn(text):
     mdl1, mdl2 = random.sample(list(AVAILABLE_MODELS.keys()), 2)
     log_text(text)
     print("[debug] Using", mdl1, mdl2)
-    def predict_and_update_result(text, model, gr_update):
+    def predict_and_update_result(text, model, result_storage):
         result = router.predict(text, AVAILABLE_MODELS[model], api_name="/synthesize")
-    thread1 = threading.Thread(target=predict_and_update_result, args=(text, mdl1, gr.update))
-    thread2 = threading.Thread(target=predict_and_update_result, args=(text, mdl2, gr.update))
+        result_storage[model] = result
+    results = {}
+    thread1 = threading.Thread(target=predict_and_update_result, args=(text, mdl1, results))
+    thread2 = threading.Thread(target=predict_and_update_result, args=(text, mdl2, results))
     thread1.start()
     thread2.start()
     thread1.join()
@@ -502,8 +504,8 @@ def synthandreturn(text):
         gr.update(visible=True), # r2
         mdl1, # model1
         mdl2, # model2
-        gr.update(visible=True, value=thread1.result), # aud1
-        gr.update(visible=True, value=thread2.result), # aud2
+        gr.update(visible=True, value=results[mdl1]), # aud1
+        gr.update(visible=True, value=results[mdl2]), # aud2
         gr.update(visible=True, interactive=True),
         gr.update(visible=True, interactive=True),
         gr.update(visible=False),
