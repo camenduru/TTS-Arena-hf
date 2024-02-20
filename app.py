@@ -1,7 +1,7 @@
 import gradio as gr
 import pandas as pd
 from datasets import load_dataset
-import threading, time, uuid, sqlite3, shutil, os, random, asyncio
+import threading, time, uuid, sqlite3, shutil, os, random, asyncio, threading
 from pathlib import Path
 from huggingface_hub import CommitScheduler, delete_file, hf_hub_download
 from gradio_client import Client
@@ -473,36 +473,26 @@ with gr.Blocks() as leaderboard:
 ############
 # 2x speedup (hopefully)
 ############
-async def predict_async(text, model, api_name):
-    print('Predicting using', model)
-    return router.predict(text, AVAILABLE_MODELS[model], api_name=api_name)
+def predict_and_update(router, text, model, gr_update, api_name):
+    prediction = router.predict(text, AVAILABLE_MODELS[model], api_name)
+    gr_update(visible=True, value=prediction)
 
-async def predict_both_concurrently(text, mdl1, mdl2):
-    task1 = predict_async(text, mdl1, "/synthesize")
-    task2 = predict_async(text, mdl2, "/synthesize")
-    results = await asyncio.gather(task1, task2)
-    return results
+def predict_and_update_both(router, text, mdl1, mdl2, gr_update1, gr_update2):
+    thread1 = threading.Thread(target=predict_and_update, args=(router, text, mdl1, gr_update1, "/synthesize"))
+    thread2 = threading.Thread(target=predict_and_update, args=(router, text, mdl2, gr_update2, "/synthesize"))
+
+    thread1.start()
+    thread2.start()
+
+    thread1.join()  # Wait for thread1 to finish
+    thread2.join()  # Wait for thread2 to finish
+
+    return thread1.predicted_value, thread2.predicted_value
 
 ############
 # 2x speedup (hopefully)
 ############
 
-async def process_predictions(text, mdl1, mdl2):
-    aud1, aud2 = await predict_both_concurrently(text, mdl1, mdl2)
-    return (
-        text,
-        "Synthesize",
-        gr.update(visible=True),
-        mdl1,
-        mdl2,
-        gr.update(visible=True, value=aud1),
-        gr.update(visible=True, value=aud2),
-        gr.update(visible=True, interactive=True),
-        gr.update(visible=True, interactive=True),
-        gr.update(visible=False),
-        gr.update(visible=False),
-        gr.update(visible=False),
-    )
 def synthandreturn(text):
     text = text.strip()
     if len(text) > MAX_SAMPLE_TXT_LENGTH:
@@ -517,7 +507,21 @@ def synthandreturn(text):
     mdl1, mdl2 = random.sample(list(AVAILABLE_MODELS.keys()), 2)
     log_text(text)
     print("[debug] Using", mdl1, mdl2)
-    return asyncio.run(process_predictions(text, mdl1, mdl2))
+    aud1, aud2 = predict_and_update_both(router, text, mdl1, mdl2, gr.update, gr.update)
+    return (
+        text,
+        "Synthesize",
+        gr.update(visible=True), # r2
+        mdl1, # model1
+        mdl2, # model2
+        aud1, # aud1
+        aud2, # aud2
+        gr.update(visible=True, interactive=True),
+        gr.update(visible=True, interactive=True),
+        gr.update(visible=False),
+        gr.update(visible=False),
+        gr.update(visible=False), #nxt round btn
+    )
     # return (
     #     text,
     #     "Synthesize",
