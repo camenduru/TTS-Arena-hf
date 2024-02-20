@@ -289,7 +289,7 @@ model_links = {
 #     return (choice1, choice2)
 def model_license(name):
     print(name)
-    for k,v in model_licenses.items():
+    for k, v in model_names.items():
         if v == name:
             return model_licenses[k]
     return 'Unknown'
