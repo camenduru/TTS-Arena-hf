@@ -301,7 +301,7 @@ def get_leaderboard(reveal_prelim: bool):
     cursor.execute(sql)
     data = cursor.fetchall()
     df = pd.DataFrame(data, columns=['name', 'upvote', 'downvote'])
-    df['license'] = df['name'].map(model_license).fillna("Unknown")
+    df['license'] = df['name'].map(model_license)
     df['name'] = df['name'].replace(model_names)
     df['votes'] = df['upvote'] + df['downvote']
     # df['score'] = round((df['upvote'] / df['votes']) * 100, 2) # Percentage score
