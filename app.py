@@ -302,7 +302,8 @@ def get_leaderboard(reveal_prelim: bool):
     conn = get_db()
     cursor = conn.cursor()
     sql = 'SELECT name, upvote, downvote FROM model'
-    if not reveal_prelim: sql += ' WHERE EXISTS (SELECT 1 FROM model WHERE (upvote + downvote) > 750)'
+    # if not reveal_prelim: sql += ' WHERE EXISTS (SELECT 1 FROM model WHERE (upvote + downvote) > 750)'
+    if not reveal_prelim: sql += ' WHERE (upvote + downvote) > 500'
     cursor.execute(sql)
     data = cursor.fetchall()
     df = pd.DataFrame(data, columns=['name', 'upvote', 'downvote'])
