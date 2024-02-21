@@ -62,13 +62,15 @@ def create_db_if_missing():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT,
             model TEXT,
-            vote INTEGER
+            vote INTEGER,
+            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
     ''')
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS spokentext (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            spokentext TEXT
+            spokentext TEXT,
+            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
     ''')
 def get_db():
