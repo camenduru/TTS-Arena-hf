@@ -191,7 +191,7 @@ LDESC = """
 
 A list of the models, based on how natural they sound (according to the votes casted)!
 
-### **Important**: To keep a fair impression of results, the leaderboard will be **hidden** by default, until a large number of human ratings have been recorded.
+<h3>Important: To keep a fair impression of results, the leaderboard will be hidden by default, until a large number of human ratings have been recorded.</h3>
 
 Tick the `Reveal Preliminary Results` checkbox below if you wish to see the raw data.
 """.strip()
