@@ -251,6 +251,7 @@ model_licenses = {
     'xtts2': 'CPML (NC)',
     'xtts': 'CPML (NC)',
     'elevenlabs': 'Proprietary',
+    'eleven': 'Proprietary',
     'openai': 'Proprietary',
     'hierspeech': 'MIT',
     'pheme': 'CC-BY',
