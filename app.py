@@ -497,6 +497,7 @@ def synthandreturn(text):
     log_text(text)
     print("[debug] Using", mdl1, mdl2)
     def predict_and_update_result(text, model, result_storage):
+        print('Trying with', model, 'Using', AVAILABLE_MODELS[model])
         result = router.predict(text, AVAILABLE_MODELS[model].lower(), api_name="/synthesize")
         print('Done with', model)
         result_storage[model] = result
