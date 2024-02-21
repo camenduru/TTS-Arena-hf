@@ -37,7 +37,7 @@ print(f"Using {DB_PATH}")
 # AUDIO_DATASET_ID = "ttseval/tts-arena-new"
 CITATION_TEXT = """@misc{tts-arena,
 	title        = {Text to Speech Arena},
-	author       = {mrfakename and Srivastav, Vaibhav and Pouget, Lucain and Fourrier, Clémentine and Lacombe, Yoach},
+	author       = {mrfakename and Srivastav, Vaibhav and Pouget, Lucain and Fourrier, Clémentine and Lacombe, Yoach and main},
 	year         = 2024,
 	publisher    = {Hugging Face},
 	howpublished = "\\url{https://huggingface.co/spaces/ttseval/TTS-Arena}"
@@ -643,4 +643,4 @@ with gr.Blocks(theme=theme, css="footer {visibility: hidden}textbox{resize:none}
                 gr.Markdown(f"If you use this data in your publication, please cite us!\n\nCopy the BibTeX citation to cite this source:\n\n```bibtext\n{CITATION_TEXT}\n```\n\nPlease remember that all generated audio clips should be assumed unsuitable for redistribution or commercial use.")
 
 
-demo.queue(api_open=False).launch(show_api=False)
+demo.queue(api_open=False, default_concurrency_limit=40).launch(show_api=False)
