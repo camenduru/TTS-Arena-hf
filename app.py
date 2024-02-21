@@ -375,14 +375,24 @@ def downvote_model(model, uname):
 def a_is_better(model1, model2, userid):
     userid = mkuuid(userid)
     if model1 and model2:
-        cursor.execute('INSERT INTO votelog (username, chosen, rejected) VALUES (?, ?, ?)', (uname, model1, model2,))
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute('INSERT INTO votelog (username, chosen, rejected) VALUES (?, ?, ?)', (userid, model1, model2,))
+        with scheduler.lock:
+            conn.commit()
+            cursor.close()
         upvote_model(model1, str(userid))
         downvote_model(model2, str(userid))
     return reload(model1, model2, userid, chose_a=True)
 def b_is_better(model1, model2, userid):
     userid = mkuuid(userid)
     if model1 and model2:
-        cursor.execute('INSERT INTO votelog (username, chosen, rejected) VALUES (?, ?, ?)', (uname, model2, model1,))
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute('INSERT INTO votelog (username, chosen, rejected) VALUES (?, ?, ?)', (userid, model2, model1,))
+        with scheduler.lock:
+            conn.commit()
+            cursor.close()
         upvote_model(model2, str(userid))
         downvote_model(model1, str(userid))
     return reload(model1, model2, userid, chose_b=True)
