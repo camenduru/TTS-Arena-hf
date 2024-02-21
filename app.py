@@ -15,7 +15,7 @@ with open('harvard_sentences.txt') as f:
 # Constants
 ####################################
 AVAILABLE_MODELS = {
-    'XTTS': 'xttsv2',
+    'XTTS': 'xtts',
     'WhisperSpeech': 'whisperspeech',
     'ElevenLabs': 'eleven',
     'OpenVoice': 'openvoice',
