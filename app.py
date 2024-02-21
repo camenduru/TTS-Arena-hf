@@ -36,7 +36,7 @@ print(f"Using {DB_PATH}")
 # AUDIO_DATASET_ID = "ttseval/tts-arena-new"
 CITATION_TEXT = """@misc{tts-arena,
 	title        = {Text to Speech Arena},
-	author       = {mrfakename and Srivastav, Vaibhav and Pouget, Lucain and Fourrier, Clémentine},
+	author       = {mrfakename and Srivastav, Vaibhav and Pouget, Lucain and Fourrier, Clémentine and Lacombe, Yoach},
 	year         = 2024,
 	publisher    = {Hugging Face},
 	howpublished = "\\url{https://huggingface.co/spaces/ttseval/TTS-Arena}"
