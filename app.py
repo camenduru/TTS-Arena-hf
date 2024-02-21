@@ -67,6 +67,15 @@ def create_db_if_missing():
         );
     ''')
     cursor.execute('''
+        CREATE TABLE IF NOT EXISTS votelog (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT,
+            chosen TEXT,
+            rejected TEXT,
+            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+    ''')
+    cursor.execute('''
         CREATE TABLE IF NOT EXISTS spokentext (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             spokentext TEXT,
@@ -366,12 +375,14 @@ def downvote_model(model, uname):
 def a_is_better(model1, model2, userid):
     userid = mkuuid(userid)
     if model1 and model2:
+        cursor.execute('INSERT INTO votelog (username, chosen, rejected) VALUES (?, ?, ?)', (uname, model1, model2,))
         upvote_model(model1, str(userid))
         downvote_model(model2, str(userid))
     return reload(model1, model2, userid, chose_a=True)
 def b_is_better(model1, model2, userid):
     userid = mkuuid(userid)
     if model1 and model2:
+        cursor.execute('INSERT INTO votelog (username, chosen, rejected) VALUES (?, ?, ?)', (uname, model2, model1,))
         upvote_model(model2, str(userid))
         downvote_model(model1, str(userid))
     return reload(model1, model2, userid, chose_b=True)
