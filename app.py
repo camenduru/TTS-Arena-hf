@@ -477,9 +477,9 @@ def doloudnorm(path):
     loudness = meter.integrated_loudness(data)
     loudness_normalized_audio = pyln.normalize.loudness(data, loudness, -12.0)
     sf.write(path, loudness_normalized_audio, rate)
-############
-# 2x speedup (hopefully)
-############
+##########################
+# 2x speedup (hopefully) #
+##########################
 
 def synthandreturn(text):
     text = text.strip()
@@ -488,6 +488,7 @@ def synthandreturn(text):
     if len(text) < MIN_SAMPLE_TXT_LENGTH:
         raise gr.Error(f'Not enough text')
     if (toxicity.predict(text)['toxicity'] > 0.5):
+        print(f'Detected toxic content! "{text}"')
         raise gr.Error('Your text failed the toxicity test')
     if not text:
         raise gr.Error(f'You did not enter any text')
@@ -496,7 +497,7 @@ def synthandreturn(text):
     log_text(text)
     print("[debug] Using", mdl1, mdl2)
     def predict_and_update_result(text, model, result_storage):
-        result = router.predict(text, AVAILABLE_MODELS[model], api_name="/synthesize")
+        result = router.predict(text, AVAILABLE_MODELS[model].lower(), api_name="/synthesize")
         doloudnorm(result)
         result_storage[model] = result
     results = {}
