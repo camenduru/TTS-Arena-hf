@@ -498,8 +498,12 @@ def synthandreturn(text):
     print("[debug] Using", mdl1, mdl2)
     def predict_and_update_result(text, model, result_storage):
         result = router.predict(text, AVAILABLE_MODELS[model].lower(), api_name="/synthesize")
-        doloudnorm(result)
+        print('Done with', model)
         result_storage[model] = result
+        try:
+            doloudnorm(result)
+        except:
+            pass
     results = {}
     thread1 = threading.Thread(target=predict_and_update_result, args=(text, mdl1, results))
     thread2 = threading.Thread(target=predict_and_update_result, args=(text, mdl2, results))
