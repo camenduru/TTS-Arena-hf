@@ -167,7 +167,7 @@ Thank you to the following individuals who helped make this project possible:
 
 ### Privacy Statement
 
-We may store text you enter and generated audio. We store a unique ID for each session.
+We may store text you enter and generated audio. We store a unique ID for each session. You agree that we may collect, share, and/or publish any data you input for research and/or commercial purposes.
 
 ### License
 
