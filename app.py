@@ -14,6 +14,7 @@ with open('harvard_sentences.txt') as f:
 ####################################
 # Constants
 ####################################
+BLOG_POST_LINK = '' # <<<<< ----
 AVAILABLE_MODELS = {
     'XTTS': 'xtts',
     'WhisperSpeech': 'whisperspeech',
@@ -145,19 +146,22 @@ Please fill out [this form](https://huggingface.co/spaces/{SPACE_ID}/discussions
 ABOUT = f"""
 ## About
 
-The TTS Arena is a project created to evaluate leading speech synthesis models. It is inspired by the [Chatbot Arena](https://chat.lmsys.org/) by LMSYS.
+The TTS Arena is a project created to evaluate leading speech synthesis models. It is inspired by the [Chatbot Arena](https://chat.lmsys.org/) by LMSys.
 
-### How it Works
+For more information, please check out our [blog post]({BLOG_POST_LINK})
 
-First, vote on two samples of text-to-speech models. The models that synthesized the samples are not revealed to mitigate bias.
+### Credits
 
-As you vote, the leaderboard will be updated based on votes. We calculate a score for each model using a method similar to the [Elo system](https://en.wikipedia.org/wiki/Elo_rating_system).
+Thank you to the following individuals who helped make this project possible:
 
-### Motivation
-
-Recently, many new open-access speech synthesis models have been made available to the community. However, there is no standardized evaluation or benchmark to measure the quality and naturalness of these models.
-
-The TTS Arena is an attempt to benchmark these models and find the highest-quality models available to the community.
+* VB ([Twitter](https://twitter.com/reach_vb) / [Hugging Face](https://huggingface.co/reach-vb))
+* Lucain Pouget ([Twitter](https://twitter.com/Wauplin) / [Hugging Face](https://huggingface.co/Wauplin))
+* Clémentine Fourrier ([Twitter](https://twitter.com/clefourrier) / [Hugging Face](https://huggingface.co/clefourrier))
+* Yoach Lacombe ([Twitter](https://twitter.com/yoachlacombe) / [Hugging Face](https://huggingface.co/ylacombe))
+* Main Horse ([Twitter](https://twitter.com/main_horse) / [Hugging Face](https://huggingface.co/main-horse))
+* Apolinário Passos ([Twitter](https://twitter.com/multimodalart) / [Hugging Face](https://huggingface.co/multimodalart))
+* Sanchit Gandhi ([Twitter](https://twitter.com/sanchitgandhi99) / [Hugging Face](https://huggingface.co/sanchit-gandhi))
+* Pedro Cuenca ([Twitter](https://twitter.com/pcuenq) / [Hugging Face](https://huggingface.co/pcuenq))
 
 {request}
 
