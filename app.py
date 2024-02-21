@@ -16,7 +16,7 @@ with open('harvard_sentences.txt') as f:
 ####################################
 BLOG_POST_LINK = '' # <<<<< ----
 AVAILABLE_MODELS = {
-    'XTTS': 'xtts',
+    'XTTSv2': 'xtts',
     'WhisperSpeech': 'whisperspeech',
     'ElevenLabs': 'eleven',
     'OpenVoice': 'openvoice',
@@ -141,11 +141,13 @@ Vote on different speech synthesis models!
 INSTR = """
 ## Instructions
 
-* Enter text to synthesize.
-* Listen to the two audio clips.
-* Vote on which synthesized audio sounds more natural to you. **Did the model hallucinate?**
+* Input the text to synthesize (or press the 🎲 for a random input text).
+* Listen to the two audio clips, one after the other.
+* Vote on which audio sounds more natural to you.
 
-**When you're ready to begin, enter text.** Model names will be revealed once you vote.
+Model names will be revealed after the vote is cast.
+
+**When you're ready to begin, enter text.**
 """.strip()
 request = ''
 if SPACE_ID:
@@ -182,12 +184,12 @@ We may store text you enter and generated audio. We store a unique ID for each s
 
 ### License
 
-Please assume all generated audio clips are not licensed to be redistributed and may only be used for personal, non-commercial use.
+Generated audio clips cannot be redistributed and used for personal, non-commercial use only.
 """.strip()
 LDESC = """
 ## Leaderboard
 
-A list of the models, based on how highly they are ranked!
+A list of the models, based on how natural they sound (according to the votes casted)!
 
 ### **Important**: To keep a fair impression of results, the leaderboard will be **hidden** by default, until a large number of human ratings have been recorded.
 
