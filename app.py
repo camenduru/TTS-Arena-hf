@@ -186,7 +186,7 @@ We may store text you enter and generated audio. We store a unique ID for each s
 Generated audio clips cannot be redistributed and used for personal, non-commercial use only.
 """.strip()
 LDESC = """
-## 🎖️ Leaderboard
+## 🏆 Leaderboard
 
 A list of the models based on how natural they sound (according to the votes cast)!
 
