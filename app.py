@@ -125,7 +125,7 @@ router = Client("ttseval/tts-router", hf_token=os.getenv('HF_TOKEN'))
 ####################################
 MUST_BE_LOGGEDIN = "Please login with Hugging Face to participate in the TTS Arena."
 DESCR = """
-# TTS Arena: Benchmarking TTS models in the Wild
+# TTS Arena: Benchmarking TTS models in the Wild ⚡
 
 Vote to find the best Text-to-Speech model out there!
 """.strip()
@@ -141,13 +141,12 @@ Vote to find the best Text-to-Speech model out there!
 INSTR = """
 ## Instructions
 
-* Input the text to synthesize audio (or press the 🎲 for a random input text).
+* Input the text to synthesise audio (or press 🎲 for a random text).
 * Listen to the two audio clips, one after the other.
 * Vote on which audio sounds more natural to you.
+* Model names are revealed after the vote is cast.
 
-Model names are revealed after the vote is cast.
-
-## Synthesize now!
+## Synthesise now!
 """.strip()
 request = ''
 if SPACE_ID:
@@ -157,7 +156,7 @@ if SPACE_ID:
 Please fill out [this form](https://huggingface.co/spaces/{SPACE_ID}/discussions/new?title=%5BModel+Request%5D+&description=%23%23%20Model%20Request%0A%0A%2A%2AModel%20website%2Fpaper%20%28if%20applicable%29%2A%2A%3A%0A%2A%2AModel%20available%20on%2A%2A%3A%20%28coqui%7CHF%20pipeline%7Ccustom%20code%29%0A%2A%2AWhy%20do%20you%20want%20this%20model%20added%3F%2A%2A%0A%2A%2AComments%3A%2A%2A) to request a model.
 """
 ABOUT = f"""
-## About
+## 📄 About
 
 The TTS Arena is a project created to evaluate leading speech synthesis models. It is inspired by the [Chatbot Arena](https://chat.lmsys.org/) by LMSys.
 
@@ -187,11 +186,11 @@ We may store text you enter and generated audio. We store a unique ID for each s
 Generated audio clips cannot be redistributed and used for personal, non-commercial use only.
 """.strip()
 LDESC = """
-## Leaderboard
+## 🎖️ Leaderboard
 
-A list of the models, based on how natural they sound (according to the votes casted)!
+A list of the models based on how natural they sound (according to the votes cast)!
 
-<h3>Important: To keep a fair impression of results, the leaderboard will be hidden by default, until a large number of human ratings have been recorded.</h3>
+Important: The leaderboard will be hidden by default until a human ratings threshold has been achieved to keep the results fair.
 
 Tick the `Reveal Preliminary Results` checkbox below if you wish to see the raw data.
 """.strip()
