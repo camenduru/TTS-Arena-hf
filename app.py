@@ -583,6 +583,8 @@ def synthandreturn(text):
     #     gr.update(visible=False),
     #     gr.update(visible=False), #nxt round btn
     # )
+def randsynthandreturn():
+    return synthandreturn(random.choice(sents))
 def randomsent():
     return random.choice(sents), '🎲'
 def clear_stuff():
@@ -609,14 +611,17 @@ with gr.Blocks() as vote:
                 aud2 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
                 bbetter = gr.Button("B is better", variant='primary')
                 prevmodel2 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model B", text_align="center", lines=1, max_lines=1, visible=False)
-    nxtroundbtn = gr.Button('Next round', visible=False)
+    with gr.Row(visible=False) as nrb:
+        nxtroundbtn = gr.Button('Next round', scale=100)
+        randomnext = gr.Button('🎲➡️', scale=0, min_width=0)
     # outputs = [text, btn, r2, model1, model2, prevmodel1, aud1, prevmodel2, aud2, abetter, bbetter]
-    outputs = [text, btn, r2, model1, model2, aud1, aud2, abetter, bbetter, prevmodel1, prevmodel2, nxtroundbtn]
+    outputs = [text, btn, r2, model1, model2, aud1, aud2, abetter, bbetter, prevmodel1, prevmodel2, nrb]
     btn.click(synthandreturn, inputs=[text], outputs=outputs)
+    randomnext.click(randsynthandreturn, outputs=outputs)
     nxtroundbtn.click(clear_stuff, outputs=outputs)
 
     # nxt_outputs = [prevmodel1, prevmodel2, abetter, bbetter]
-    nxt_outputs = [abetter, bbetter, prevmodel1, prevmodel2, nxtroundbtn]
+    nxt_outputs = [abetter, bbetter, prevmodel1, prevmodel2, nrb]
     abetter.click(a_is_better, outputs=nxt_outputs, inputs=[model1, model2, useridstate])
     bbetter.click(b_is_better, outputs=nxt_outputs, inputs=[model1, model2, useridstate])
     # skipbtn.click(b_is_better, outputs=outputs, inputs=[model1, model2, useridstate])
