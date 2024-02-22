@@ -14,7 +14,6 @@ with open('harvard_sentences.txt') as f:
 ####################################
 # Constants
 ####################################
-BLOG_POST_LINK = '' # <<<<< ----
 AVAILABLE_MODELS = {
     'XTTSv2': 'xtts',
     'WhisperSpeech': 'whisperspeech',
@@ -160,7 +159,9 @@ ABOUT = f"""
 
 The TTS Arena is a project created to evaluate leading speech synthesis models. It is inspired by the [Chatbot Arena](https://chat.lmsys.org/) by LMSys.
 
-For more information, please check out our [blog post]({BLOG_POST_LINK})
+### Motivation
+
+The field of speech synthesis has long lacked an accurate method to measure the quality of different models. Objective metrics like WER (word error rate) are unreliable measures of model quality, and subjective measures such as MOS (mean opinion score) are typically small-scale experiments conducted with few listeners. As a result, these measurements are generally not useful for comparing two models of roughly similar quality. To address these drawbacks, we are inviting the community to rank models in an easy-to-use interface, and opening it up to the public in order to make both the opportunity to rank models, as well as the results, more easily accessible to everyone.
 
 ### Credits
 
