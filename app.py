@@ -125,7 +125,7 @@ router = Client("ttseval/tts-router", hf_token=os.getenv('HF_TOKEN'))
 ####################################
 MUST_BE_LOGGEDIN = "Please login with Hugging Face to participate in the TTS Arena."
 DESCR = """
-# TTS Arena: Benchmarking TTS models in the Wild ⚡
+# TTS Arena: Benchmarking TTS Models in the Wild
 
 Vote to find the best Text-to-Speech model out there!
 """.strip()
