@@ -319,7 +319,7 @@ def get_leaderboard(reveal_prelim: bool):
     cursor.execute(sql)
     data = cursor.fetchall()
     df = pd.DataFrame(data, columns=['name', 'upvote', 'downvote'])
-    df['license'] = df['name'].map(model_license)
+    # df['license'] = df['name'].map(model_license)
     df['name'] = df['name'].replace(model_names)
     df['votes'] = df['upvote'] + df['downvote']
     # df['score'] = round((df['upvote'] / df['votes']) * 100, 2) # Percentage score
@@ -340,7 +340,8 @@ def get_leaderboard(reveal_prelim: bool):
     df = df.sort_values(by='score', ascending=False)
     df['order'] = ['#' + str(i + 1) for i in range(len(df))]
     # df = df[['name', 'score', 'upvote', 'votes']]
-    df = df[['order', 'name', 'score', 'license', 'votes']]
+    # df = df[['order', 'name', 'score', 'license', 'votes']]
+    df = df[['order', 'name', 'score', 'votes']]
     return df
 def mkuuid(uid):
     if not uid:
@@ -448,7 +449,7 @@ def reload(chosenmodel1=None, chosenmodel2=None, userid=None, chose_a=False, cho
 with gr.Blocks() as leaderboard:
     gr.Markdown(LDESC)
     # df = gr.Dataframe(interactive=False, value=get_leaderboard())
-    df = gr.Dataframe(interactive=False, min_width=0, wrap=True, column_widths=[30, 200, 50, 75, 50])
+    df = gr.Dataframe(interactive=False, min_width=0, wrap=True, column_widths=[30, 200, 50, 50])
     with gr.Row():
         reveal_prelim = gr.Checkbox(label="Reveal Preliminary Results", info="Show all models, including models with very few human ratings.", scale=0)
         reloadbtn = gr.Button("Refresh")
