@@ -125,9 +125,9 @@ router = Client("ttseval/tts-router", hf_token=os.getenv('HF_TOKEN'))
 ####################################
 MUST_BE_LOGGEDIN = "Please login with Hugging Face to participate in the TTS Arena."
 DESCR = """
-# TTS Arena
+# TTS Arena: Benchmarking TTS models in the Wild
 
-Vote on different speech synthesis models!
+Vote to find the best Text-to-Speech model out there!
 """.strip()
 # INSTR = """
 # ## Instructions
@@ -141,13 +141,13 @@ Vote on different speech synthesis models!
 INSTR = """
 ## Instructions
 
-* Input the text to synthesize (or press the 🎲 for a random input text).
+* Input the text to synthesize audio (or press the 🎲 for a random input text).
 * Listen to the two audio clips, one after the other.
 * Vote on which audio sounds more natural to you.
 
-Model names will be revealed after the vote is cast.
+Model names are revealed after the vote is cast.
 
-**When you're ready to begin, enter text.**
+## Synthesize now!
 """.strip()
 request = ''
 if SPACE_ID:
