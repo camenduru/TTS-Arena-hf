@@ -140,7 +140,7 @@ Vote to find the best Text-to-Speech model out there!
 INSTR = """
 ## Instructions
 
-* Input the text to synthesise audio (or press 🎲 for a random text).
+* Input the text (English only) to synthesise audio (or press 🎲 for random text).
 * Listen to the two audio clips, one after the other.
 * Vote on which audio sounds more natural to you.
 * Model names are revealed after the vote is cast.
@@ -456,7 +456,7 @@ with gr.Blocks() as leaderboard:
     reveal_prelim.input(get_leaderboard, inputs=[reveal_prelim], outputs=[df])
     leaderboard.load(get_leaderboard, inputs=[reveal_prelim], outputs=[df])
     reloadbtn.click(get_leaderboard, inputs=[reveal_prelim], outputs=[df])
-    gr.Markdown("DISCLAIMER: The licenses listed may not be accurate or up to date, you are responsible for checking the licenses before using the models. Also note that some models may have additional usage restrictions.")
+    # gr.Markdown("DISCLAIMER: The licenses listed may not be accurate or up to date, you are responsible for checking the licenses before using the models. Also note that some models may have additional usage restrictions.")
 
 # with gr.Blocks() as vote:
 #     useridstate = gr.State()
@@ -518,7 +518,7 @@ def synthandreturn(text):
     if len(text) > MAX_SAMPLE_TXT_LENGTH:
         raise gr.Error(f'You exceeded the limit of {MAX_SAMPLE_TXT_LENGTH} characters')
     if len(text) < MIN_SAMPLE_TXT_LENGTH:
-        raise gr.Error(f'Not enough text')
+        raise gr.Error(f'Please input a text longer than {MIN_SAMPLE_TXT_LENGTH} characters')
     if (toxicity.predict(text)['toxicity'] > 0.5):
         print(f'Detected toxic content! "{text}"')
         raise gr.Error('Your text failed the toxicity test')
