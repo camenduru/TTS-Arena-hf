@@ -8,7 +8,7 @@ app_file: app.py
 pinned: true
 tags:
 - leaderboard
-# header: mini
+header: mini
 ---
 
 Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
