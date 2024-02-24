@@ -542,7 +542,10 @@ def synthandreturn(text):
     print("[debug] Using", mdl1, mdl2)
     def predict_and_update_result(text, model, result_storage):
         try:
-            result = router.predict(text, AVAILABLE_MODELS[model].lower(), api_name="/synthesize")
+            if model in AVAILABLE_MODELS:
+                result = router.predict(text, AVAILABLE_MODELS[model].lower(), api_name="/synthesize")
+            else:
+                result = router.predict(text, model.lower(), api_name="/synthesize")
         except:
             raise gr.Error('Unable to call API, please try again :)')
         print('Done with', model)
