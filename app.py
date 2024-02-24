@@ -201,7 +201,7 @@ A list of the models based on how natural they sound (according to the votes cas
 
 Important: The leaderboard will be hidden by default until a human ratings threshold has been achieved to keep the results fair.
 
-Tick the `Reveal Preliminary Results` checkbox below if you wish to see the raw data.
+Tick the `Reveal preliminary results` checkbox below if you wish to see the raw data.
 """.strip()
 
 
@@ -459,8 +459,8 @@ with gr.Blocks() as leaderboard:
     # df = gr.Dataframe(interactive=False, value=get_leaderboard())
     df = gr.Dataframe(interactive=False, min_width=0, wrap=True, column_widths=[30, 200, 50, 50])
     with gr.Row():
-        reveal_prelim = gr.Checkbox(label="Reveal Preliminary Results", info="Show all models, including models with very few human ratings.", scale=0)
-        reloadbtn = gr.Button("Refresh")
+        reveal_prelim = gr.Checkbox(label="Reveal preliminary results", info="Show all models, including models with very few human ratings.", scale=1)
+        reloadbtn = gr.Button("Refresh", scale=3)
     reveal_prelim.input(get_leaderboard, inputs=[reveal_prelim], outputs=[df])
     leaderboard.load(get_leaderboard, inputs=[reveal_prelim], outputs=[df])
     reloadbtn.click(get_leaderboard, inputs=[reveal_prelim], outputs=[df])
