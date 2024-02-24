@@ -164,6 +164,10 @@ The TTS Arena is a project created to evaluate leading speech synthesis models. 
 
 The field of speech synthesis has long lacked an accurate method to measure the quality of different models. Objective metrics like WER (word error rate) are unreliable measures of model quality, and subjective measures such as MOS (mean opinion score) are typically small-scale experiments conducted with few listeners. As a result, these measurements are generally not useful for comparing two models of roughly similar quality. To address these drawbacks, we are inviting the community to rank models in an easy-to-use interface, and opening it up to the public in order to make both the opportunity to rank models, as well as the results, more easily accessible to everyone.
 
+### The Arena
+
+The leaderboard allows a user to enter text, which will be synthesized by two models. After listening to each sample, the user will vote on which model sounds more natural. Due to the risks of human bias and abuse, model names will only be revealed after a vote is submitted.
+
 ### Credits
 
 Thank you to the following individuals who helped make this project possible:
