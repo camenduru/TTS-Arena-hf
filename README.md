@@ -9,4 +9,5 @@ pinned: true
 tags:
 - leaderboard
 header: mini
+license: zlib
 ---
