@@ -140,14 +140,14 @@ Vote to find the best Text-to-Speech model out there!
 INSTR = """
 ## Instructions
 
-* Input the text (English only) to synthesise audio (or press 🎲 for random text).
+* Input the text (English only) to synthesize audio (or press 🎲 for random text).
 * Listen to the two audio clips, one after the other.
 * Vote on which audio sounds more natural to you.
 * Model names are revealed after the vote is cast.
 
 Note: The models could take up to 30 seconds for synthesising audio.
 
-## Synthesise now!
+## Synthesize now!
 """.strip()
 request = ''
 if SPACE_ID:
