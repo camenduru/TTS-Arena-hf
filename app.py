@@ -1,5 +1,6 @@
 import gradio as gr
 import pandas as pd
+from langdetect import detect
 from datasets import load_dataset
 import threading, time, uuid, sqlite3, shutil, os, random, asyncio, threading
 from pathlib import Path
@@ -529,6 +530,12 @@ def synthandreturn(text):
         raise gr.Error('Your text failed the toxicity test')
     if not text:
         raise gr.Error(f'You did not enter any text')
+    # Check language
+    try:
+        if not detect(text) == "en":
+            gr.Warning('Warning: The inputted text may not be English')
+    except:
+        pass
     # Get two random models
     mdl1, mdl2 = random.sample(list(AVAILABLE_MODELS.keys()), 2)
     log_text(text)
