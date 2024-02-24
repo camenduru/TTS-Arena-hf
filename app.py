@@ -145,7 +145,7 @@ INSTR = """
 * Vote on which audio sounds more natural to you.
 * Model names are revealed after the vote is cast.
 
-Note: The models could take up-to 30 seconds for synthesising audio.
+Note: The models could take up to 30 seconds for synthesising audio.
 
 ## Synthesise now!
 """.strip()
