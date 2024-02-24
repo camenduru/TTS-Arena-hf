@@ -35,7 +35,7 @@ print(f"Using {DB_PATH}")
 # AUDIO_DATASET_ID = "ttseval/tts-arena-new"
 CITATION_TEXT = """@misc{tts-arena,
 	title        = {Text to Speech Arena},
-	author       = {mrfakename and Srivastav, Vaibhav and Fourrier, Clémentine and Pouget, Lucain and Lacombe, Yoach and main and Sanchit Gandhi},
+	author       = {mrfakename and Srivastav, Vaibhav and Fourrier, Clémentine and Pouget, Lucain and Lacombe, Yoach and main and Gandhi, Sanchit},
 	year         = 2024,
 	publisher    = {Hugging Face},
 	howpublished = "\\url{https://huggingface.co/spaces/TTS-AGI/TTS-Arena}"
@@ -143,6 +143,8 @@ INSTR = """
 * Listen to the two audio clips, one after the other.
 * Vote on which audio sounds more natural to you.
 * Model names are revealed after the vote is cast.
+
+Note: The models could take up-to 30 seconds for synthesising audio.
 
 ## Synthesise now!
 """.strip()
