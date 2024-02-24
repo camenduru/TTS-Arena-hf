@@ -145,7 +145,7 @@ INSTR = """
 * Vote on which audio sounds more natural to you.
 * Model names are revealed after the vote is cast.
 
-Note: The models could take up to 30 seconds for synthesizing audio.
+Note: The models could take up to 30 seconds to synthesize audio.
 
 ## Synthesize now!
 """.strip()
@@ -191,6 +191,8 @@ We may store text you enter and generated audio. We store a unique ID for each s
 ### License
 
 Generated audio clips cannot be redistributed and used for personal, non-commercial use only.
+
+Random sentences come from a filtered subset of the [Harvard Sentences](https://www.cs.columbia.edu/~hgs/audio/harvard.html).
 """.strip()
 LDESC = """
 ## 🏆 Leaderboard
