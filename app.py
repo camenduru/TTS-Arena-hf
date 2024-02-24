@@ -39,7 +39,7 @@ CITATION_TEXT = """@misc{tts-arena,
 	author       = {mrfakename and Srivastav, Vaibhav and Fourrier, Clémentine and Pouget, Lucain and Lacombe, Yoach and main and Sanchit Gandhi},
 	year         = 2024,
 	publisher    = {Hugging Face},
-	howpublished = "\\url{https://huggingface.co/spaces/ttseval/TTS-Arena}"
+	howpublished = "\\url{https://huggingface.co/spaces/TTS-AGI/TTS-Arena}"
 }"""
 
 ####################################
@@ -118,7 +118,7 @@ scheduler = CommitScheduler(
 ####################################
 # Router API
 ####################################
-router = Client("ttseval/tts-router", hf_token=os.getenv('HF_TOKEN'))
+router = Client("TTS-AGI/tts-router", hf_token=os.getenv('HF_TOKEN'))
 ####################################
 # Gradio app
 ####################################
