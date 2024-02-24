@@ -166,7 +166,7 @@ The field of speech synthesis has long lacked an accurate method to measure the 
 
 ### The Arena
 
-The leaderboard allows a user to enter text, which will be synthesized by two models. After listening to each sample, the user will vote on which model sounds more natural. Due to the risks of human bias and abuse, model names will only be revealed after a vote is submitted.
+The leaderboard allows a user to enter text, which will be synthesized by two models. After listening to each sample, the user will vote on which model sounds more natural. Due to the risks of human bias and abuse, model names will be revealed only after a vote is submitted.
 
 ### Credits
 
