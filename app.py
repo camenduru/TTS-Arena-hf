@@ -200,8 +200,6 @@ Vote to help the community determine the best text-to-speech (TTS) models.
 The leaderboard displays models in descending order of how natural they sound (based on votes cast by the community).
 
 Important: In order to help keep results fair, the leaderboard hides results by default until the number of votes passes a threshold.
-
-Check `Reveal preliminary results` checkbox below to view early results.
 """.strip()
 
 
@@ -459,9 +457,9 @@ with gr.Blocks() as leaderboard:
     # df = gr.Dataframe(interactive=False, value=get_leaderboard())
     df = gr.Dataframe(interactive=False, min_width=0, wrap=True, column_widths=[30, 200, 50, 50])
     with gr.Row():
-        reveal_prelim = gr.Checkbox(label="Reveal preliminary results", info="Show all models, including models with very few human ratings.", scale=1)
+        # reveal_prelim = gr.Checkbox(label="Reveal preliminary results", info="Show all models, including models with very few human ratings.", scale=1)
         reloadbtn = gr.Button("Refresh", scale=3)
-    reveal_prelim.input(get_leaderboard, inputs=[reveal_prelim], outputs=[df])
+    # reveal_prelim.input(get_leaderboard, inputs=[reveal_prelim], outputs=[df])
     leaderboard.load(get_leaderboard, inputs=[reveal_prelim], outputs=[df])
     reloadbtn.click(get_leaderboard, inputs=[reveal_prelim], outputs=[df])
     # gr.Markdown("DISCLAIMER: The licenses listed may not be accurate or up to date, you are responsible for checking the licenses before using the models. Also note that some models may have additional usage restrictions.")
