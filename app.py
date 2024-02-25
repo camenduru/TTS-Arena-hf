@@ -316,7 +316,7 @@ def model_license(name):
                 return model_licenses[v]
     print('---')
     return 'Unknown'
-def get_leaderboard(reveal_prelim: bool):
+def get_leaderboard(reveal_prelim = False):
     conn = get_db()
     cursor = conn.cursor()
     sql = 'SELECT name, upvote, downvote FROM model'
@@ -460,8 +460,8 @@ with gr.Blocks() as leaderboard:
         # reveal_prelim = gr.Checkbox(label="Reveal preliminary results", info="Show all models, including models with very few human ratings.", scale=1)
         reloadbtn = gr.Button("Refresh", scale=3)
     # reveal_prelim.input(get_leaderboard, inputs=[reveal_prelim], outputs=[df])
-    leaderboard.load(get_leaderboard, inputs=[reveal_prelim], outputs=[df])
-    reloadbtn.click(get_leaderboard, inputs=[reveal_prelim], outputs=[df])
+    leaderboard.load(get_leaderboard, inputs=[], outputs=[df])
+    reloadbtn.click(get_leaderboard, inputs=[], outputs=[df])
     # gr.Markdown("DISCLAIMER: The licenses listed may not be accurate or up to date, you are responsible for checking the licenses before using the models. Also note that some models may have additional usage restrictions.")
 
 # with gr.Blocks() as vote:
