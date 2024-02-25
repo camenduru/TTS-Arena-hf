@@ -10,6 +10,10 @@ import pyloudnorm as pyln
 import soundfile as sf
 import librosa
 from detoxify import Detoxify
+import os
+import tempfile
+from pydub import AudioSegment
+
 toxicity = Detoxify('original')
 with open('harvard_sentences.txt') as f:
     sents = f.read().strip().splitlines()
@@ -556,11 +560,20 @@ def synthandreturn(text):
         except:
             raise gr.Error('Unable to call API, please try again :)')
         print('Done with', model)
-        result_storage[model] = result
         try:
             doresample(result)
         except:
             pass
+        try:
+            with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as f:
+                audio = AudioSegment.from_file(result)
+                audio.export(f.name, format="wav")
+                os.unlink(result)
+                result = f.name
+        except:
+            pass
+
+        result_storage[model] = result
         # try:
         #     doloudnorm(result)
         # except:
