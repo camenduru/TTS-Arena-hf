@@ -146,8 +146,6 @@ INSTR = """
 * Model names are revealed after the vote is cast.
 
 Note: The models could take up to 30 seconds to synthesize audio.
-
-## Synthesize now!
 """.strip()
 request = ''
 if SPACE_ID:
@@ -197,11 +195,13 @@ Random sentences come from a filtered subset of the [Harvard Sentences](https://
 LDESC = """
 ## 🏆 Leaderboard
 
-A list of the models based on how natural they sound (according to the votes cast)!
+Vote to help the community determine the best text-to-speech (TTS) models.
 
-Important: The leaderboard will be hidden by default until a human ratings threshold has been achieved to keep the results fair.
+The leaderboard displays models in descending order of how natural they sound (based on votes cast by the community).
 
-Tick the `Reveal preliminary results` checkbox below if you wish to see the raw data.
+Important: In order to help keep results fair, the leaderboard hides results by default until the number of votes passes a threshold.
+
+Check `Reveal preliminary results` checkbox below to view early results.
 """.strip()
 
 
