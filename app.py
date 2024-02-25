@@ -8,6 +8,7 @@ from huggingface_hub import CommitScheduler, delete_file, hf_hub_download
 from gradio_client import Client
 import pyloudnorm as pyln
 import soundfile as sf
+import librosa
 from detoxify import Detoxify
 toxicity = Detoxify('original')
 with open('harvard_sentences.txt') as f:
@@ -515,6 +516,12 @@ def doloudnorm(path):
     loudness = meter.integrated_loudness(data)
     loudness_normalized_audio = pyln.normalize.loudness(data, loudness, -12.0)
     sf.write(path, loudness_normalized_audio, rate)
+def doresample(path_to_wav):
+    y, sr = librosa.load(path_to_wav, sr=None)
+    if sr > 24000:
+        y_resampled = librosa.resample(y, sr, 24000)
+        librosa.output.write_wav(path_to_wav, y_resampled, 24000)
+
 ##########################
 # 2x speedup (hopefully) #
 ##########################
@@ -550,6 +557,10 @@ def synthandreturn(text):
             raise gr.Error('Unable to call API, please try again :)')
         print('Done with', model)
         result_storage[model] = result
+        try:
+            doresample(result)
+        except:
+            pass
         # try:
         #     doloudnorm(result)
         # except:
