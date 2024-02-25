@@ -572,7 +572,15 @@ def synthandreturn(text):
     thread2.start()
     thread1.join()
     thread2.join()
+    #debug
     print(results)
+    print(results.keys()[0])
+    y, sr = librosa.load(results[results.keys()[0]], sr=None)
+    print(sr)
+    print(results.keys()[1])
+    y, sr = librosa.load(results[results.keys()[1]], sr=None)
+    print(sr)
+    #debug
     return (
         text,
         "Synthesize",
