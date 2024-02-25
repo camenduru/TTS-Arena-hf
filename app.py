@@ -572,6 +572,7 @@ def synthandreturn(text):
     thread2.start()
     thread1.join()
     thread2.join()
+    print(results)
     return (
         text,
         "Synthesize",
