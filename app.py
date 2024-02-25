@@ -573,13 +573,13 @@ def synthandreturn(text):
     thread1.join()
     thread2.join()
     #debug
-    print(results)
-    print(list(results.keys())[0])
-    y, sr = librosa.load(results[list(results.keys())[0]], sr=None)
-    print(sr)
-    print(list(results.keys())[1])
-    y, sr = librosa.load(results[list(results.keys())[1]], sr=None)
-    print(sr)
+    # print(results)
+    # print(list(results.keys())[0])
+    # y, sr = librosa.load(results[list(results.keys())[0]], sr=None)
+    # print(sr)
+    # print(list(results.keys())[1])
+    # y, sr = librosa.load(results[list(results.keys())[1]], sr=None)
+    # print(sr)
     #debug
     return (
         text,
