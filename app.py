@@ -550,10 +550,10 @@ def synthandreturn(text):
             raise gr.Error('Unable to call API, please try again :)')
         print('Done with', model)
         result_storage[model] = result
-        try:
-            doloudnorm(result)
-        except:
-            pass
+        # try:
+        #     doloudnorm(result)
+        # except:
+        #     pass
     results = {}
     thread1 = threading.Thread(target=predict_and_update_result, args=(text, mdl1, results))
     thread2 = threading.Thread(target=predict_and_update_result, args=(text, mdl2, results))
