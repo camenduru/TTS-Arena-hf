@@ -143,7 +143,7 @@ Vote to find the best Text-to-Speech model out there!
 # **When you're ready to begin, login and begin voting!** The model names will be revealed once you vote.
 # """.strip()
 INSTR = """
-## Instructions
+## 🗳️ Vote
 
 * Input the text (English only) to synthesize audio (or press 🎲 for random text).
 * Listen to the two audio clips, one after the other.
@@ -687,7 +687,7 @@ with gr.Blocks() as about:
 with gr.Blocks(theme=theme, css="footer {visibility: hidden}textbox{resize:none}", title="TTS Leaderboard") as demo:
     gr.Markdown(DESCR)
     # gr.TabbedInterface([vote, leaderboard, about, admin], ['Vote', 'Leaderboard', 'About', 'Admin (ONLY IN BETA)'])
-    gr.TabbedInterface([vote, leaderboard, about], ['Vote', 'Leaderboard', 'About'])
+    gr.TabbedInterface([vote, leaderboard, about], ['🗳️ Vote', '🏆 Leaderboard', '📄 About'])
     if CITATION_TEXT:
         with gr.Row():
             with gr.Accordion("Citation", open=False):
