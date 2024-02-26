@@ -9,9 +9,9 @@ emoji: 🏆
 colorFrom: blue
 colorTo: blue
 pinned: true
-# header: mini
-# space_ci:
-#   trusted_authors: []
-#   secrets: []
-#   hardware: cpu-basic
+header: mini
+space_ci:
+  trusted_authors: []
+  secrets: []
+  hardware: cpu-basic
 ---
