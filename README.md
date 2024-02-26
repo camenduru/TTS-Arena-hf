@@ -11,7 +11,7 @@ colorTo: blue
 pinned: true
 header: mini
 space_ci:
-  trusted_authors: [mrfakename, Wauplin, reach-vb, clefourrier, pcuenq, ylacombe, sanchit-gandhi, multimodalart, main-horse]
+  trusted_authors: []
   secrets: []
   hardware: cpu-basic
 ---
