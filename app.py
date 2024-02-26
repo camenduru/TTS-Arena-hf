@@ -26,7 +26,7 @@ AVAILABLE_MODELS = {
     'ElevenLabs': 'eleven',
     'OpenVoice': 'openvoice',
     'Pheme': 'pheme',
-    #'MetaVoice': 'metavoice'
+    'MetaVoice': 'metavoice'
 }
 
 SPACE_ID = os.getenv('HF_ID')
