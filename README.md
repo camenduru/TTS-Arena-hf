@@ -10,10 +10,10 @@ colorFrom: blue
 colorTo: blue
 pinned: true
 header: mini
-space_ci:
-  trusted_authors: []
-  secrets:
-    - HF_TOKEN
-    - DATASET_ID
-  hardware: cpu-basic
+#space_ci:
+#  trusted_authors: []
+#  secrets:
+#    - HF_TOKEN
+#    - DATASET_ID
+#  hardware: cpu-basic
 ---
