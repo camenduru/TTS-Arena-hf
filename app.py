@@ -14,6 +14,10 @@ import os
 import tempfile
 from pydub import AudioSegment
 
+def match_target_amplitude(sound, target_dBFS):
+    change_in_dBFS = target_dBFS - sound.dBFS
+    return sound.apply_gain(change_in_dBFS)
+
 # from gradio_space_ci import enable_space_ci
 
 # enable_space_ci()
@@ -573,6 +577,11 @@ def synthandreturn(text):
         try:
             with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as f:
                 audio = AudioSegment.from_file(result)
+                try:
+                    print('Trying to normalize audio')
+                    audio = match_target_amplitude(audio, -20)
+                except:
+                    print('[WARN] Unable to normalize audio')
                 audio.export(f.name, format="wav")
                 os.unlink(result)
                 result = f.name
