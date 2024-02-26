@@ -10,8 +10,8 @@ colorFrom: blue
 colorTo: blue
 pinned: true
 header: mini
-space_ci:
-  trusted_authors: []
-  secrets: []
-  hardware: cpu-basic
+# space_ci:
+#   trusted_authors: []
+#   secrets: []
+#   hardware: cpu-basic
 ---
