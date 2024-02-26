@@ -14,9 +14,9 @@ import os
 import tempfile
 from pydub import AudioSegment
 
-from gradio_space_ci import enable_space_ci
+# from gradio_space_ci import enable_space_ci
 
-enable_space_ci()
+# enable_space_ci()
 
 
 
