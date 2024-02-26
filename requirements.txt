@@ -7,3 +7,4 @@ git+https://github.com/unitaryai/detoxify
 pyloudnorm
 langdetect
 pydub
+gradio-space-ci @ git+https://huggingface.co/spaces/Wauplin/gradio-space-ci@0.2.1

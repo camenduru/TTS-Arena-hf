@@ -1,13 +1,17 @@
 ---
 title: TTS Arena
+sdk: gradio
+app_file: app.py
+license: zlib
+tags:
+- leaderboard
 emoji: 🏆
 colorFrom: blue
 colorTo: blue
-sdk: gradio
-app_file: app.py
 pinned: true
-tags:
-- leaderboard
 header: mini
-license: zlib
+space_ci:
+  trusted_authors: []
+  secrets: []
+  hardware: cpu-basic
 ---
