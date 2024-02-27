@@ -141,7 +141,7 @@ MUST_BE_LOGGEDIN = "Please login with Hugging Face to participate in the TTS Are
 DESCR = """
 # TTS Arena: Benchmarking TTS Models in the Wild
 
-Vote to find the best Text-to-Speech model out there!
+Vote to help the community find the best available text-to-speech model!
 """.strip()
 # INSTR = """
 # ## Instructions
@@ -155,24 +155,24 @@ Vote to find the best Text-to-Speech model out there!
 INSTR = """
 ## 🗳️ Vote
 
-* Input the text (English only) to synthesize audio (or press 🎲 for random text).
+* Input text (English only) to synthesize audio (or press 🎲 for random text).
 * Listen to the two audio clips, one after the other.
 * Vote on which audio sounds more natural to you.
-* Model names are revealed after the vote is cast.
+* _Note: Model names are revealed after the vote is cast._
 
-Note: The models could take up to 30 seconds to synthesize audio.
+Note: It may take up to 30 seconds to synthesize audio.
 """.strip()
 request = ''
 if SPACE_ID:
     request = f"""
-### Request Model
+### Request a model
 
 Please [create a Discussion](https://huggingface.co/spaces/{SPACE_ID}/discussions/new) to request a model.
 """
 ABOUT = f"""
 ## 📄 About
 
-The TTS Arena is a project created to evaluate leading speech synthesis models. It is inspired by the [Chatbot Arena](https://chat.lmsys.org/) by LMSys.
+The TTS Arena evaluates leading speech synthesis models. It is inspired by LMsys's [Chatbot Arena](https://chat.lmsys.org/).
 
 ### Motivation
 
@@ -180,7 +180,7 @@ The field of speech synthesis has long lacked an accurate method to measure the 
 
 ### The Arena
 
-The leaderboard allows a user to enter text, which will be synthesized by two models. After listening to each sample, the user will vote on which model sounds more natural. Due to the risks of human bias and abuse, model names will be revealed only after a vote is submitted.
+The leaderboard allows a user to enter text, which will be synthesized by two models. After listening to each sample, the user can vote on which model sounds more natural. Due to the risks of human bias and abuse, model names are revealed only after a vote is submitted.
 
 ### Credits
 
@@ -197,15 +197,15 @@ Thank you to the following individuals who helped make this project possible:
 
 {request}
 
-### Privacy Statement
+### Privacy statement
 
 We may store text you enter and generated audio. We store a unique ID for each session. You agree that we may collect, share, and/or publish any data you input for research and/or commercial purposes.
 
 ### License
 
-Generated audio clips cannot be redistributed and used for personal, non-commercial use only.
+Generated audio clips cannot be redistributed and may be used for personal, non-commercial use only.
 
-Random sentences come from a filtered subset of the [Harvard Sentences](https://www.cs.columbia.edu/~hgs/audio/harvard.html).
+Random sentences are sourced from a filtered subset of the [Harvard Sentences](https://www.cs.columbia.edu/~hgs/audio/harvard.html).
 """.strip()
 LDESC = """
 ## 🏆 Leaderboard
