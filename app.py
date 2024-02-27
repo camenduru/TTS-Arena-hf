@@ -39,7 +39,7 @@ AVAILABLE_MODELS = {
     'MetaVoice': 'metavoice'
 }
 
-SPACE_ID = os.getenv('HF_ID')
+SPACE_ID = os.getenv('SPACE_ID')
 MAX_SAMPLE_TXT_LENGTH = 300
 MIN_SAMPLE_TXT_LENGTH = 10
 DB_DATASET_ID = os.getenv('DATASET_ID')
