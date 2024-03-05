@@ -10,10 +10,5 @@ colorFrom: blue
 colorTo: blue
 pinned: true
 header: mini
-#space_ci:
-#  trusted_authors: []
-#  secrets:
-#    - HF_TOKEN
-#    - DATASET_ID
-#  hardware: cpu-basic
+short_description: Vote on the top TTS models!
 ---
