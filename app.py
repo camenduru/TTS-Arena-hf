@@ -530,12 +530,9 @@ def doloudnorm(path):
     loudness = meter.integrated_loudness(data)
     loudness_normalized_audio = pyln.normalize.loudness(data, loudness, -12.0)
     sf.write(path, loudness_normalized_audio, rate)
-def doresample(path_to_wav):
-    y, sr = librosa.load(path_to_wav, sr=None)
-    if sr > 24000:
-        y_resampled = librosa.resample(y, sr, 24000)
-        librosa.output.write_wav(path_to_wav, y_resampled, 24000)
 
+def doresample(path_to_wav):
+    pass
 ##########################
 # 2x speedup (hopefully) #
 ##########################
@@ -570,13 +567,16 @@ def synthandreturn(text):
         except:
             raise gr.Error('Unable to call API, please try again :)')
         print('Done with', model)
-        try:
-            doresample(result)
-        except:
-            pass
+        # try:
+        #     doresample(result)
+        # except:
+        #     pass
         try:
             with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as f:
                 audio = AudioSegment.from_file(result)
+                current_sr = audio.frame_rate
+                if current_sr > 24000:
+                    audio = audio.set_frame_rate(24000)
                 try:
                     print('Trying to normalize audio')
                     audio = match_target_amplitude(audio, -20)
