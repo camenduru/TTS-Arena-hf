@@ -543,7 +543,11 @@ def synthandreturn(text):
         raise gr.Error(f'You exceeded the limit of {MAX_SAMPLE_TXT_LENGTH} characters')
     if len(text) < MIN_SAMPLE_TXT_LENGTH:
         raise gr.Error(f'Please input a text longer than {MIN_SAMPLE_TXT_LENGTH} characters')
-    if (toxicity.predict(text)['toxicity'] > 0.8):
+    if (
+        # test toxicity if not prepared text
+        text not in sents
+        and toxicity.predict(text)['toxicity'] > 0.8
+    ):
         print(f'Detected toxic content! "{text}"')
         raise gr.Error('Your text failed the toxicity test')
     if not text:
