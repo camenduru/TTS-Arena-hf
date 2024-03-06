@@ -36,7 +36,54 @@ AVAILABLE_MODELS = {
     'ElevenLabs': 'eleven',
     'OpenVoice': 'openvoice',
     'Pheme': 'pheme',
-    'MetaVoice': 'metavoice'
+    'MetaVoice': 'metavoice',
+
+    # '<Space>': <function>#<return-index-of-audio-param>
+    # 'coqui/xtts': '1#1',
+    # 'collabora/WhisperSpeech': '/whisper_speech_demo#0',
+    # 'myshell-ai/OpenVoice': '1#1',
+    # 'PolyAI/pheme': '/predict#0', #sleepy HF Space
+    # 'mrfakename/MetaVoice-1B-v0.1': '/tts#0',
+
+    # xVASynth (CPU)
+    'Pendrokar/xVASynth': '/predict#0',
+
+    # MeloTTS
+    # 'mrfakename/MeloTTS': '0#0', #API disabled
+
+    # CoquiTTS (CPU)
+    'coqui/CoquiTTS': '0#0',
+
+    # 'pytorch/Tacotron2': '0#0', #old gradio
+}
+
+OVERRIDE_INPUTS = {
+    'coqui/xtts': {
+        1: 'en',
+        2: 'https://cdn-uploads.huggingface.co/production/uploads/641de0213239b631552713e4/iKHHqWxWy6Zfmp6QP6CZZ.wav', # voice sample - Scarlett Johanson
+        3: 'https://cdn-uploads.huggingface.co/production/uploads/641de0213239b631552713e4/iKHHqWxWy6Zfmp6QP6CZZ.wav', # voice sample - Scarlett Johanson
+        4: False, #use_mic
+        5: False, #cleanup_reference
+        6: False, #auto_detect
+    },
+    'collabora/WhisperSpeech': {
+        1: 'https://cdn-uploads.huggingface.co/production/uploads/641de0213239b631552713e4/iKHHqWxWy6Zfmp6QP6CZZ.wav', # voice sample - Scarlett Johanson
+        2: 'https://cdn-uploads.huggingface.co/production/uploads/641de0213239b631552713e4/iKHHqWxWy6Zfmp6QP6CZZ.wav', # voice sample - Scarlett Johanson
+        3: 14.0, #Tempo - Gradio Slider issue: takes min. rather than value
+    },
+    'myshell-ai/OpenVoice': {
+        1: 'default', # style
+        2: 'https://cdn-uploads.huggingface.co/production/uploads/641de0213239b631552713e4/iKHHqWxWy6Zfmp6QP6CZZ.wav', # voice sample - Scarlett Johanson
+    },
+    'PolyAI/pheme': {
+        1: 'YOU1000000044_S0000798', # voice
+        2: 210,
+        3: 0.7, #Tempo - Gradio Slider issue: takes min. rather than value
+    },
+    'Pendrokar/xVASynth': {
+        1: 'ccby_nvidia_hifi_92_F', #fine-tuned voice model name
+        3: 1.0, #pacing/duration - Gradio Slider issue: takes min. rather than value
+    },
 }
 
 SPACE_ID = os.getenv('SPACE_ID')
@@ -44,6 +91,9 @@ MAX_SAMPLE_TXT_LENGTH = 300
 MIN_SAMPLE_TXT_LENGTH = 10
 DB_DATASET_ID = os.getenv('DATASET_ID')
 DB_NAME = "database.db"
+
+SPACE_ID = 'Pendrokar/TTS-Arena'
+DB_DATASET_ID = 'PenLocal'
 
 # If /data available => means local storage is enabled => let's use it!
 DB_PATH = f"/data/{DB_NAME}" if os.path.isdir("/data") else DB_NAME
@@ -118,6 +168,7 @@ if not os.path.isfile(DB_PATH):
 # Create DB table (if doesn't exist)
 create_db_if_missing()
     
+hf_token = os.getenv('HF_TOKEN')
 # Sync local DB with remote repo every 5 minute (only if a change is detected)
 scheduler = CommitScheduler(
     repo_id=DB_DATASET_ID,
@@ -133,7 +184,7 @@ scheduler = CommitScheduler(
 ####################################
 # Router API
 ####################################
-router = Client("TTS-AGI/tts-router", hf_token=os.getenv('HF_TOKEN'))
+router = Client("TTS-AGI/tts-router", hf_token=hf_token)
 ####################################
 # Gradio app
 ####################################
@@ -291,6 +342,9 @@ model_licenses = {
     'metavoice': 'Apache 2.0',
     'elevenlabs': 'Proprietary',
     'whisperspeech': 'MIT',
+
+    'Pendrokar/xVASynth': 'GPT3',
+    'Pendrokar/xVASynthStreaming': 'GPT3',
 }
 model_links = {
     'styletts2': 'https://github.com/yl4579/StyleTTS2',
@@ -561,7 +615,44 @@ def synthandreturn(text):
     def predict_and_update_result(text, model, result_storage):
         try:
             if model in AVAILABLE_MODELS:
-                result = router.predict(text, AVAILABLE_MODELS[model].lower(), api_name="/synthesize")
+                if '/' in model:
+                    # Use public HF Space
+                    mdl_space = Client(model, hf_token=hf_token)
+                    # assume the index is one of the first 9 return params
+                    return_audio_index = int(AVAILABLE_MODELS[model][-1])
+                    endpoints = mdl_space.view_api(all_endpoints=True, print_info=False, return_format='dict')
+
+                    api_name = None
+                    fn_index = None
+                    # has named endpoint
+                    if '/' == AVAILABLE_MODELS[model][:1]:
+                        # assume the index is one of the first 9 params
+                        api_name = AVAILABLE_MODELS[model][:-2]
+
+                        space_inputs = _get_param_examples(
+                            endpoints['named_endpoints'][api_name]['parameters']
+                        )
+                    # has unnamed endpoint
+                    else:
+                        # endpoint index is the first character
+                        fn_index = int(AVAILABLE_MODELS[model][0])
+
+                        space_inputs = _get_param_examples(
+                            endpoints['unnamed_endpoints'][str(fn_index)]['parameters']
+                        )
+
+                    space_inputs = _override_params(space_inputs, model)
+
+                    # force text
+                    space_inputs[0] = text
+
+                    results = mdl_space.predict(*space_inputs, api_name=api_name, fn_index=fn_index)
+
+                    # return path to audio
+                    result = results[return_audio_index] if (not isinstance(results, str)) else results
+                else:
+                    # Use the private HF Space
+                    result = router.predict(text, AVAILABLE_MODELS[model].lower(), api_name="/synthesize")
             else:
                 result = router.predict(text, model.lower(), api_name="/synthesize")
         except:
@@ -593,6 +684,40 @@ def synthandreturn(text):
         #     doloudnorm(result)
         # except:
         #     pass
+
+    def _get_param_examples(parameters):
+        example_inputs = []
+        for param_info in parameters:
+            if (
+                param_info['component'] == 'Radio'
+                or param_info['component'] == 'Dropdown'
+                or param_info['component'] == 'Audio'
+                or param_info['python_type']['type'] == 'str'
+            ):
+                example_inputs.append(str(param_info['example_input']))
+                continue
+            if param_info['python_type']['type'] == 'int':
+                example_inputs.append(int(param_info['example_input']))
+                continue
+            if param_info['python_type']['type'] == 'float':
+                example_inputs.append(float(param_info['example_input']))
+                continue
+            if param_info['python_type']['type'] == 'bool':
+                example_inputs.append(bool(param_info['example_input']))
+                continue
+
+        return example_inputs
+
+    def _override_params(inputs, modelname):
+        try:
+            for key,value in OVERRIDE_INPUTS[modelname].items():
+                inputs[key] = value
+            print(f"Default inputs overridden for {modelname}")
+        except:
+            pass
+
+        return inputs
+
     results = {}
     thread1 = threading.Thread(target=predict_and_update_result, args=(text, mdl1, results))
     thread2 = threading.Thread(target=predict_and_update_result, args=(text, mdl2, results))
