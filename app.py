@@ -38,7 +38,7 @@ AVAILABLE_MODELS = {
     'Pheme': 'pheme',
     'MetaVoice': 'metavoice',
     'MeloTTS': 'melo',
-    'StyleTTS 2', 'styletts2'
+    'StyleTTS 2': 'styletts2',
 }
 
 SPACE_ID = os.getenv('SPACE_ID')
