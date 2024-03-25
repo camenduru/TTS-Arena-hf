@@ -4,7 +4,7 @@ sdk: gradio
 app_file: app.py
 license: zlib
 tags:
-- leaderboard
+- arena
 emoji: 🏆
 colorFrom: blue
 colorTo: blue
