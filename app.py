@@ -659,7 +659,7 @@ def clear_stuff():
     return "", "Synthesize", gr.update(visible=False), '', '', gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=False)
 def disable():
     return gr.update(interactive=False)
-def ensable():
+def enable():
     return gr.update(interactive=True)
 with gr.Blocks() as vote:
     useridstate = gr.State()
