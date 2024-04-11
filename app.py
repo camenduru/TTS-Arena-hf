@@ -658,9 +658,9 @@ def randomsent():
 def clear_stuff():
     return "", "Synthesize", gr.update(visible=False), '', '', gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=False)
 def disable():
-    return gr.update(interactive=False)
+    return [gr.update(interactive=False), gr.update(interactive=False), gr.update(interactive=False)]
 def enable():
-    return gr.update(interactive=True)
+    return [gr.update(interactive=True), gr.update(interactive=True), gr.update(interactive=True)]
 with gr.Blocks() as vote:
     useridstate = gr.State()
     gr.Markdown(INSTR)
@@ -686,7 +686,7 @@ with gr.Blocks() as vote:
     nxtroundbtn = gr.Button('Next round', visible=False)
     # outputs = [text, btn, r2, model1, model2, prevmodel1, aud1, prevmodel2, aud2, abetter, bbetter]
     outputs = [text, btn, r2, model1, model2, aud1, aud2, abetter, bbetter, prevmodel1, prevmodel2, nxtroundbtn]
-    btn.click(disable, outputs=btn).then(synthandreturn, inputs=[text], outputs=outputs).then(enable, outputs=btn)
+    btn.click(disable, outputs=[btn, abetter, bbetter]).then(synthandreturn, inputs=[text], outputs=outputs).then(enable, outputs=[btn, abetter, bbetter])
     nxtroundbtn.click(clear_stuff, outputs=outputs)
 
     # nxt_outputs = [prevmodel1, prevmodel2, abetter, bbetter]
