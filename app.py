@@ -712,7 +712,7 @@ with gr.Blocks() as vote:
     nxtroundbtn = gr.Button('Next round', visible=False)
     # outputs = [text, btn, r2, model1, model2, prevmodel1, aud1, prevmodel2, aud2, abetter, bbetter]
     outputs = [text, btn, r2, model1, model2, aud1, aud2, abetter, bbetter, prevmodel1, prevmodel2, nxtroundbtn]
-    btn.click(disable, outputs=[btn, abetter, bbetter]).then(synthandreturn, inputs=[text], outputs=outputs).then(enable, outputs=[btn])
+    btn.click(disable, outputs=[btn, abetter, bbetter]).then(synthandreturn, inputs=[text], outputs=outputs).then(enable, outputs=[btn, abetter, bbetter])
     nxtroundbtn.click(clear_stuff, outputs=outputs)
 
     # Allow interaction with the vote buttons only when both audio samples have finished playing
