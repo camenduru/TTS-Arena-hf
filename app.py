@@ -623,11 +623,14 @@ def synthandreturn(text):
         mdl2, # model2
         gr.update(visible=True, value=results[mdl1]), # aud1
         gr.update(visible=True, value=results[mdl2]), # aud2
-        gr.update(visible=True, interactive=True),
-        gr.update(visible=True, interactive=True),
-        gr.update(visible=False),
-        gr.update(visible=False),
+        gr.update(visible=True, interactive=False), #abetter
+        gr.update(visible=True, interactive=False), #bbetter
+        gr.update(visible=False), #prevmodel1
+        gr.update(visible=False), #prevmodel2
         gr.update(visible=False), #nxt round btn
+        # reset aplayed, bplayed audio playback events
+        gr.update(value=False), #aplayed
+        gr.update(value=False), #bplayed
     )
     # return (
     #     text,
@@ -653,15 +656,35 @@ def synthandreturn(text):
     #     gr.update(visible=False),
     #     gr.update(visible=False), #nxt round btn
     # )
+
+def unlock_vote(btn_index, aplayed, bplayed):
+    # sample played
+    if btn_index == 0:
+        aplayed = gr.State(value=True)
+    if btn_index == 1:
+        bplayed = gr.State(value=True)
+
+    # both audio samples played
+    if bool(aplayed) and bool(bplayed):
+        print('Both audio samples played, voting unlocked')
+        return [gr.update(interactive=True), gr.update(interactive=True), gr.update(), gr.update()]
+
+    return [gr.update(), gr.update(), aplayed, bplayed]
+
 def randomsent():
     return random.choice(sents), '🎲'
 def clear_stuff():
     return "", "Synthesize", gr.update(visible=False), '', '', gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=False)
+
 def disable():
     return [gr.update(interactive=False), gr.update(interactive=False), gr.update(interactive=False)]
 def enable():
     return [gr.update(interactive=True), gr.update(interactive=True), gr.update(interactive=True)]
 with gr.Blocks() as vote:
+    # sample played
+    aplayed = gr.State(value=False)
+    bplayed = gr.State(value=False)
+    # voter ID
     useridstate = gr.State()
     gr.Markdown(INSTR)
     with gr.Group():
@@ -676,18 +699,22 @@ with gr.Blocks() as vote:
         with gr.Column():
             with gr.Group():
                 aud1 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
-                abetter = gr.Button("A is better", variant='primary')
+                abetter = gr.Button("A is better", variant='primary', interactive=False)
                 prevmodel1 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model A", text_align="center", lines=1, max_lines=1, visible=False)
         with gr.Column():
             with gr.Group():
                 aud2 = gr.Audio(interactive=False, show_label=False, show_download_button=False, show_share_button=False, waveform_options={'waveform_progress_color': '#3C82F6'})
-                bbetter = gr.Button("B is better", variant='primary')
+                bbetter = gr.Button("B is better", variant='primary', interactive=False)
                 prevmodel2 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model B", text_align="center", lines=1, max_lines=1, visible=False)
     nxtroundbtn = gr.Button('Next round', visible=False)
     # outputs = [text, btn, r2, model1, model2, prevmodel1, aud1, prevmodel2, aud2, abetter, bbetter]
-    outputs = [text, btn, r2, model1, model2, aud1, aud2, abetter, bbetter, prevmodel1, prevmodel2, nxtroundbtn]
-    btn.click(disable, outputs=[btn, abetter, bbetter]).then(synthandreturn, inputs=[text], outputs=outputs).then(enable, outputs=[btn, abetter, bbetter])
+    outputs = [text, btn, r2, model1, model2, aud1, aud2, abetter, bbetter, prevmodel1, prevmodel2, nxtroundbtn, aplayed, bplayed]
+    btn.click(disable, outputs=[btn, abetter, bbetter]).then(synthandreturn, inputs=[text], outputs=outputs).then(enable, outputs=[btn, gr.State(), gr.State()])
     nxtroundbtn.click(clear_stuff, outputs=outputs)
+
+    # Allow interaction with the vote buttons only when both audio samples have finished playing
+    aud1.stop(unlock_vote, outputs=[abetter, bbetter, aplayed, bplayed], inputs=[gr.State(value=0), aplayed, bplayed])
+    aud2.stop(unlock_vote, outputs=[abetter, bbetter, aplayed, bplayed], inputs=[gr.State(value=1), aplayed, bplayed])
 
     # nxt_outputs = [prevmodel1, prevmodel2, abetter, bbetter]
     nxt_outputs = [abetter, bbetter, prevmodel1, prevmodel2, nxtroundbtn]
