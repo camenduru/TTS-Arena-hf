@@ -605,6 +605,7 @@ def synthandreturn(text):
     results = {}
     thread1 = threading.Thread(target=predict_and_update_result, args=(text, mdl1, results))
     thread2 = threading.Thread(target=predict_and_update_result, args=(text, mdl2, results))
+    
     thread1.start()
     thread2.start()
     thread1.join()
@@ -618,6 +619,8 @@ def synthandreturn(text):
     # y, sr = librosa.load(results[list(results.keys())[1]], sr=None)
     # print(sr)
     #debug
+    #     outputs = [text, btn, r2, model1, model2, aud1, aud2, abetter, bbetter, prevmodel1, prevmodel2, nxtroundbtn]
+    
     return (
         text,
         "Synthesize",
@@ -696,7 +699,8 @@ with gr.Blocks() as vote:
             randomt = gr.Button('🎲', scale=0, min_width=0, variant='tool')
         randomt.click(randomsent, outputs=[text, randomt])
         btn = gr.Button("Synthesize", variant='primary')
-    model1 = gr.Textbox(interactive=False, lines=1, max_lines=1, visible=False)
+    # model1 = gr.Textbox(interactive=False, lines=1, max_lines=1, visible=False)
+    model1 = gr.Textbox(interactive=False, lines=1, max_lines=1, visible=True)
     model2 = gr.Textbox(interactive=False, lines=1, max_lines=1, visible=False)
     with gr.Row(visible=False) as r2:
         with gr.Column():
