@@ -39,6 +39,10 @@ AVAILABLE_MODELS = {
     'MetaVoice': 'metavoice',
     'MeloTTS': 'melo',
     'StyleTTS 2': 'styletts2',
+    'GPT-SoVITS': 'sovits',
+    'Vokan TTS', 'vokan',
+    'VoiceCraft': 'voicecraft',
+    'Parler TTS': 'parler'
 }
 
 SPACE_ID = os.getenv('SPACE_ID')
