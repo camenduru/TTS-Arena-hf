@@ -39,7 +39,7 @@ AVAILABLE_MODELS = {
     'MeloTTS': 'melo',
     'StyleTTS 2': 'styletts2',
     'GPT-SoVITS': 'sovits',
-    'Vokan TTS', 'vokan',
+    'Vokan TTS': 'vokan',
     'VoiceCraft': 'voicecraft',
     'Parler TTS': 'parler'
 }
