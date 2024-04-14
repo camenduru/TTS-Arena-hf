@@ -402,6 +402,7 @@ def downvote_model(model, uname):
     cursor.close()
 
 def a_is_better(model1, model2, userid):
+    print("A is better", model1, model2)
     userid = mkuuid(userid)
     if model1 and model2:
         conn = get_db()
@@ -414,6 +415,7 @@ def a_is_better(model1, model2, userid):
         downvote_model(model2, str(userid))
     return reload(model1, model2, userid, chose_a=True)
 def b_is_better(model1, model2, userid):
+    print("B is better", model1, model2)
     userid = mkuuid(userid)
     if model1 and model2:
         conn = get_db()
