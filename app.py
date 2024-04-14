@@ -699,10 +699,10 @@ with gr.Blocks() as vote:
             randomt = gr.Button('🎲', scale=0, min_width=0, variant='tool')
         randomt.click(randomsent, outputs=[text, randomt])
         btn = gr.Button("Synthesize", variant='primary')
-    # model1 = gr.Textbox(interactive=False, lines=1, max_lines=1, visible=False)
-    model1 = gr.Textbox(interactive=False, lines=1, max_lines=1, visible=True)
-    #model2 = gr.Textbox(interactive=False, lines=1, max_lines=1, visible=False)
-    model2 = gr.Textbox(interactive=False, lines=1, max_lines=1, visible=True)
+    model1 = gr.Textbox(interactive=False, lines=1, max_lines=1, visible=False)
+    #model1 = gr.Textbox(interactive=False, lines=1, max_lines=1, visible=True)
+    model2 = gr.Textbox(interactive=False, lines=1, max_lines=1, visible=False)
+    #model2 = gr.Textbox(interactive=False, lines=1, max_lines=1, visible=True)
     with gr.Row(visible=False) as r2:
         with gr.Column():
             with gr.Group():
