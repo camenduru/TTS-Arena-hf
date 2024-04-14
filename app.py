@@ -701,7 +701,8 @@ with gr.Blocks() as vote:
         btn = gr.Button("Synthesize", variant='primary')
     # model1 = gr.Textbox(interactive=False, lines=1, max_lines=1, visible=False)
     model1 = gr.Textbox(interactive=False, lines=1, max_lines=1, visible=True)
-    model2 = gr.Textbox(interactive=False, lines=1, max_lines=1, visible=False)
+    #model2 = gr.Textbox(interactive=False, lines=1, max_lines=1, visible=False)
+    model2 = gr.Textbox(interactive=False, lines=1, max_lines=1, visible=True)
     with gr.Row(visible=False) as r2:
         with gr.Column():
             with gr.Group():
@@ -716,7 +717,7 @@ with gr.Blocks() as vote:
     nxtroundbtn = gr.Button('Next round', visible=False)
     # outputs = [text, btn, r2, model1, model2, prevmodel1, aud1, prevmodel2, aud2, abetter, bbetter]
     outputs = [text, btn, r2, model1, model2, aud1, aud2, abetter, bbetter, prevmodel1, prevmodel2, nxtroundbtn]
-    btn.click(disable, outputs=[btn, abetter, bbetter]).then(synthandreturn, inputs=[text], outputs=outputs).then(enable, outputs=[btn, abetter, bbetter])
+    btn.click(disable, outputs=[btn, abetter, bbetter]).then(synthandreturn, inputs=[text], outputs=outputs).then(enable, outputs=[btn])
     nxtroundbtn.click(clear_stuff, outputs=outputs)
 
     # Allow interaction with the vote buttons only when both audio samples have finished playing
