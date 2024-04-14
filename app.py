@@ -634,9 +634,6 @@ def synthandreturn(text):
         gr.update(visible=False), #prevmodel1
         gr.update(visible=False), #prevmodel2
         gr.update(visible=False), #nxt round btn
-        # reset aplayed, bplayed audio playback events
-        #gr.update(value=False), #aplayed
-        #r.update(value=False), #bplayed
     )
     # return (
     #     text,
@@ -716,8 +713,34 @@ with gr.Blocks() as vote:
                 prevmodel2 = gr.Textbox(interactive=False, show_label=False, container=False, value="Vote to reveal model B", text_align="center", lines=1, max_lines=1, visible=False)
     nxtroundbtn = gr.Button('Next round', visible=False)
     # outputs = [text, btn, r2, model1, model2, prevmodel1, aud1, prevmodel2, aud2, abetter, bbetter]
-    outputs = [text, btn, r2, model1, model2, aud1, aud2, abetter, bbetter, prevmodel1, prevmodel2, nxtroundbtn]
-    btn.click(disable, outputs=[btn, abetter, bbetter]).then(synthandreturn, inputs=[text], outputs=outputs).then(enable, outputs=[btn])
+    outputs = [
+        text,
+        btn,
+        r2,
+        model1,
+        model2,
+        aud1,
+        aud2,
+        abetter,
+        bbetter,
+        prevmodel1,
+        prevmodel2,
+        nxtroundbtn
+    ]
+    """
+    text,
+        "Synthesize",
+        gr.update(visible=True), # r2
+        mdl1, # model1
+        mdl2, # model2
+        gr.update(visible=True, value=results[mdl1]), # aud1
+        gr.update(visible=True, value=results[mdl2]), # aud2
+        gr.update(visible=True, interactive=False), #abetter
+        gr.update(visible=True, interactive=False), #bbetter
+        gr.update(visible=False), #prevmodel1
+        gr.update(visible=False), #prevmodel2
+        gr.update(visible=False), #nxt round btn"""
+    btn.click(disable, outputs=[btn, abetter, bbetter]).then(synthandreturn, inputs=[text], outputs=outputs).then(enable, outputs=[btn, abetter, bbetter])
     nxtroundbtn.click(clear_stuff, outputs=outputs)
 
     # Allow interaction with the vote buttons only when both audio samples have finished playing
