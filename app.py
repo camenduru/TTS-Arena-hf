@@ -605,6 +605,7 @@ def synthandreturn(text):
         except:
             pass
         if model in AVAILABLE_MODELS.keys(): model = AVAILABLE_MODELS[model]
+        print(model)
         result_storage[model] = result
         # try:
         #     doloudnorm(result)
@@ -630,6 +631,7 @@ def synthandreturn(text):
     #     outputs = [text, btn, r2, model1, model2, aud1, aud2, abetter, bbetter, prevmodel1, prevmodel2, nxtroundbtn]
     mdl1k = mdl1
     mdl2k = mdl2
+    print(mdl1k, mdl2k)
     if mdl1 in AVAILABLE_MODELS.keys(): mdl1k=AVAILABLE_MODELS[mdl1]
     if mdl2 in AVAILABLE_MODELS.keys(): mdl2k=AVAILABLE_MODELS[mdl2]
     
