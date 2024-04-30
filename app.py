@@ -606,14 +606,21 @@ def synthandreturn(text):
             pass
         if model in AVAILABLE_MODELS.keys(): model = AVAILABLE_MODELS[model]
         print(model)
+        print(f"Running model {model}")
         result_storage[model] = result
         # try:
         #     doloudnorm(result)
         # except:
         #     pass
+    mdl1k = mdl1
+    mdl2k = mdl2
+    print(mdl1k, mdl2k)
+    if mdl1 in AVAILABLE_MODELS.keys(): mdl1k=AVAILABLE_MODELS[mdl1]
+    if mdl2 in AVAILABLE_MODELS.keys(): mdl2k=AVAILABLE_MODELS[mdl2]
     results = {}
-    thread1 = threading.Thread(target=predict_and_update_result, args=(text, mdl1, results))
-    thread2 = threading.Thread(target=predict_and_update_result, args=(text, mdl2, results))
+    print(f"Sending models {mdl1} and {mdl2} to API")
+    thread1 = threading.Thread(target=predict_and_update_result, args=(text, mdl1k, results))
+    thread2 = threading.Thread(target=predict_and_update_result, args=(text, mdl2k, results))
     
     thread1.start()
     thread2.start()
@@ -629,12 +636,8 @@ def synthandreturn(text):
     # print(sr)
     #debug
     #     outputs = [text, btn, r2, model1, model2, aud1, aud2, abetter, bbetter, prevmodel1, prevmodel2, nxtroundbtn]
-    mdl1k = mdl1
-    mdl2k = mdl2
-    print(mdl1k, mdl2k)
-    if mdl1 in AVAILABLE_MODELS.keys(): mdl1k=AVAILABLE_MODELS[mdl1]
-    if mdl2 in AVAILABLE_MODELS.keys(): mdl2k=AVAILABLE_MODELS[mdl2]
     
+    print(f"Retrieving models {mdl1} and {mdl2} from API")
     return (
         text,
         "Synthesize",
