@@ -32,15 +32,17 @@ with open('harvard_sentences.txt') as f:
 ####################################
 AVAILABLE_MODELS = {
     'XTTSv2': 'xtts',
-    'WhisperSpeech': 'whisperspeech',
+    # 'WhisperSpeech': 'whisperspeech',
     'ElevenLabs': 'eleven',
-    'OpenVoice': 'openvoice',
+    # 'OpenVoice': 'openvoice',
+    'OpenVoice V2': 'openvoicev2',
+    'Play.HT 2.0': 'playht',,
     'MetaVoice': 'metavoice',
     'MeloTTS': 'melo',
     'StyleTTS 2': 'styletts2',
     'GPT-SoVITS': 'sovits',
-    'Vokan TTS': 'vokan',
-#    'VoiceCraft': 'voicecraft',
+    # 'Vokan TTS': 'vokan',
+    'VoiceCraft': 'voicecraft',
     'Parler TTS': 'parler'
 }
 
