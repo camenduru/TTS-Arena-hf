@@ -42,7 +42,7 @@ AVAILABLE_MODELS = {
     'StyleTTS 2': 'styletts2',
     'GPT-SoVITS': 'sovits',
     # 'Vokan TTS': 'vokan',
-    'VoiceCraft': 'voicecraft',
+    'VoiceCraft 2.0': 'voicecraft',
     'Parler TTS': 'parler'
 }
 
