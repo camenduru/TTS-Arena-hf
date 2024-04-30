@@ -628,6 +628,10 @@ def synthandreturn(text):
     # print(sr)
     #debug
     #     outputs = [text, btn, r2, model1, model2, aud1, aud2, abetter, bbetter, prevmodel1, prevmodel2, nxtroundbtn]
+    mdl1k = mdl1
+    mdl2k = mdl2
+    if mdl1 in AVAILABLE_MODELS.keys(): mdl1k=AVAILABLE_MODELS[mdl1]
+    if mdl2 in AVAILABLE_MODELS.keys(): mdl2k=AVAILABLE_MODELS[mdl2]
     
     return (
         text,
@@ -635,8 +639,8 @@ def synthandreturn(text):
         gr.update(visible=True), # r2
         mdl1, # model1
         mdl2, # model2
-        gr.update(visible=True, value=results[mdl1]), # aud1
-        gr.update(visible=True, value=results[mdl2]), # aud2
+        gr.update(visible=True, value=results[mdl1k]), # aud1
+        gr.update(visible=True, value=results[mdl2k]), # aud2
         gr.update(visible=True, interactive=False), #abetter
         gr.update(visible=True, interactive=False), #bbetter
         gr.update(visible=False), #prevmodel1
