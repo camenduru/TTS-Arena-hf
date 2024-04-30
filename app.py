@@ -618,7 +618,7 @@ def synthandreturn(text):
     if mdl1 in AVAILABLE_MODELS.keys(): mdl1k=AVAILABLE_MODELS[mdl1]
     if mdl2 in AVAILABLE_MODELS.keys(): mdl2k=AVAILABLE_MODELS[mdl2]
     results = {}
-    print(f"Sending models {mdl1} and {mdl2} to API")
+    print(f"Sending models {mdl1k} and {mdl2k} to API")
     thread1 = threading.Thread(target=predict_and_update_result, args=(text, mdl1k, results))
     thread2 = threading.Thread(target=predict_and_update_result, args=(text, mdl2k, results))
     
@@ -637,7 +637,7 @@ def synthandreturn(text):
     #debug
     #     outputs = [text, btn, r2, model1, model2, aud1, aud2, abetter, bbetter, prevmodel1, prevmodel2, nxtroundbtn]
     
-    print(f"Retrieving models {mdl1} and {mdl2} from API")
+    print(f"Retrieving models {mdl1k} and {mdl2k} from API")
     return (
         text,
         "Synthesize",
