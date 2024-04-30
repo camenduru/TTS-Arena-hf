@@ -604,7 +604,7 @@ def synthandreturn(text):
                 result = f.name
         except:
             pass
-
+        if model in AVAILABLE_MODELS.keys(): model = AVAILABLE_MODELS[model]
         result_storage[model] = result
         # try:
         #     doloudnorm(result)
