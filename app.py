@@ -36,7 +36,7 @@ AVAILABLE_MODELS = {
     'ElevenLabs': 'eleven',
     # 'OpenVoice': 'openvoice',
     'OpenVoice V2': 'openvoicev2',
-    'Play.HT 2.0': 'playht',,
+    'Play.HT 2.0': 'playht',
     'MetaVoice': 'metavoice',
     'MeloTTS': 'melo',
     'StyleTTS 2': 'styletts2',
