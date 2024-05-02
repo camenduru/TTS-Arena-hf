@@ -35,7 +35,7 @@ AVAILABLE_MODELS = {
     # 'WhisperSpeech': 'whisperspeech',
     'ElevenLabs': 'eleven',
     # 'OpenVoice': 'openvoice',
-#    'OpenVoice V2': 'openvoicev2',
+    'OpenVoice V2': 'openvoicev2',
     'Play.HT 2.0': 'playht',
     'MetaVoice': 'metavoice',
     'MeloTTS': 'melo',
