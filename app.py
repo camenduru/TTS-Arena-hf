@@ -483,13 +483,13 @@ def reload(chosenmodel1=None, chosenmodel2=None, userid=None, chose_a=False, cho
 with gr.Blocks() as leaderboard:
     gr.Markdown(LDESC)
     # df = gr.Dataframe(interactive=False, value=get_leaderboard())
-    df = gr.Dataframe(interactive=False, min_width=0, wrap=True, column_widths=[30, 200, 50, 50])
+    df1 = gr.Dataframe(interactive=False, min_width=0, wrap=True, column_widths=[30, 200, 50, 50])
     with gr.Row():
         reveal_prelim = gr.Checkbox(label="Reveal preliminary results", info="Show all models, including models with very few human ratings.", scale=1)
         reloadbtn = gr.Button("Refresh", scale=3)
-    reveal_prelim.input(get_leaderboard, inputs=[reveal_prelim], outputs=[df])
-    leaderboard.load(get_leaderboard, inputs=[reveal_prelim], outputs=[df])
-    reloadbtn.click(get_leaderboard, inputs=[reveal_prelim], outputs=[df])
+    reveal_prelim.input(get_leaderboard, inputs=[reveal_prelim], outputs=[df1])
+    leaderboard.load(get_leaderboard, inputs=[reveal_prelim], outputs=[df1])
+    reloadbtn.click(get_leaderboard, inputs=[reveal_prelim], outputs=[df1])
     # gr.Markdown("DISCLAIMER: The licenses listed may not be accurate or up to date, you are responsible for checking the licenses before using the models. Also note that some models may have additional usage restrictions.")
 
 # with gr.Blocks() as vote:
