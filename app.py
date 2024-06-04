@@ -148,8 +148,6 @@ MUST_BE_LOGGEDIN = "Please login with Hugging Face to participate in the TTS Are
 DESCR = """
 # TTS Arena: Benchmarking TTS Models in the Wild
 
-**_NOTE: The leaderboard is currently down due to an issue rendering results that caused it to error out. It will be back up shortly!_**
-
 Vote to help the community find the best available text-to-speech model!
 """.strip()
 # INSTR = """
@@ -485,51 +483,13 @@ def reload(chosenmodel1=None, chosenmodel2=None, userid=None, chose_a=False, cho
 with gr.Blocks() as leaderboard:
     gr.Markdown(LDESC)
     # df = gr.Dataframe(interactive=False, value=get_leaderboard())
-    df1 = gr.Dataframe(interactive=False, min_width=0, wrap=True, column_widths=[30, 200, 50, 50])
+    df = gr.Dataframe(interactive=False, min_width=0, wrap=True, column_widths=[30, 200, 50, 50])
     with gr.Row():
         reveal_prelim = gr.Checkbox(label="Reveal preliminary results", info="Show all models, including models with very few human ratings.", scale=1)
         reloadbtn = gr.Button("Refresh", scale=3)
-    reveal_prelim.input(get_leaderboard, inputs=[reveal_prelim], outputs=[df1])
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    #leaderboard.load(get_leaderboard, inputs=[reveal_prelim], outputs=[df1])
-    reloadbtn.click(get_leaderboard, inputs=[reveal_prelim], outputs=[df1])
+    reveal_prelim.input(get_leaderboard, inputs=[reveal_prelim], outputs=[df])
+    leaderboard.load(get_leaderboard, inputs=[reveal_prelim], outputs=[df])
+    reloadbtn.click(get_leaderboard, inputs=[reveal_prelim], outputs=[df])
     # gr.Markdown("DISCLAIMER: The licenses listed may not be accurate or up to date, you are responsible for checking the licenses before using the models. Also note that some models may have additional usage restrictions.")
 
 # with gr.Blocks() as vote:
@@ -827,8 +787,7 @@ with gr.Blocks() as about:
 with gr.Blocks(theme=theme, css="footer {visibility: hidden}textbox{resize:none}", title="TTS Arena") as demo:
     gr.Markdown(DESCR)
     # gr.TabbedInterface([vote, leaderboard, about, admin], ['Vote', 'Leaderboard', 'About', 'Admin (ONLY IN BETA)'])
-    #gr.TabbedInterface([vote, leaderboard, about], ['🗳️ Vote', '🏆 Leaderboard', '📄 About'])
-    gr.TabbedInterface([vote, about], ['🗳️ Vote', '📄 About'])
+    gr.TabbedInterface([vote, leaderboard, about], ['🗳️ Vote', '🏆 Leaderboard', '📄 About'])
     if CITATION_TEXT:
         with gr.Row():
             with gr.Accordion("Citation", open=False):
