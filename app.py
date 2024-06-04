@@ -488,7 +488,45 @@ with gr.Blocks() as leaderboard:
         reveal_prelim = gr.Checkbox(label="Reveal preliminary results", info="Show all models, including models with very few human ratings.", scale=1)
         reloadbtn = gr.Button("Refresh", scale=3)
     reveal_prelim.input(get_leaderboard, inputs=[reveal_prelim], outputs=[df1])
-    leaderboard.load(get_leaderboard, inputs=[reveal_prelim], outputs=[df1])
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    #leaderboard.load(get_leaderboard, inputs=[reveal_prelim], outputs=[df1])
     reloadbtn.click(get_leaderboard, inputs=[reveal_prelim], outputs=[df1])
     # gr.Markdown("DISCLAIMER: The licenses listed may not be accurate or up to date, you are responsible for checking the licenses before using the models. Also note that some models may have additional usage restrictions.")
 
