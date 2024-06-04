@@ -148,8 +148,7 @@ MUST_BE_LOGGEDIN = "Please login with Hugging Face to participate in the TTS Are
 DESCR = """
 # TTS Arena: Benchmarking TTS Models in the Wild
 
-**NOTE:** The leaderboard is currently down due to an issue rendering results.
-it will be back up shortly!
+**_NOTE: The leaderboard is currently down due to an issue rendering results that caused it to error out. It will be back up shortly!_**
 
 Vote to help the community find the best available text-to-speech model!
 """.strip()
