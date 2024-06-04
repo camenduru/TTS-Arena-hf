@@ -148,6 +148,9 @@ MUST_BE_LOGGEDIN = "Please login with Hugging Face to participate in the TTS Are
 DESCR = """
 # TTS Arena: Benchmarking TTS Models in the Wild
 
+**NOTE:** The leaderboard is currently down due to an issue rendering results.
+it will be back up shortly!
+
 Vote to help the community find the best available text-to-speech model!
 """.strip()
 # INSTR = """
@@ -825,7 +828,8 @@ with gr.Blocks() as about:
 with gr.Blocks(theme=theme, css="footer {visibility: hidden}textbox{resize:none}", title="TTS Arena") as demo:
     gr.Markdown(DESCR)
     # gr.TabbedInterface([vote, leaderboard, about, admin], ['Vote', 'Leaderboard', 'About', 'Admin (ONLY IN BETA)'])
-    gr.TabbedInterface([vote, leaderboard, about], ['🗳️ Vote', '🏆 Leaderboard', '📄 About'])
+    #gr.TabbedInterface([vote, leaderboard, about], ['🗳️ Vote', '🏆 Leaderboard', '📄 About'])
+    gr.TabbedInterface([vote, about], ['🗳️ Vote', '📄 About'])
     if CITATION_TEXT:
         with gr.Row():
             with gr.Accordion("Citation", open=False):
