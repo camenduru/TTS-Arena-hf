@@ -1,6 +1,6 @@
 ---
 title: TTS Arena
-sdk_version: 4.19.0
+sdk_version: 4.36.0
 sdk: gradio
 app_file: app.py
 license: zlib
