@@ -37,7 +37,7 @@ AVAILABLE_MODELS = {
     # 'OpenVoice': 'openvoice',
     'OpenVoice V2': 'openvoicev2',
     'Play.HT 2.0': 'playht',
-    'MetaVoice': 'metavoice',
+#    'MetaVoice': 'metavoice',
     'MeloTTS': 'melo',
     'StyleTTS 2': 'styletts2',
     'GPT-SoVITS': 'sovits',
