@@ -2,7 +2,7 @@ gradio
 datasets
 librosa
 soundfile
-gradio_client==0.10.0
+gradio_client
 git+https://github.com/unitaryai/detoxify
 pyloudnorm
 langdetect
