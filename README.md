@@ -1,15 +1,16 @@
 ---
 title: TTS Arena
-sdk_version: 4.36.1
 sdk: gradio
 app_file: app.py
 license: zlib
 tags:
 - arena
-emoji: 🏆
-colorFrom: blue
-colorTo: blue
-pinned: true
+emoji: 🧪
+colorFrom: yellow
+colorTo: yellow
+pinned: false
 header: mini
-short_description: Vote on the top TTS models!
+sdk_version: 5.0.1
+short_description: Vote on the latest TTS models!
 ---
+# TTS Arena
