@@ -10,7 +10,7 @@ colorFrom: blue
 colorTo: blue
 pinned: false
 header: mini
-sdk_version: 5.2.0
+sdk_version: 5.1.0
 short_description: Vote on the latest TTS models!
 ---
 # TTS Arena
