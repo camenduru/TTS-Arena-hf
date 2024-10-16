@@ -41,12 +41,16 @@ def get_leaderboard(reveal_prelim = False, hide_battle_votes = False):
     for i in range(len(df)):
         for j in range(len(df)):
             if i != j:
-                expected_a = 1 / (1 + 10 ** ((df['score'][j] - df['score'][i]) / 400))
-                expected_b = 1 / (1 + 10 ** ((df['score'][i] - df['score'][j]) / 400))
-                actual_a = df['upvote'][i] / df['votes'][i] if df['votes'][i] > 0 else 0.5
-                actual_b = df['upvote'][j] / df['votes'][j] if df['votes'][j] > 0 else 0.5
-                df.at[i, 'score'] += 32 * (actual_a - expected_a)
-                df.at[j, 'score'] += 32 * (actual_b - expected_b)
+                try:
+                    expected_a = 1 / (1 + 10 ** ((df['score'][j] - df['score'][i]) / 400))
+                    expected_b = 1 / (1 + 10 ** ((df['score'][i] - df['score'][j]) / 400))
+                    actual_a = df['upvote'][i] / df['votes'][i] if df['votes'][i] > 0 else 0.5
+                    actual_b = df['upvote'][j] / df['votes'][j] if df['votes'][j] > 0 else 0.5
+                    df.at[i, 'score'] += 32 * (actual_a - expected_a)
+                    df.at[j, 'score'] += 32 * (actual_b - expected_b)
+                except:
+                    print(f'Error in ELO calculation for {df["name"][i]} and {df["name"][j]}')
+                    pass
     df['score'] = round(df['score'])
     ## ELO SCORE
     df = df.sort_values(by='score', ascending=False)
