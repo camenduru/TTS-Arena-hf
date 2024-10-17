@@ -8,7 +8,6 @@ from .ui_leaderboard import *
 
 with gr.Blocks() as about:
     gr.Markdown(ABOUT)
-    gr.DownloadButton("DL", DB_PATH)
 
 with gr.Blocks(css="footer {visibility: hidden}textbox{resize:none}", title="TTS Arena") as app:
     gr.Markdown(DESCR)
