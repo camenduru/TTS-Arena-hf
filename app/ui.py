@@ -4,6 +4,7 @@ from .messages import *
 from .ui_vote import *
 from .ui_battle import *
 from .ui_leaderboard import *
+from .ui_contenders import *
 
 
 with gr.Blocks() as about:
@@ -11,7 +12,7 @@ with gr.Blocks() as about:
 
 with gr.Blocks(css="footer {visibility: hidden}textbox{resize:none}", title="TTS Arena") as app:
     gr.Markdown(DESCR)
-    gr.TabbedInterface([vote, battle, leaderboard, about], ['Vote', 'Battle', 'Leaderboard', 'About'])
+    gr.TabbedInterface([vote, battle, leaderboard, tts_info, about], ['Vote', 'Battle', 'Leaderboard', 'Contenders', 'About'])
     if CITATION_TEXT:
         with gr.Row():
             with gr.Accordion("Citation", open=False):

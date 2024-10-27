@@ -1,4 +1,5 @@
 from .config import *
+from .models import *
 
 ############
 # Messages #
@@ -59,4 +60,38 @@ LDESC = """
 Vote to help the community determine the best text-to-speech (TTS) models.
 The leaderboard displays models in descending order of how natural they sound (based on votes cast by the community).
 Important: In order to help keep results fair, the leaderboard hides results by default until the number of votes passes a threshold. Tick the `Reveal preliminary results` to show models without sufficient votes. Please note that preliminary results may be inaccurate.
+""".strip()
+
+
+model_series = []
+for model in AVAILABLE_MODELS.keys():
+    # name up to first whitespace
+    model = model.split()[0]
+    model_series.append('%27'+ model +'%27')
+try:
+    for model in HF_SPACES.values():
+        # url encode pluses +
+        model_series.append('%27'+ model['series'].replace('+', '%2B') +'%27')
+except:
+    pass
+
+TTS_INFO = f"""
+## 🗣 Contenders
+
+### 🔐 Closed Source TTS
+* ElevenLabs
+* Play.ht
+
+### 🔓 Open Source TTS capabilities table
+
+See [the full dataset itself](https://huggingface.co/datasets/Pendrokar/open_tts_tracker) for the legend and more in depth information of each model.
+""".strip()
+TTS_DATASET_IFRAME_ORDER = '%2C+'.join(model_series)
+TTS_DATASET_IFRAME = f"""
+<iframe
+    src="https://huggingface.co/datasets/Pendrokar/open_tts_tracker/embed/sql-console/default/train?sql_console=true&sql=--+The+SQL+console+is+powered+by+DuckDB+WASM+and+runs+entirely+in+the+browser.%0A--+Get+started+by+typing+a+query+or+selecting+a+view+from+the+options+below.%0ASELECT+*%2C+%22Name%22+IN+%28{TTS_DATASET_IFRAME_ORDER}%29+AS+%22In+arena%22+FROM+train+WHERE+%22Insta-clone+%F0%9F%91%A5%22+IS+NOT+NULL+ORDER+BY+%22In+arena%22+DESC+LIMIT+50%3B&views%5B%5D=train"
+    frameborder="0"
+    width="100%"
+    height="650px"
+></iframe>
 """.strip()
